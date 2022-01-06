@@ -6,7 +6,7 @@ from django_countries.fields import CountryField
 
 
 class TelegramUser(AbstractTelegramUser):
-    language_code = CountryField("lang", max_length=2)
+    language_code = CountryField("lang", max_length=2, blank=True, null=True)
     role = models.CharField(max_length=15, choices=(
         ('Admin', '🔰 Admin'),
         ('Whale', '🐳 Whale'),
@@ -16,14 +16,23 @@ class TelegramUser(AbstractTelegramUser):
         ('Hustler', '🚫 Hustler'),
     ), blank=True, null=True)
 
-    post_count = models.IntegerField(null=True, blank=True)
+    post_count = models.IntegerField("posts", default=0)
     joined = models.DateField(default=date.today)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f' {self.name()}'
+
+    def name(self):
+        name = self.first_name
+        if self.last_name is not None:
+            name += f' {self.last_name}'
+        if self.username is not None:
+            name = f' @{self.username}'
+        return name
+
     def get_role_display(self):
         return self.get_role_display()
-
-
 
 
 class TelegramChat(AbstractTelegramChat):
