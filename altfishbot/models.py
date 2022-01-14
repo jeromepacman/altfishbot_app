@@ -6,14 +6,14 @@ from django_countries.fields import CountryField
 
 
 class TelegramUser(AbstractTelegramUser):
-    language_code = CountryField("lang", max_length=2, blank=True, null=True)
+    language_code = CountryField("lang", max_length=2, null=True)
     role = models.CharField(max_length=15, choices=(
-        ('Admin', '🔰 Admin'),
-        ('Whale', '🐳 Whale'),
-        ('Babywhale', '🐋 Babywhale'),
-        ('Dolphin', '🐬 Dolphin'),
-        ('Member', '❇️ Member'),
-        ('Hustler', '🚫 Hustler'),
+        ('🔰 Admin', '🔰 Admin'),
+        ('🐳 Whale', '🐳 Whale'),
+        ('🐋 Babywhale', '🐋 Babywhale'),
+        ('🐬 Dolphin', '🐬 Dolphin'),
+        ('❇️ Member', '❇️ Member'),
+        ('🚫 Hustler', '🚫 Hustler'),
     ), blank=True, null=True)
 
     post_count = models.IntegerField("posts", default=0)
@@ -31,9 +31,6 @@ class TelegramUser(AbstractTelegramUser):
             name = f' @{self.username}'
         return name
 
-    def get_role_display(self):
-        return self.get_role_display()
-
 
 class TelegramChat(AbstractTelegramChat):
     pass
@@ -47,3 +44,8 @@ class TelegramState(AbstractTelegramState):
 
     class Meta:
         unique_together = ('telegram_user', 'telegram_chat')
+
+
+
+
+

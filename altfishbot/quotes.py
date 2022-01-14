@@ -82,5 +82,8 @@ QUOTES_STRINGS = [
     "©️Cobie.",
     "🔈 Was thinking about getting a Hublot. After today I'm trying to sell my Timex.."
     " SalsaTekila (21/12)",
+    "🔈 Stay disciplined. Keep emotions in check. Emotionally detached traders yield better results. "
+    "Discipline will separate you from the pack."
+    "©️Mr Anderson",
 
 ]
