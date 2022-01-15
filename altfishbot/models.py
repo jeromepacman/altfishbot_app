@@ -2,18 +2,17 @@ from _datetime import date
 from django.db import models
 from django.db.models import CASCADE
 from django_tgbot.models import AbstractTelegramUser, AbstractTelegramChat, AbstractTelegramState
-from django_countries.fields import CountryField
 
 
 class TelegramUser(AbstractTelegramUser):
-    language_code = CountryField("lang", max_length=2, null=True)
+    language_code = models.CharField("lang", max_length=2, null=True, blank=True)
     role = models.CharField(max_length=15, choices=(
-        ('🔰 Admin', '🔰 Admin'),
-        ('🐳 Whale', '🐳 Whale'),
-        ('🐋 Babywhale', '🐋 Babywhale'),
-        ('🐬 Dolphin', '🐬 Dolphin'),
-        ('❇️ Member', '❇️ Member'),
-        ('🚫 Hustler', '🚫 Hustler'),
+        ('Admin', '🔰 Admin'),
+        ('Whale', '🐳 Whale'),
+        ('Babywhale', '🐋 Babywhale'),
+        ('Dolphin', '🐬 Dolphin'),
+        ('Member', '❇️ Member'),
+        ('Hustler', '🚫 Hustler'),
     ), blank=True, null=True)
 
     post_count = models.IntegerField("posts", default=0)
