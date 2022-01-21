@@ -85,5 +85,12 @@ QUOTES_STRINGS = [
     "🔈 Stay disciplined. Keep emotions in check. Emotionally detached traders yield better results. "
     "Discipline will separate you from the pack."
     "©️Mr Anderson",
+    "🔈 Web3 has different-colored hair, but the same DNA as earlier web paradigms, which decentralized services at an unprecedented scale"
+    " to centralize wealth and influence at an unprecedented scale. ©️️prof Galloway ",
 
 ]
+
+
+def quote_display(string):
+    s = f'💬 {QUOTES_STRINGS}'
+    pass

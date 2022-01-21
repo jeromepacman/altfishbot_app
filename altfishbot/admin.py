@@ -8,6 +8,7 @@ class TelegramUserAdmin(admin.ModelAdmin):
     list_display = (
         'telegram_id', 'first_name', 'last_name', 'username', 'role', 'post_count', 'language_code', 'updated_at', 'joined')
     order_by = ('updated_at',)
+    search_fields = ('first_name',)
 
 
 @admin.register(models.TelegramChat)

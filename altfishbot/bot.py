@@ -33,8 +33,9 @@ def import_processors():
 state_manager = StateManager()
 bot = TelegramBot(bot_token, state_manager)
 import_processors()
+# bot.getMyCommands()
 
-# bot.setMyCommands([BotCommand({
-#    'command': "test",
-#     'description': "test"
-# })])
+bot.setMyCommands([BotCommand({
+   'command': "test",
+   'description': "test"
+ })])
