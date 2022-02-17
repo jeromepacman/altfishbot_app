@@ -37,7 +37,7 @@ QUOTES_STRINGS = [
     "©️Elliott waves theory",
     "🔈 Essential projects that spent time on critically thinking about how to structure their product survive"
     "Projects with multiple strong, well funded teams that are playing multi-decade games will still be here."
-    "Tokenomics that look “bad” in a bull market start to look good."
+    " Tokenomics that look “bad” in a bull market start to look good."
     "©️CryptoCobain",
     "🔈 Almost everything you want to know is already printed on the weekly chart"
     "©️Altwhales",
@@ -49,8 +49,8 @@ QUOTES_STRINGS = [
     "reacting to 'that'."
     "©️Sam Trabucco",
     "🔈 WAGMI ",
-    "🔈 I am a big fan of Bitcoin, always have been!”"
-    "©️Jamie Dimon - October 21, 2021",
+    "🔈 I am a big fan of Bitcoin, always have been!"
+    "©️Jamie Dimon - October 21, 2021. ...",
     "🔈 Believe nothing you hear. And be suspect even of your own eyes. A world ruled by the powerful, the clever and "
     "the corrupt is never what it seems."
     "©️John McAfee",
@@ -62,13 +62,13 @@ QUOTES_STRINGS = [
     "©️John Bollinger",
     "🔈 サトシ ('Satoshi' in Katakana) or "
     "覚 ('Satoshi' in Kanji) "
-    "means 'wisdom' or 'sense'",
+    "means 'wisdom' or 'sense' ",
     " ナカモト ('Nakamoto' in Katakana) or "
     "中本 ('Nakamoto' in Kanji) "
     "means 'base' 'root' or 'origin'",
     "🔈 Wave 2 must retrace Wave 1 by a minimum of 20% "
     "©️Elliott Waves Theory",
-    "🔈 It's funny, because no one cares.",
+    "🔈 History doesn't repeat, but it often rhymes. ©️Mark Twain",
     "🔈 Ah, what a waste. I liked that one.",
     "🔈 A misdraw generally results in a multiplied inverse effect"
     "©️Cryptocred",
@@ -87,10 +87,9 @@ QUOTES_STRINGS = [
     "©️Mr Anderson",
     "🔈 Web3 has different-colored hair, but the same DNA as earlier web paradigms, which decentralized services at an unprecedented scale"
     " to centralize wealth and influence at an unprecedented scale. ©️️prof Galloway ",
+    "🔈 When it's a gold rush, it sometimes makes more sense to sell shovels ©️Idriss Aberkane",
+    "🔈 Money is made by sitting, not trading. ©️Jesse Livermore",
 
 ]
 
 
-def quote_display(string):
-    s = f'💬 {QUOTES_STRINGS}'
-    pass
