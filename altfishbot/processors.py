@@ -27,8 +27,9 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
         quote = random.choices(QUOTES_STRINGS)
         bot.sendMessage(chat_id, quote[0])
 
-    if quote ==  == '/priv':
-    qotes =
+    if text == '/priv':
+        quote = text[6:0]
+        bot.sendMessage(chat_id, quote)
 
 
 
