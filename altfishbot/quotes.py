@@ -92,4 +92,9 @@ QUOTES_STRINGS = [
 
 ]
 
-
+TRADE_STRINGS = [
+    "It's a ✅ BUY ✅",
+    "You wanna 🛑 SELL 🛑",
+    "Just 🔅 HODL 🔅",
+    "No idea ❕DYOR❕",
+]

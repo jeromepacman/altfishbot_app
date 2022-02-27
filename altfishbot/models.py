@@ -5,7 +5,7 @@ from django_tgbot.models import AbstractTelegramUser, AbstractTelegramChat, Abst
 
 
 class TelegramUser(AbstractTelegramUser):
-    language_code = models.CharField("lang", max_length=2, null=True, blank=True)
+    language_code = models.CharField("Lang", max_length=15, null=True, blank=True)
     role = models.CharField(max_length=15, choices=(
         ('Admin', '🔰 Admin'),
         ('Whale', '🐳 Whale'),
@@ -13,11 +13,12 @@ class TelegramUser(AbstractTelegramUser):
         ('Dolphin', '🐬 Dolphin'),
         ('Member', '❇️ Member'),
         ('Hustler', '🚫 Hustler'),
-    ), blank=True, null=True)
+        ('Bot', '🔷 Bot'),), blank=True, null=True)
 
     post_count = models.IntegerField("posts", default=0)
     joined = models.DateField(default=date.today)
     updated_at = models.DateTimeField(auto_now=True)
+    has_status = models.BooleanField("Mb", default=False)
 
     def __str__(self):
         return f' {self.name()}'
