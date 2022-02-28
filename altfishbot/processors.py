@@ -58,9 +58,10 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
         except:
             bot.sendMessage(chat_id='342785208', text="Data failed")
         else:
-            bot.sendMessage(chat_id, "Data purged")
+            bot.sendMessage(chat_id='342785208', text="Data purged")
     else:
         return
+
 
 @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
            update_types=update_types.Message)
@@ -135,7 +136,7 @@ def trendy(bot: TelegramBot, update: Update, state: TelegramState):
         data2 = result_2["data"][0]
         feeling = data2["value_classification"]
         number = data2["value"]
-        total = f'📊<b>Total market change:</> {change_price}% (last 24 hours)\n🪙<b>Bitcoin dominance:</> {domi_btc}%\n😵<b>Fear&Greed index: </>{feeling} ({number}|100)'
+        total = f'📊 Total market change: {change_price}% (last 24 hours)\n🪙 Bitcoin dominance: {domi_btc}%\n😵 Fear&Greed index: {feeling} ({number}|100)'
         bot.sendMessage(chat_id, total, parse_mode='html')
 
     else:
