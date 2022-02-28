@@ -18,6 +18,22 @@ from .quotes import QUOTES_STRINGS, TRADE_STRINGS
 
 # commands #########
 
+
+# Internal direct requests #######################
+@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
+           update_types=update_types.Message)
+def post_count(bot: TelegramBot, update: Update, state: TelegramState):
+    chat_type = update.get_chat().get_type()
+    user_id = update.get_user().get_id()
+    text = update.get_message().get_text()
+
+    if chat_type == 'supergroup' and len(text) > 10:
+        user = TelegramUser.objects.get(telegram_id=user_id)
+        user.post_count += 1
+        user.save()
+
+
+#  requests #######################
 @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
            update_types=update_types.Message)
 def quotes(bot: TelegramBot, update: Update, state: TelegramState):
@@ -26,20 +42,25 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
 
     if text == '/quote':
         quote = random.choices(QUOTES_STRINGS)
-        bot.sendMessage(chat_id, {quote[0]})
+        bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
 
-    if text.startswith('!!'):
+    elif text.startswith('/trade '):
         quote = random.choices(TRADE_STRINGS)
         bot.sendMessage(chat_id, quote[0])
 
-    if text == '/purge':
+    elif text == '/active':
+        n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
+        bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
+
+    elif text == '/purge' and chat_id == '342785208':
         try:
             TelegramUser.objects.filter(role=None).delete()
         except:
-            bot.sendMessage(chat_id, "Failed")
+            bot.sendMessage(chat_id='342785208', text="Data failed")
         else:
-            bot.sendMessage(chat_id, "Done")
-
+            bot.sendMessage(chat_id, "Data purged")
+    else:
+        return
 
 @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
            update_types=update_types.Message)
@@ -69,16 +90,6 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
 
 @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
            update_types=update_types.Message)
-def user_24(bot: TelegramBot, update: Update, state: TelegramState):
-    chat_id = update.get_chat().get_id()
-    text = update.get_message().get_text()
-    if text == '/active':
-        n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
-        bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
-
-
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
-           update_types=update_types.Message)
 def promote(bot: TelegramBot, update: Update, state: TelegramState):
     text = update.get_message().get_text()
     user_id = update.get_user().get_id()
@@ -97,25 +108,38 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
 
 @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
            update_types=update_types.Message)
-def trend7(bot: TelegramBot, update: Update, state: TelegramState):
+def trendy(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
-    chat_type = update.get_chat().get_type()
-    if chat_type == 'supergroup' and text == '/hot':
-        pass
+    if text == '/top5':
+        request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
+        result = request.json()
+        coins = result["coins"][:5]
+        bot.sendMessage(chat_id, text='<b>💹 Trending coins searched</b>', parse_mode='html')
+        for x in coins:
+            symbol = (x["item"]["symbol"])
+            bot.sendMessage(chat_id, symbol)
 
+    elif text == "/cap":
+        cap = requests.get(url='https://api.coingecko.com/api/v3/global')
+        fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
+        result_1 = cap.json()
+        result_2 = fear.json()
+        data = result_1["data"]
+        change = data["market_cap_change_percentage_24h_usd"]
+        btc = data["market_cap_percentage"]["btc"]
+        change = round(change, 2)
+        change_price = '{:,}'.format(change)
+        btc = round(btc, 2)
+        domi_btc = '{:,}'.format(btc)
+        data2 = result_2["data"][0]
+        feeling = data2["value_classification"]
+        number = data2["value"]
+        total = f'📊<b>Total market change:</> {change_price}% (last 24 hours)\n🪙<b>Bitcoin dominance:</> {domi_btc}%\n😵<b>Fear&Greed index: </>{feeling} ({number}|100)'
+        bot.sendMessage(chat_id, total, parse_mode='html')
 
-# Internal direct requests #######################
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
-           update_types=update_types.Message)
-def post_count(bot: TelegramBot, update: Update, state: TelegramState):
-    chat_type = update.get_chat().get_type()
-    user_id = update.get_user().get_id()
-    text = update.get_message().get_text()
-    if chat_type == 'supergroup' and len(text) > 15:
-        user = TelegramUser.objects.get(telegram_id=user_id)
-        user.post_count += 1
-        user.save()
+    else:
+        return
 
 
 # Private chat actions  #######################
@@ -131,23 +155,20 @@ def team_ask(bot: TelegramBot, update: Update, state: TelegramState):
             for a in TelegramUser.objects.filter(role='Admin'):
                 if not a.is_bot:
                     bot.sendMessage(chat_id, f' @{a.username} {a.get_role_display()}')
-        if text == '/scamlist':
+        elif text == '/scamlist':
             bot.sendMessage(chat_id, f'Mostly scams...')
             for a in TelegramUser.objects.filter(role="Hustler"):
                 bot.sendMessage(chat_id, f'{a.name()} {a.get_role_display()}')
-
-
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
-           update_types=update_types.Message)
-def insiders(bot: TelegramBot, update: Update, state: TelegramState):
-    chat_id = update.get_chat().get_id()
-    text = update.get_message().get_text()
-    if text == '/insiderlist':
-        for a in TelegramUser.objects.filter(role="Dolphins"):
-            bot.sendMessage(chat_id, f'{a.name()} {a.get_role_display()}')
-        for m in TelegramUser.objects.filter(role="MiniWhale"):
-            bot.sendMessage(chat_id, f'{m.name()} {m.get_role_display()}')
-            bot.sendMessage(chat_id, f'<i>Your current status does not allow you to access the list of top level members</i>')
+        elif text == '/insiderlist':
+            for a in TelegramUser.objects.filter(role="Dolphin"):
+                bot.sendMessage(chat_id, f'{a.name()} {a.get_role_display()}')
+            for a in TelegramUser.objects.filter(role="Babywhale"):
+                bot.sendMessage(chat_id, f'{a.name()} {a.get_role_display()}')
+            bot.sendMessage(chat_id,
+                            text='<i>Your current status does not allow you to access the list of top level members</>',
+                            parse_mode='html')
+        else:
+            return
 
     # @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text])
     # def send_keyboards(bot: TelegramBot, update: Update, state: TelegramState):
