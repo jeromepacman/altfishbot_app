@@ -116,7 +116,7 @@ def trendy(bot: TelegramBot, update: Update, state: TelegramState):
         request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
         result = request.json()
         coins = result["coins"][:5]
-        bot.sendMessage(chat_id, text='<b>💹 Trending searched on CoinGekko</b>', parse_mode='html')
+        bot.sendMessage(chat_id, text='<b>💹 Trending searched coins on Gekko:</b>', parse_mode='html')
         for x in coins:
             symbol = (x["item"]["symbol"])
             bot.sendMessage(chat_id, symbol)
