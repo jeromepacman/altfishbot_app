@@ -52,7 +52,7 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
         n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
         bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
 
-    elif text == '/purge' and chat_id == '342785208':
+    elif text == '/purge':
         try:
             TelegramUser.objects.filter(role=None).delete()
         except:
@@ -84,7 +84,7 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
         b = TelegramUser.objects.get(telegram_id=user_id)
         if b.role is not None:
             c = f'{b.get_role_display()}'
-            bot.sendMessage(chat_id, f'😎 Your Status: \n{c}')
+            bot.sendMessage(chat_id, f'Hi {b.first_name} 😎 Your Status:\n{c}')
         else:
             bot.sendMessage(chat_id, f"😶 You don't have any status")
 
@@ -112,11 +112,11 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
 def trendy(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
-    if text == '/top5':
+    if text == '/tcoin':
         request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
         result = request.json()
         coins = result["coins"][:5]
-        bot.sendMessage(chat_id, text='<b>💹 Trending coins searched</b>', parse_mode='html')
+        bot.sendMessage(chat_id, text='<b>💹 Trending searched on CoinGekko</b>', parse_mode='html')
         for x in coins:
             symbol = (x["item"]["symbol"])
             bot.sendMessage(chat_id, symbol)
