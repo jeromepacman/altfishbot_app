@@ -12,7 +12,7 @@ class TelegramUser(AbstractTelegramUser):
         ('Whale', '🐳 Whale'),
         ('Babywhale', '🐋 Babywhale'),
         ('Dolphin', '🐬 Dolphin'),
-        ('Member', '❇️ Member'),
+        ('Member', '🐡 Member'),
         ('Hustler', '🚫 Hustler'),
         ('Bot', '🔷 Bot'),), blank=True, null=True)
 

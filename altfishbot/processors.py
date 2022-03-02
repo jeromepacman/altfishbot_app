@@ -1,5 +1,6 @@
 import requests
 import json
+import time
 import random
 from datetime import timedelta
 from django.utils.timezone import now
@@ -24,12 +25,13 @@ from .quotes import QUOTES_STRINGS, TRADE_STRINGS
            update_types=update_types.Message)
 def post_count(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
-    user_id = update.get_user().get_id()
     text = update.get_message().get_text()
 
     if chat_type == 'supergroup' and len(text) > 5:
+        user_id = update.get_user().get_id()
         user = TelegramUser.objects.get(telegram_id=user_id)
         user.post_count += 1
+        user.updated_at = now()
         user.save()
 
 
@@ -39,7 +41,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
 def quotes(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
-
+    sender = update.get_user().get_id()
     if text == '/quote':
         quote = random.choices(QUOTES_STRINGS)
         bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
@@ -84,7 +86,7 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
         b = TelegramUser.objects.get(telegram_id=user_id)
         if b.role is not None:
             c = f'{b.get_role_display()}'
-            bot.sendMessage(chat_id, f'Hi {b.first_name} 😎 Your Status:\n{c}')
+            bot.sendMessage(chat_id, f'Hi {b.first_name} 😎\nYour Status: \n{c}')
         else:
             bot.sendMessage(chat_id, f"😶 You don't have any status")
 
@@ -101,7 +103,7 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
             hook = sender.get_from().get_id()
             a = TelegramUser.objects.get(telegram_id=hook)
             if a.role is not None:
-                response = f'▫️{a} got a new status:\n▫️   ➖ ➖ {a.get_role_display()}  ➖ ➖ '
+                response = f'▫️{a} got a new status:\n▫️    ➖ {a.get_role_display()}  ➖  '
                 bot.sendMessage(chat_id, response)
         else:
             bot.sendMessage(chat_id, 'Bad request')
@@ -112,14 +114,17 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
 def trendy(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
-    if text == '/tcoin':
+    if text == '/top':
         request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
         result = request.json()
         coins = result["coins"][:5]
-        bot.sendMessage(chat_id, text='<b>💹 Trending searched coins on Gekko:</b>', parse_mode='html')
+        url = f'https://coingecko.com/coins/'
+        bot.sendMessage(chat_id, text='📈 Trending coins searched on Gecko:', parse_mode='html')
         for x in coins:
-            symbol = (x["item"]["symbol"])
-            bot.sendMessage(chat_id, symbol)
+            symbol = x["item"]["symbol"]
+            num = x["item"]["slug"]
+            response = f'➖ <a href="{url}{num}">{symbol}</a>'
+            bot.sendMessage(chat_id, response, disable_web_page_preview=True, parse_mode='html')
 
     elif text == "/cap":
         cap = requests.get(url='https://api.coingecko.com/api/v3/global')
@@ -136,11 +141,21 @@ def trendy(bot: TelegramBot, update: Update, state: TelegramState):
         data2 = result_2["data"][0]
         feeling = data2["value_classification"]
         number = data2["value"]
-        total = f'📊 Total market change: {change_price}% (last 24 hours)\n🪙 Bitcoin dominance: {domi_btc}%\n😵 Fear&Greed index: {feeling} ({number}|100)'
+        total = f' 📊<b>Total market change:</> {change_price}% (last 24 hours)\n🪙 <b>Bitcoin dominance:</> {domi_btc}%\n😵 <b>Fear&Greed index: </>{feeling} ({number}|100)'
         bot.sendMessage(chat_id, total, parse_mode='html')
 
+    elif text == "/news":
+        news = requests.get(url='https://min-api.cryptocompare.com/data/v2/news/?lang=EN')
+        api = news.json()
+        data = api["Data"][:5]
+        for x in data:
+            title = x["title"]
+            url = x["url"]
+            source = x["source"]
+            response = f'🌎{source.title()}\n〽️<a href="{url}">{title}</a>'
+            bot.sendMessage(chat_id, {response}, disable_web_page_preview=True, parse_mode='html')
     else:
-        return
+        return None
 
 
 # Private chat actions  #######################
@@ -170,6 +185,7 @@ def team_ask(bot: TelegramBot, update: Update, state: TelegramState):
                             parse_mode='html')
         else:
             return
+
 
     # @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text])
     # def send_keyboards(bot: TelegramBot, update: Update, state: TelegramState):
