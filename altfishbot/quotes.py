@@ -24,7 +24,12 @@ QUOTES_STRINGS = [
     "🔈 If you wait until everyone understands it, you won't be able to afford it."
     "©️M.Saylor",
     "🔈 Buy the dips, sell the rips !)",
+    "🔈 Crypto has been one of the great stories in finance over the course of the last 15 years. "
+    "And I’ll be clear, I’ve been in the naysayer camp over that period of time"
+    "©️ Ken Griffin",
     "🔈 You just don't DCA enough, do you?",
+    "🔈 It’s a sad reality but the majority of western crypto investors do not view their family history and collective human and intellectual capital"
+    "as a metric of success; and only on individual capital and pursuit of financial goals. ©️ThinkingUSD",
     "🔈 Lost coins only make everyone else’s coins worth slightly more. Think of it as a donation to everyone."
     "©️Satoshi Nakamoto",
     "🔈 Remember this: "
@@ -35,7 +40,7 @@ QUOTES_STRINGS = [
     "©️Sam Alameda",
     "🔈 Wave2 may be any corrective pattern except a Triangle."
     "©️Elliott waves theory",
-    "🔈 Essential projects that spent time on critically thinking about how to structure their product survive"
+    "🔈 Essential projects that spent time on critically thinking about how to structure their product survive. "
     "Projects with multiple strong, well funded teams that are playing multi-decade games will still be here."
     " Tokenomics that look “bad” in a bull market start to look good."
     "©️CryptoCobain",

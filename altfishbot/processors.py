@@ -41,7 +41,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
 def quotes(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
-    sender = update.get_user().get_id()
+    user = update.get_user()
     if text == '/quote':
         quote = random.choices(QUOTES_STRINGS)
         bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
@@ -54,9 +54,9 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
         n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
         bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
 
-    elif text == '/purge':
+    elif text == '/db':
         try:
-            TelegramUser.objects.filter(role=None).delete()
+            TelegramUser.objects.filter(has_status=False).delete()
         except:
             bot.sendMessage(chat_id='342785208', text="Data failed")
         else:
@@ -103,7 +103,7 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
             hook = sender.get_from().get_id()
             a = TelegramUser.objects.get(telegram_id=hook)
             if a.role is not None:
-                response = f'▫️{a} got a new status:\n▫️    ➖ {a.get_role_display()}  ➖  '
+                response = f'▫️{a} got a new status:\n▫️   ➖ {a.get_role_display()}  ➖  '
                 bot.sendMessage(chat_id, response)
         else:
             bot.sendMessage(chat_id, 'Bad request')
