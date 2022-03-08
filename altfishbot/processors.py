@@ -87,9 +87,9 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
         b = TelegramUser.objects.get(telegram_id=user_id)
         if b.role is not None:
             c = f'{b.get_role_display()}'
-            bot.sendMessage(chat_id, f'Hi {b.first_name} 😎\nYour Status: \n{c}')
+            bot.sendMessage(user_id, f'Hi {b.first_name} 😎\nYour Status: \n{c}')
         else:
-            bot.sendMessage(chat_id, f"😶 You don't have any status")
+            bot.sendMessage(user_id, f"😶 You don't have any status")
 
 
 @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
@@ -104,7 +104,7 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
             hook = sender.get_from().get_id()
             a = TelegramUser.objects.get(telegram_id=hook)
             if a.role is not None:
-                response = f'▫️{a} got a new status:\n▫️   ➖ {a.get_role_display()}  ➖  '
+                response = f'▫️{a} got a new status:\n▫️    ➖ {a.get_role_display()}  ➖  '
                 bot.sendMessage(chat_id, response)
         else:
             bot.sendMessage(chat_id, 'Bad request')

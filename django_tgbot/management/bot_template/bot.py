@@ -1,13 +1,11 @@
 from django_tgbot.bot import AbstractTelegramBot
 from django_tgbot.state_manager.state_manager import StateManager
-from django_tgbot.types.botcommand import BotCommand
 from django_tgbot.types.update import Update
 from . import bot_token
 from .models import TelegramUser, TelegramChat, TelegramState
 
 
 class TelegramBot(AbstractTelegramBot):
-
     def __init__(self, token, state_manager):
         super(TelegramBot, self).__init__(token, state_manager)
 
@@ -34,9 +32,3 @@ def import_processors():
 state_manager = StateManager()
 bot = TelegramBot(bot_token, state_manager)
 import_processors()
-# bot.getMyCommands()
-
-bot.setMyCommands([BotCommand({
-   'command': "test",
-   'description': "test"
- })])
