@@ -26,14 +26,15 @@ from .quotes import QUOTES_STRINGS, TRADE_STRINGS
 def post_count(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
     text = update.get_message().get_text()
-
-    if chat_type == 'supergroup' and len(text) > 5:
-        user_id = update.get_user().get_id()
-        user = TelegramUser.objects.get(telegram_id=user_id)
-        user.language_code = update.get_user().get_language_code()
-        user.post_count += 1
-        user.updated_at = now()
-        user.save()
+    user_id = update.get_user().get_id()
+    lang = update.get_message().get_from()
+    if chat_type == 'supergroup':
+        if not text.startswith('/') and len(text) >= 5:
+            a = TelegramUser.objects.get(telegram_id=user_id)
+            a.language_code = lang.get_language_code()
+            a.post_count += 1
+            a.updated_at = now()
+            a.save()
 
 
 #  requests #######################
@@ -42,7 +43,8 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
 def quotes(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
-    user = update.get_user()
+    user_id = update.get_user().get_id()
+
     if text == '/quote':
         quote = random.choices(QUOTES_STRINGS)
         bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
@@ -53,7 +55,7 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
 
     elif text == '/active':
         n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
-        bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
+        bot.sendMessage(user_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
 
     elif text == '/db':
         try:
@@ -62,8 +64,9 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id='342785208', text="Data failed")
         else:
             bot.sendMessage(chat_id='342785208', text="Data purged")
-    else:
-        return
+
+    elif text == '/test':
+        bot.sendMessage(user_id, text="It works but you need to be a trusted member")
 
 
 @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
@@ -79,9 +82,9 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
             a = TelegramUser.objects.get(telegram_id=hook)
             if a.role is not None:
                 response = f'{a} is {a.get_role_display()}'
-                bot.sendMessage(chat_id, response)
-        else:
-            bot.sendMessage(chat_id, 'no status found')
+                bot.sendMessage(user_id, response)
+            else:
+                bot.sendMessage(user_id, 'no status found')
 
     if text == '/inf':
         b = TelegramUser.objects.get(telegram_id=user_id)
