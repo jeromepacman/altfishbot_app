@@ -250,7 +250,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
 
     elif text == 'Rules of the group':
         bot.sendMessage(chat_id, text='appreciated that 😉, check there', reply_markup=InlineKeyboardMarkup.a(inline_keyboard=[[InlineKeyboardButton.a('Rules & more', url='https://altcoinwhales.com/rules/')]]))
-    elif text == '/up' or text == '/up@AltBabybot':
+    elif text == '/up' or text == '/up@AltFishBot':
         bot.deleteMessage(chat_id, update.get_message())
     else:
         bot.sendMessage(chat_id, 'I didn\'t get that! Use the keyboard below')
