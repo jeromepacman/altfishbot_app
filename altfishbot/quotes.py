@@ -23,6 +23,7 @@ QUOTES_STRINGS = [
     "as a metric of success; and only on individual capital and pursuit of financial goals. \n©️ThinkingUSD",
     "🔈 Lost coins only make everyone else’s coins worth slightly more. Think of it as a donation to everyone.\n"
     "©️Satoshi Nakamoto",
+    "I can provide info in private: /up",
     "🔈 Remember this:\n"
     "When you are doing nothing, those speculators who feel they must trade day in and day out, "
     "are laying the foundation for your next venture. You will reap benefits from their mistakes. \n©️Jesse Livermore",
