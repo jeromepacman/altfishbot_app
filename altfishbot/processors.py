@@ -193,7 +193,7 @@ def team_ask(bot: TelegramBot, update: Update, state: TelegramState):
 def welcome(bot: TelegramBot, update: Update, state: TelegramState):
     chat_direct = update.get_message().get_from().get_id()
     text = update.get_message().get_text()
-    if text == '/up' or text == '/up@AltBabybot':
+    if text == '/up' or text == '/up@AltFishBot':
         bot.sendMessage(
             chat_direct,
             text='Hi there, wanna check some stuff ?',
