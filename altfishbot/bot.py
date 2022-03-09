@@ -37,6 +37,7 @@ import_processors()
 # bot.getMyCommands()
 
 bot.setMyCommands([BotCommand({
-   'command': "test",
-   'description': "test"
- })])
+    'command': "up",
+    'description': "dm infos"
+})])
+
