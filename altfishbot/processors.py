@@ -38,7 +38,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
 
 
 #  requests #######################
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.Text],
            update_types=update_types.Message)
 def quotes(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
@@ -66,7 +66,7 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id='342785208', text="Data purged")
 
 
-@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text,
+@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
 def role(bot: TelegramBot, update: Update, state: TelegramState):
     text = update.get_message().get_text()
@@ -93,7 +93,7 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id, f"😶 You don't have any status")
 
 
-@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text,
+@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
 def promote(bot: TelegramBot, update: Update, state: TelegramState):
     text = update.get_message().get_text()
@@ -111,7 +111,7 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id, 'Bad request')
 
 
-@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text,
+@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
 def trendy(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
@@ -200,6 +200,7 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
                 [KeyboardButton.a('Rules of the group')]
             ])
         )
+    state.name('welcome')
 
 
 @processor(state_manager, from_states='welcome', message_types=message_types.Text,
@@ -257,6 +258,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
         else:
             bot.sendMessage(chat_id, 'I didn\'t get that! Use the keyboard below')
 
+    state.name('')
     # @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text])
     # def send_keyboards(bot: TelegramBot, update: Update, state: TelegramState):
     #     chat_id = update.get_chat().get_id()
