@@ -21,7 +21,7 @@ from .quotes import QUOTES_STRINGS, TRADE_STRINGS
 
 
 # Internal direct requests #######################
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.Text],
            update_types=update_types.Message)
 def post_count(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
@@ -66,11 +66,12 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id='342785208', text="Data purged")
 
 
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
+@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text,
            update_types=update_types.Message)
 def role(bot: TelegramBot, update: Update, state: TelegramState):
     text = update.get_message().get_text()
     user_id = update.get_user().get_id()
+    user = update.get_user()
     chat_id = update.get_chat().get_id()
     sender = update.get_message().get_reply_to_message()
     if text == '/who':
@@ -78,7 +79,7 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
             hook = sender.get_from().get_id()
             a = TelegramUser.objects.get(telegram_id=hook)
             if a.role is not None:
-                response = f'{a} is {a.get_role_display()}'
+                response = f'Hey {user} \n{a} is {a.get_role_display()}'
                 bot.sendMessage(user_id, response)
             else:
                 bot.sendMessage(user_id, 'no status found')
@@ -87,21 +88,19 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
         b = TelegramUser.objects.get(telegram_id=user_id)
         if b.role is not None:
             c = f'{b.get_role_display()}'
-            bot.sendMessage(user_id, f'Hi {b.first_name} 😎\nYour Status: \n{c}')
+            bot.sendMessage(chat_id, f'Hi {b.first_name} 😎\nYour Status: \n{c}')
         else:
-            bot.sendMessage(user_id, f"😶 You don't have any status")
-    else:
-        return
+            bot.sendMessage(chat_id, f"😶 You don't have any status")
 
 
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
+@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text,
            update_types=update_types.Message)
 def promote(bot: TelegramBot, update: Update, state: TelegramState):
     text = update.get_message().get_text()
     user_id = update.get_user().get_id()
     chat_id = update.get_chat().get_id()
     sender = update.get_message().get_reply_to_message()
-    if text == '/promote':
+    if text == '/promote' and user_id == '342785208':
         if sender is not None:
             hook = sender.get_from().get_id()
             a = TelegramUser.objects.get(telegram_id=hook)
@@ -112,7 +111,7 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id, 'Bad request')
 
 
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
+@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text,
            update_types=update_types.Message)
 def trendy(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
@@ -157,12 +156,10 @@ def trendy(bot: TelegramBot, update: Update, state: TelegramState):
             source = x["source"]
             response = f'🌎{source.title()}\n〽️<a href="{url}">{title}</a>'
             bot.sendMessage(chat_id, {response}, disable_web_page_preview=True, parse_mode='html')
-    else:
-        return None
 
 
 # Private chat actions  #######################
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
+@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
 def team_ask(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
@@ -177,7 +174,7 @@ def team_ask(bot: TelegramBot, update: Update, state: TelegramState):
         elif text == '/scamlist':
             bot.sendMessage(chat_id, f'Mostly scams...')
             for a in TelegramUser.objects.filter(role="Hustler"):
-                bot.sendMessage(chat_id, f'{a.name()} {a.get_role_display()}')
+                bot.sendMessage(chat_id, f'{a.name()} #id{a.telegram_id} {a.get_role_display()}')
         elif text == '/insiderlist':
             for a in TelegramUser.objects.filter(role="Dolphin"):
                 bot.sendMessage(chat_id, f'{a.name()} {a.get_role_display()}')
@@ -188,13 +185,12 @@ def team_ask(bot: TelegramBot, update: Update, state: TelegramState):
                             parse_mode='html')
 
 
-# Actions gui Private chat actions  #######################
 @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
 def welcome(bot: TelegramBot, update: Update, state: TelegramState):
     chat_direct = update.get_message().get_from().get_id()
     text = update.get_message().get_text()
-    if text == '/up' or text == '/up@AltFishBot':
+    if text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
         bot.sendMessage(
             chat_direct,
             text='Hi there, wanna check some stuff ?',
@@ -204,7 +200,6 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
                 [KeyboardButton.a('Rules of the group')]
             ])
         )
-        state.set_name('welcome')
 
 
 @processor(state_manager, from_states='welcome', message_types=message_types.Text,
@@ -218,7 +213,8 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
             b = TelegramUser.objects.get(telegram_id=chat_id)
             if b.role is not None:
                 c = f'{b.get_role_display()}'
-                bot.sendMessage(chat_id, f"Hi {b.first_name} 😎\n\nYour Status is {c}\n\nYou're in the group since {b.joined}\n\n Date may be incorrect, i'm still in beta")
+                bot.sendMessage(chat_id,
+                                f"Hi {b.first_name} 😎\n\nYour Status is {c}\n\nYou're in the group since {b.joined}\n\n Date may be incorrect, i'm still in beta")
             else:
                 bot.sendMessage(chat_id, f"😶 You don't have any status")
 
@@ -252,12 +248,14 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, response, disable_web_page_preview=True, parse_mode='html')
 
         elif text == 'Rules of the group':
-            bot.sendMessage(chat_id, text='appreciated that 😉, check there', reply_markup=InlineKeyboardMarkup.a(inline_keyboard=[[InlineKeyboardButton.a('Rules & more', url='https://altcoinwhales.com/rules/')]]))
-        elif text == '/up' or text == '/up@AltFishBot':
+            bot.sendMessage(chat_id, text='appreciated that 😉, check there', reply_markup=InlineKeyboardMarkup.a(
+                inline_keyboard=[[InlineKeyboardButton.a('Rules & more', url='https://altcoinwhales.com/rules/')]]))
+
+        elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
             bot.deleteMessage(chat_id, update.get_message())
+
         else:
             bot.sendMessage(chat_id, 'I didn\'t get that! Use the keyboard below')
-
 
     # @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text])
     # def send_keyboards(bot: TelegramBot, update: Update, state: TelegramState):

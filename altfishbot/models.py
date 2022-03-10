@@ -1,12 +1,10 @@
 from _datetime import date
 from django.db import models
 from django.db.models import CASCADE
-from django.utils.html import format_html
 from django_tgbot.models import AbstractTelegramUser, AbstractTelegramChat, AbstractTelegramState
 
 
 class TelegramUser(AbstractTelegramUser):
-    language_code = models.CharField("Lang", max_length=15, null=True, blank=True)
     role = models.CharField(max_length=15, choices=(
         ('Admin', '🔰 Admin'),
         ('Whale', '🐳 Whale'),
@@ -46,7 +44,3 @@ class TelegramState(AbstractTelegramState):
     class Meta:
         unique_together = ('telegram_user', 'telegram_chat')
 
-    def __str__(self):
-        if self.name is not None:
-            return f'{self.name}'
-        return f'{self.telegram_user}'

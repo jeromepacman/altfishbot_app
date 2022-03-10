@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.utils.html import format_html
 
 from . import models
 
@@ -20,4 +19,6 @@ class TelegramChatAdmin(admin.ModelAdmin):
     list_display = ('telegram_id', 'type', 'title', 'username')
 
 
-admin.site.register(models.TelegramState)
+@admin.register(models.TelegramState)
+class TelegramStateAdmin(admin.ModelAdmin):
+    list_display = ('name', 'telegram_user', 'telegram_chat')
