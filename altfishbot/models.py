@@ -1,6 +1,8 @@
 from _datetime import date
 from django.db import models
 from django.db.models import CASCADE
+
+import django_tgbot.types.user
 from django_tgbot.models import AbstractTelegramUser, AbstractTelegramChat, AbstractTelegramState
 
 

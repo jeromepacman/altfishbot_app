@@ -38,7 +38,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
 
 
 #  requests #######################
-@processor(state_manager, from_states=state_types.All, message_types=[message_types.Text],
+@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
            update_types=update_types.Message)
 def quotes(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
@@ -66,12 +66,12 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id='342785208', text="Data purged")
 
 
-@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
+@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text,
            update_types=update_types.Message)
 def role(bot: TelegramBot, update: Update, state: TelegramState):
     text = update.get_message().get_text()
     user_id = update.get_user().get_id()
-    user = update.get_user()
+    user_name = update.get_message().get_from()
     chat_id = update.get_chat().get_id()
     sender = update.get_message().get_reply_to_message()
     if text == '/who':
@@ -79,21 +79,22 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
             hook = sender.get_from().get_id()
             a = TelegramUser.objects.get(telegram_id=hook)
             if a.role is not None:
-                response = f'Hey {user} \n{a} is {a.get_role_display()}'
-                bot.sendMessage(user_id, response)
+                response = f'Hey {user_name.first_name}\n{a} is {a.get_role_display()}'
+                bot.sendMessage(chat_id, response)
             else:
-                bot.sendMessage(user_id, 'no status found')
+                bot.sendMessage(chat_id, 'no status found')
 
     elif text == '/inf':
+
         b = TelegramUser.objects.get(telegram_id=user_id)
         if b.role is not None:
             c = f'{b.get_role_display()}'
             bot.sendMessage(chat_id, f'Hi {b.first_name} 😎\nYour Status: \n{c}')
         else:
-            bot.sendMessage(chat_id, f"😶 You don't have any status")
+            bot.sendMessage(chat_id, f"😶 You don't have any status {b.first_name}")
 
 
-@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
+@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text,
            update_types=update_types.Message)
 def promote(bot: TelegramBot, update: Update, state: TelegramState):
     text = update.get_message().get_text()
@@ -111,8 +112,7 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id, 'Bad request')
 
 
-@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
-           update_types=update_types.Message)
+@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text, update_types=update_types.Message)
 def trendy(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
@@ -154,7 +154,7 @@ def trendy(bot: TelegramBot, update: Update, state: TelegramState):
             title = x["title"]
             url = x["url"]
             source = x["source"]
-            response = f'🌎{source.title()}\n〽️<a href="{url}">{title}</a>'
+            response = f'🌎{source.title()}\n<a href="{url}">{title}</a>'
             bot.sendMessage(chat_id, {response}, disable_web_page_preview=True, parse_mode='html')
 
 
@@ -200,10 +200,10 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
                 [KeyboardButton.a('Rules of the group')]
             ])
         )
-    state.name('welcome')
+    state.name = 'welcome'
 
 
-@processor(state_manager, from_states='welcome', message_types=message_types.Text,
+@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
 def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
@@ -214,8 +214,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
             b = TelegramUser.objects.get(telegram_id=chat_id)
             if b.role is not None:
                 c = f'{b.get_role_display()}'
-                bot.sendMessage(chat_id,
-                                f"Hi {b.first_name} 😎\n\nYour Status is {c}\n\nYou're in the group since {b.joined}\n\n Date may be incorrect, i'm still in beta")
+                bot.sendMessage(chat_id, f"Hi {b.first_name} 😎\n\nYour Status is {c}\n\nYou're in the group since {b.joined}\n\n Date may be incorrect, i'm still in beta")
             else:
                 bot.sendMessage(chat_id, f"😶 You don't have any status")
 
@@ -249,8 +248,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, response, disable_web_page_preview=True, parse_mode='html')
 
         elif text == 'Rules of the group':
-            bot.sendMessage(chat_id, text='appreciated that 😉, check there', reply_markup=InlineKeyboardMarkup.a(
-                inline_keyboard=[[InlineKeyboardButton.a('Rules & more', url='https://altcoinwhales.com/rules/')]]))
+            bot.sendMessage(chat_id, text='appreciated that 😉, check there', reply_markup=InlineKeyboardMarkup.a(inline_keyboard=[[InlineKeyboardButton.a('Rules & more', url='https://altcoinwhales.com/rules/')]]))
 
         elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
             bot.deleteMessage(chat_id, update.get_message())
@@ -258,7 +256,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
         else:
             bot.sendMessage(chat_id, 'I didn\'t get that! Use the keyboard below')
 
-    state.name('')
+
     # @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text])
     # def send_keyboards(bot: TelegramBot, update: Update, state: TelegramState):
     #     chat_id = update.get_chat().get_id()
