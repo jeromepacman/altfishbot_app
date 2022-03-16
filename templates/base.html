@@ -1,0 +1,83 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="crypto, trading, risk management, currency, telegram, altwhales, official">
+    <meta name="description" content="Technical and fundamental analyses with charts, insights and forecasts. Blockchains & cryptocurrencies">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<link rel="canonical" href="https://altcoinwhales.com/" />
+	<meta name="robots" content="index, follow" />
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="AltcoinWhales">
+	<meta name="twitter:description" content="Technical and fundamental analyses with charts, insights and forecasts. Blockchains & cryptocurrencies. Telegram group & channel">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="Altcoinwhales">
+	<meta property="og:title" content="AltcoinWhales">
+	<meta property="og:description" content="Technical and fundamental analyses with charts, insights and forecasts. Blockchains & cryptocurrencies. Telegram group & channel">
+	<meta property="og:url" content="https://altcoinwhales.com/">
+	<meta property="og:image" content="https://altcoinwhales.com/img/altologo.png">
+  	<meta name="theme-color" content="#0432ff">
+  	<link rel="apple-touch-icon" href="altologo.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="./css/animate.min.css">
+	<link rel="stylesheet" type="text/css" href="./css/all.min.css">
+
+    <title>{% block title %}Altcoin Whales | crypto Bitcoin Altcoins{% endblock title %}</title>
+
+</head>
+<body class="mob-disable-anim ">
+<!-- Main container -->
+<div class="page-container">
+
+<!-- head -->
+<div class="bloc none bgc-blue-ryb d-bloc " id="head">
+	<div class="container bloc-sm bloc-sm-lg">
+		<div class="row align-items-center">
+			<div class="col-sm-6 offset-sm-3 col">
+				<a href="./"><img src="img/botlogo.jpg" class="img-fluid rounded-circle mx-auto d-block img-botlo-style img-protected" alt="logo" /></a>
+			</div>
+			<div class="col-12 col-11 col">
+				<h1 class="text-center  mg-md h1-style mx-auto d-block pressed-t">
+					<strong>Altcoinwhales</strong><br>
+				</h1>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- head END -->
+    {% include 'navbar.html' %}
+
+    {% block content %}
+    {% endblock content %}
+
+    <!-- ScrollToTop Button -->
+<a class="bloc-button btn btn-d scrollToTop" onclick="scrollToTarget('1',this)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32"><path class="scroll-to-top-btn-icon" d="M30,22.656l-14-13-14,13"/></svg></a>
+<!-- ScrollToTop Button END-->
+
+
+<!-- waves -->
+<div class="bloc l-bloc" id="waves">
+	<div class="container bloc-sm bloc-no-padding-lg">
+		<div class="row">
+			<div class="col">
+				<div><div class="waves-container" data-wave-front-color="#FFFFFF" data-wave-middle-color="#00FCFF" data-wave-back-color="#0000f8" data-wave-height="70"><canvas id="wave-canvas"></canvas></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- waves END -->
+
+</div>
+<!-- Main container END -->
+
+
+<!-- Additional JS -->
+<script src="{% static 'js/all.js' %}"></script><!-- Additional JS END -->
+
+</body>
+</html>

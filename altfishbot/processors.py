@@ -28,12 +28,10 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
     text = update.get_message().get_text()
     user_id = update.get_user().get_id()
-    lang = update.get_message().get_from()
-    if chat_type == 'supergroup':
+
+    if chat_type == 'supergroup' and len(text) >= 5 and not text.startswith('/'):
         a = TelegramUser.objects.get(telegram_id=user_id)
-        a.language_code = lang.language_code
-        if not text.startswith('/') and len(text) >= 5:
-            a.post_count += 1
+        a.post_count += 1
         a.updated_at = now()
         a.save()
 
