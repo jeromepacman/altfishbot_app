@@ -74,3 +74,6 @@ TRADE_STRINGS = [
     "Just 🔅 HODL 🔅",
     "No idea ❕DYOR❕",
 ]
+
+MEMBERS_ROLES = "🐳 Whale\n🐋 Babywhale\n🐬 Dolphin\n🐡 Member\n🚫 Hustler\n"
+

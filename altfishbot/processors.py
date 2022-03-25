@@ -48,8 +48,9 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
         quote = random.choices(QUOTES_STRINGS)
         bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
 
-    elif text.startswith('/trade '):
+    elif text.startswith('$trade '):
         quote = random.choices(TRADE_STRINGS)
+        time.sleep(1)
         bot.sendMessage(chat_id, quote[0])
 
     elif text == '/active':
