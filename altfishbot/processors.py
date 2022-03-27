@@ -214,7 +214,7 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
             text='Hi there, wanna check some stuff ?',
             reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
                 [KeyboardButton.a('My status'), KeyboardButton.a('Admins list')],
-                [KeyboardButton.a('Status'), KeyboardButton.a('Black list')],
+                [KeyboardButton.a('Status'), KeyboardButton.a('Hustlers list')],
                 [KeyboardButton.a('News'), KeyboardButton.a('Gecko trend coins')],
                 [KeyboardButton.a('Rules of the group')]
             ])
