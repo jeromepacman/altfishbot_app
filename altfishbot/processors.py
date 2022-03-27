@@ -14,7 +14,7 @@ from django_tgbot.types.update import Update
 from .bot import state_manager
 from .models import TelegramState, TelegramUser
 from .bot import TelegramBot
-from .quotes import QUOTES_STRINGS, TRADE_STRINGS
+from .quotes import QUOTES_STRINGS, TRADE_STRINGS, MEMBERS_ROLES
 from .helpers import get_tendency
 
 
@@ -37,7 +37,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
 
 
 #  requests #######################
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.Text],
            update_types=update_types.Message)
 def quotes(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
@@ -49,9 +49,11 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
         bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
 
     elif text.startswith('$trade '):
-        quote = random.choices(TRADE_STRINGS)
-        time.sleep(1)
-        bot.sendMessage(chat_id, quote[0])
+        if len(text) > 8 and (text[7:]).isupper:
+            quote = random.choices(TRADE_STRINGS)
+            bot.sendMessage(chat_id, quote[0])
+        else:
+            bot.sendMessage(chat_id, text == 'I dont get it, I need the acronym of the ponzi')
 
     elif text == '/active':
         n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
@@ -66,7 +68,7 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id='342785208', text="Data purged")
 
 
-@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text,
+@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
 def role(bot: TelegramBot, update: Update, state: TelegramState):
     text = update.get_message().get_text()
@@ -85,7 +87,6 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, 'no status found')
 
     elif text == '/inf':
-
         b = TelegramUser.objects.get(telegram_id=user_id)
         if b.role is not None:
             c = f'{b.get_role_display()}'
@@ -112,7 +113,7 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id, 'Bad request')
 
 
-@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text, update_types=update_types.Message)
+@processor(state_manager, from_states=state_types.All, message_types=message_types.Text, update_types=update_types.Message)
 def trendy(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
@@ -193,9 +194,9 @@ def team_ask(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, f'{a.name()} #id{a.telegram_id} {a.get_role_display()}')
         elif text == '/insiderlist':
             for a in TelegramUser.objects.filter(role="Dolphin"):
-                bot.sendMessage(chat_id, f'{a.name()} {a.get_role_display()}')
+                bot.sendMessage(chat_id, f'{a.name_gen()} {a.get_role_display()}')
             for a in TelegramUser.objects.filter(role="Babywhale"):
-                bot.sendMessage(chat_id, f'{a.name()} {a.get_role_display()}')
+                bot.sendMessage(chat_id, f'{a.name_gen()} {a.get_role_display()}')
             bot.sendMessage(chat_id,
                             text='<i>Your current status does not allow you to access the list of top level members</>',
                             parse_mode='html')
@@ -206,17 +207,18 @@ def team_ask(bot: TelegramBot, update: Update, state: TelegramState):
 def welcome(bot: TelegramBot, update: Update, state: TelegramState):
     chat_direct = update.get_message().get_from().get_id()
     text = update.get_message().get_text()
+
     if text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
         bot.sendMessage(
             chat_direct,
             text='Hi there, wanna check some stuff ?',
             reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
                 [KeyboardButton.a('My status'), KeyboardButton.a('Admins list')],
+                [KeyboardButton.a('Status'), KeyboardButton.a('Black list')],
                 [KeyboardButton.a('News'), KeyboardButton.a('Gecko trend coins')],
                 [KeyboardButton.a('Rules of the group')]
             ])
         )
-    state.name = 'welcome'
 
 
 @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
@@ -239,6 +241,14 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
             for a in TelegramUser.objects.filter(role='Admin'):
                 if not a.is_bot:
                     bot.sendMessage(chat_id, f' @{a.username} {a.get_role_display()}')
+
+        elif text == 'Status':
+            bot.sendMessage(chat_id, MEMBERS_ROLES)
+
+        elif text == 'Hustlers list':
+            bot.sendMessage(chat_id, f'Mostly scams...')
+            for a in TelegramUser.objects.filter(role="Hustler"):
+                bot.sendMessage(chat_id, f'{a.name()} #id{a.telegram_id} {a.get_role_display()}')
 
         elif text == 'News':
             news = requests.get(url='https://min-api.cryptocompare.com/data/v2/news/?lang=EN')
@@ -273,59 +283,3 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id, 'I didn\'t get that! Use the keyboard below')
 
 
-    # @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text])
-    # def send_keyboards(bot: TelegramBot, update: Update, state: TelegramState):
-    #     chat_id = update.get_chat().get_id()
-    #     text = str(update.get_message().get_text())
-    #
-    #     if text.lower() in ['normal keyboard', 'regular keyboard']:
-    #         send_normal_keyboard(bot, chat_id)
-    #     elif text.lower() in ['inline keyboard']:
-    #         send_inline_keyboard(bot, chat_id)
-    #     else:
-    #         send_options(bot, chat_id)
-    #
-    #
-    # @processor(state_manager, from_states=state_types.All, update_types=[update_types.CallbackQuery])
-    # def handle_callback_query(bot: TelegramBot, update, state):
-    #     callback_data = update.get_callback_query().get_data()
-    #     bot.answerCallbackQuery(update.get_callback_query().get_id(), text='Callback data received: {}'.format(callback_data))
-    #
-    #
-    # def send_normal_keyboard(bot, chat_id):
-    #     bot.sendMessage(
-    #         chat_id,
-    #         text='Here is a keyboard for you!',
-    #         reply_markup=ReplyKeyboardMarkup.a(
-    #             one_time_keyboard=True,
-    #             resize_keyboard=True,
-    #             keyboard=[
-    #                 [KeyboardButton.a('Text 1'), KeyboardButton.a('Text 2')],
-    #                 [KeyboardButton.a('Text 3'), KeyboardButton.a('Text 4')],
-    #                 [KeyboardButton.a('Text 5')]
-    #             ]
-    #         )
-    #     )
-    #
-    #
-    # def send_inline_keyboard(bot, chat_id):
-    #     bot.sendMessage(
-    #         chat_id,
-    #         text='Here is an inline keyboard for you!',
-    #         reply_markup=InlineKeyboardMarkup.a(
-    #             inline_keyboard=[
-    #                 [
-    #                     InlineKeyboardButton.a('URL Button', url='https://altcoinwhales.com'),
-    #                     InlineKeyboardButton.a('Callback Button', callback_data='some_callback_data')
-    #                 ]
-    #             ]
-    #         )
-    #     )
-    #
-    #
-    # def send_options(bot, chat_id):
-    #     bot.sendMessage(
-    #         chat_id,
-    #         text='I can send you two different types of keyboards!\nSend me `normal keyboard` or `inline keyboard` and I\'ll make one for you ;)',
-    #         parse_mode=bot.PARSE_MODE_MARKDOWN
-    #     )

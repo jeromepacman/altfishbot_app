@@ -75,5 +75,11 @@ TRADE_STRINGS = [
     "No idea ❕DYOR❕",
 ]
 
-MEMBERS_ROLES = "🐳 Whale\n🐋 Babywhale\n🐬 Dolphin\n🐡 Member\n🚫 Hustler\n"
+MEMBERS_ROLES = "🐳 Whale\nHigh grade, a whale is a connoisseur, investor, market maker\n" \
+                "🐋 Babywhale\nInsider. Accurate knowledge. Got & share alpha info\n" \
+                "🐬 Dolphin\nAdvanced member. Has a good knowledge of the space\n" \
+                "🐡 Member\nFull & trusted member (not restricted)\n" \
+                "🚫 Hustler\nSuspicious member (scam)\n" \
+                "\n" \
+                "Various privileges according to status"
 
