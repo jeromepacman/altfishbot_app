@@ -216,7 +216,7 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
                 [KeyboardButton.a('My status'), KeyboardButton.a('Admins list')],
                 [KeyboardButton.a('Status'), KeyboardButton.a('Hustlers list')],
                 [KeyboardButton.a('News'), KeyboardButton.a('Gecko trend coins')],
-                [KeyboardButton.a('Rules of the group')]
+                [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Channel')],
             ])
         )
 
