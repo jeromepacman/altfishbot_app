@@ -5,7 +5,7 @@ def get_tendency(self):
         return str('Bearish')
     elif self < 50:
         return str('Neutral')
-    elif self < 53:
+    elif self < 52:
         return str('Tricky')
     elif self < 80:
         return str('Bullish')

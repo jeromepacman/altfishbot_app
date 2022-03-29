@@ -276,6 +276,12 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
         elif text == 'Rules of the group':
             bot.sendMessage(chat_id, text='appreciated that 😉, check there', reply_markup=InlineKeyboardMarkup.a(inline_keyboard=[[InlineKeyboardButton.a('Rules & more', url='https://altcoinwhales.com/rules/')]]))
 
+        elif text == 'Channel':
+            bot.sendMessage(chat_id,
+                            "Go to @altcoinwhales\n\nCharts from channel admins 🐳:\n➖Artem\n➖Rocketbomb\n➖LA440\n➖Liquidity Hunter\n➖Excavo\n➖Edward Morra\n➖Jerome\n& more...\n",
+                            reply_markup=InlineKeyboardMarkup.a(
+                                inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
+
         elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
             bot.deleteMessage(chat_id, update.get_message())
 
