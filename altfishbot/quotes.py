@@ -5,7 +5,7 @@ QUOTES_STRINGS = [
     "🔈 Buy fear, sell euphoria",
     "🔈 Any idiot can make money. Keeping money, very few can do.\n©️McAfee",
     "🔈 Your best investment is in yourself.\n©️W.Buffet",
-    "🔈 No pain, no gain !",
+    "🔈 'No pain, no gain !'",
     "🔈 My Bitcoin price target is $238,855. I arrived at this price target by googling the distance "
     "between the earth and the moon and converting it from miles to dollars. \n©️CryptoCobain",
     "🔈 Round numbers are meant to be bought\n©️Zhu",
@@ -37,11 +37,11 @@ QUOTES_STRINGS = [
     "🔈 May the odds be ever in your favour..",
     "🔈 Of the 10,000 or so people who are practicing and trading Ichimoku, only about 10 really understand it.\n"
     "©️Goichi Hosada",
-    "🔈 It's hard enough to be a great 'level one' trader figuring out what's happening and reacting."
+    "🔈 It's hard enough to be a great 'level one' trader figuring out what's happening and reacting.\n"
     "The next level up is even harder as it requires figuring out how others will react to what's happening and "
     "reacting to 'that'.\n©️Sam Trabucco",
-    "🔈 WAGMI ",
-    "🔈 I am a big fan of Bitcoin, always have been!\n©️Jamie Dimon - October 21, 2021. ...",
+    "🔈 WAGMI :)",
+    "🔈 I am a big fan of Bitcoin, always have been!\n©️Jamie Dimon - October 21, 2021... D",
     "🔈 Believe nothing you hear. And be suspect even of your own eyes. A world ruled by the powerful, the clever and "
     "the corrupt is never what it seems.\n©️John McAfee",
     "🔈 Some tradfi plebs asked 'what catalysts are left for BTC'. I asked if they realized Bitcoin will be "
@@ -65,6 +65,9 @@ QUOTES_STRINGS = [
     " to centralize wealth and influence at an unprecedented scale.\n©️️prof Galloway ",
     "🔈 When it's a gold rush, it sometimes makes more sense to sell shovels. \n©️Idriss Aberkane",
     "🔈 Money is made by sitting, not trading. \n©️Jesse Livermore",
+    "🔈 Everyone always will sacrifice decentralization for speed and scalability, given the choice.\n©Alex Gladstein",
+    "🔈 Governments can slow the adoption of Bitcoin, but Bitcoin will prevail in the end.\n"
+    "Bitcoin is an idea whose time has come, and nobody can fight that.\n©SatoshiLabs",
 
 ]
 
@@ -83,3 +86,8 @@ MEMBERS_ROLES = "🐳 Whale\nHigh grade, a whale is a connoisseur, investor, mar
                 "\n" \
                 "Various privileges according to status"
 
+SERV_MSG = [
+
+    "🔺 You're not allowed to use the bot,\nTrusted member status missing",
+
+]
