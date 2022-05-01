@@ -215,7 +215,7 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
 
     if text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
         a = TelegramUser.objects.get(telegram_id=user_id)
-        if a.role is None:
+        if not a.role:
             bot.sendMessage(chat_id, SERV_MSG[0])
         else:
             bot.sendMessage(
@@ -237,12 +237,12 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     text = str(update.get_message().get_text())
     chat_type = update.get_chat().get_type()
 
-    if chat_type == 'private':
+    if chat_type == 'private' and text:
         try:
             TelegramUser.objects.get(telegram_id=chat_id)
         except TelegramUser.DoesNotExist:
             bot.sendMessage(chat_id, SERV_MSG[0])
-
+        else:
             if text == 'My status':
                 b = TelegramUser.objects.get(telegram_id=chat_id)
                 if b.role is not None:
