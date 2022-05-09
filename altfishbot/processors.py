@@ -1,7 +1,5 @@
-import requests
-import json
-import time
 import random
+import requests
 from datetime import timedelta
 from django.utils.timezone import now
 from django_tgbot.decorators import processor
@@ -14,7 +12,7 @@ from django_tgbot.types.update import Update
 from .bot import state_manager
 from .models import TelegramState, TelegramUser
 from .bot import TelegramBot
-from .quotes import QUOTES_STRINGS, TRADE_STRINGS, MEMBERS_ROLES, SERV_MSG
+from .quotes import QUOTES_STRINGS, TRADE_STRINGS, ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
 from .helpers import get_tendency
 
 
@@ -118,22 +116,10 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
 def trendy(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
-    if text == '/top':
-        request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
-        result = request.json()
-        coins = result["coins"][:5]
-        url = f'https://coingecko.com/coins/'
-        bot.sendMessage(chat_id, text='📈 Trending coins searched on Gecko:', parse_mode='html')
-        for x in coins:
-            symbol = x["item"]["symbol"]
-            num = x["item"]["slug"]
-            response = f'➖ <a href="{url}{num}">{symbol}</a>'
-            bot.sendMessage(chat_id, response, disable_web_page_preview=True, parse_mode='html')
 
-    elif text == "/cap":
+    if text == "/cap":
         cap = requests.get(url='https://api.coingecko.com/api/v3/global')
         fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
-
         tendency = requests.get(
             url='https://api.cryptometer.io/trend-indicator-v3/?api_key=KLT7vnP42Bf4k55z07sA9ImHpVd2lN11s4B3854Y')
         result_1 = cap.json()
@@ -165,45 +151,34 @@ def trendy(bot: TelegramBot, update: Update, state: TelegramState):
                 f' 〽️<b>Current market trend:</> {score} <i>(last 4 hours)</>\n🐮 <b>Buy pressure:</> {buy}%\n🐻 <b>Sell pressure:</> {sell}%'
         bot.sendMessage(chat_id, total, parse_mode='html')
 
-    elif text == "/news":
-        news = requests.get(url='https://min-api.cryptocompare.com/data/v2/news/?lang=EN')
-        api = news.json()
-        data = api["Data"][:5]
-        for x in data:
-            title = x["title"]
-            url = x["url"]
-            source = x["source"]
-            response = f'🌎{source.title()}\n<a href="{url}">{title}</a>'
-            bot.sendMessage(chat_id, {response}, disable_web_page_preview=True, parse_mode='html')
 
-
-# Private chat actions  #######################
-@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
-           update_types=update_types.Message)
-def team_ask(bot: TelegramBot, update: Update, state: TelegramState):
-    chat_type = update.get_chat().get_type()
-    text = update.get_message().get_text()
-    chat_id = update.get_chat().get_id()
-    user_id = update.get_user().get_id()
-    if chat_type == 'private':
-        if text == '/adminlist':
-            bot.sendMessage(chat_id, 'chat - Active admins')
-            for a in TelegramUser.objects.filter(role='Admin'):
-                if not a.is_bot:
-                    bot.sendMessage(chat_id, f' @{a.username} {a.get_role_display()}')
-        elif text == '/scamlist':
-            bot.sendMessage(chat_id, f'Mostly scams...')
-            for a in TelegramUser.objects.filter(role="Hustler"):
-                bot.sendMessage(chat_id, f'{a.name()} #id{a.telegram_id} {a.get_role_display()}')
-        elif text == '/insiderlist':
-            for a in TelegramUser.objects.filter(role="Dolphin"):
-                bot.sendMessage(chat_id, f'{a.name_gen()} {a.get_role_display()}')
-            for a in TelegramUser.objects.filter(role="Babywhale"):
-                bot.sendMessage(chat_id, f'{a.name_gen()} {a.get_role_display()}')
-            bot.sendMessage(chat_id,
-                            text='<i>Your current status does not allow you to access the list of top level members</>',
-                            parse_mode='html')
-
+# Private chat actions
+# @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
+#            update_types=update_types.Message)
+# def team_ask(bot: TelegramBot, update: Update, state: TelegramState):
+#     chat_type = update.get_chat().get_type()
+#     text = update.get_message().get_text()
+#     chat_id = update.get_chat().get_id()
+#     user_id = update.get_user().get_id()
+#     if chat_type == 'private':
+#         if text == '/adminlist':
+#             bot.sendMessage(chat_id, 'chat - Active admins')
+#             for a in TelegramUser.objects.filter(role='Admin'):
+#                 if not a.is_bot:
+#                     bot.sendMessage(chat_id, f' @{a.username} {a.get_role_display()}')
+#         elif text == '/scamlist':
+#             bot.sendMessage(chat_id, f'Mostly scams...')
+#             for a in TelegramUser.objects.filter(role="Hustler"):
+#                 bot.sendMessage(chat_id, f'{a.name()} #id{a.telegram_id} {a.get_role_display()}')
+#         elif text == '/insiderlist':
+#             for a in TelegramUser.objects.filter(role="Dolphin"):
+#                 bot.sendMessage(chat_id, f'{a.name_gen()} {a.get_role_display()}')
+#             for a in TelegramUser.objects.filter(role="Babywhale"):
+#                 bot.sendMessage(chat_id, f'{a.name_gen()} {a.get_role_display()}')
+#             bot.sendMessage(chat_id,
+#                             text='<i>Your current status does not allow you to access the list of top level members</>',
+#                             parse_mode='html')
+#
 
 @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
@@ -235,9 +210,11 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
 def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = str(update.get_message().get_text())
+    msg_ref = int(update.get_message().get_message_id())
     chat_type = update.get_chat().get_type()
 
-    if chat_type == 'private' and text:
+    if chat_type == 'private':
+        bot.deleteMessage(chat_id, msg_ref)
         try:
             TelegramUser.objects.get(telegram_id=chat_id)
         except TelegramUser.DoesNotExist:
@@ -253,10 +230,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                     bot.sendMessage(chat_id, f"😶 You don't have any status yet")
 
             elif text == 'Admins list':
-                bot.sendMessage(chat_id, 'chat - Active admins')
-                for a in TelegramUser.objects.filter(role='Admin'):
-                    if not a.is_bot:
-                        bot.sendMessage(chat_id, f' @{a.username} {a.get_role_display()}')
+                bot.sendMessage(chat_id, ACTIVE_ADMINS_LIST)
 
             elif text == 'Status':
                 bot.sendMessage(chat_id, MEMBERS_ROLES)
@@ -300,7 +274,6 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                                     inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
 
             elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
-                bot.deleteMessage(chat_id, update.get_message())
-
+                pass
             else:
-                bot.sendMessage(chat_id, 'Use the keyboard')
+                bot.sendMessage(chat_id, SERV_MSG[1])

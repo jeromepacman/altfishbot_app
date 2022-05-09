@@ -62,13 +62,13 @@ QUOTES_STRINGS = [
     "🔈 Stay disciplined. Keep emotions in check. Emotionally detached traders yield better results. "
     "Discipline will separate you from the pack.\n©️Mr Anderson",
     "🔈 Web3 has different-colored hair, but the same DNA as earlier web paradigms, which decentralized services at an unprecedented scale"
-    " to centralize wealth and influence at an unprecedented scale.\n©️️prof Galloway ",
+    "to centralize wealth and influence at an unprecedented scale.\n©️️prof Galloway ",
     "🔈 When it's a gold rush, it sometimes makes more sense to sell shovels. \n©️Idriss Aberkane",
     "🔈 Money is made by sitting, not trading. \n©️Jesse Livermore",
     "🔈 Everyone always will sacrifice decentralization for speed and scalability, given the choice.\n©Alex Gladstein",
     "🔈 Governments can slow the adoption of Bitcoin, but Bitcoin will prevail in the end.\n"
     "Bitcoin is an idea whose time has come, and nobody can fight that.\n©SatoshiLabs",
-
+    "🔈 View trading as a marathon, not a sprint\n©️️Peter Brandt",
 ]
 
 TRADE_STRINGS = [
@@ -78,7 +78,7 @@ TRADE_STRINGS = [
     "No idea ❕DYOR❕",
 ]
 
-MEMBERS_ROLES = "🐳 Whale\nHigh grade, a whale is a connoisseur, investor, market maker\n" \
+MEMBERS_ROLES = "🐳 Whale\nHigh grade, a whale is a connoisseur, dev, investor or market maker, \n" \
                 "🐋 Babywhale\nInsider. Accurate knowledge. Got & share alpha info\n" \
                 "🐬 Dolphin\nAdvanced member. Has a good knowledge of the space\n" \
                 "🐡 Member\nFull & trusted member (not restricted)\n" \

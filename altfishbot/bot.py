@@ -40,4 +40,3 @@ bot.setMyCommands([BotCommand({
     'command': "up",
     'description': "dm infos"
 })])
-

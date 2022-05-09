@@ -11,7 +11,7 @@ class TelegramUserAdmin(admin.ModelAdmin):
     ordering = ('-updated_at',)
     filter_by = ['role', 'post_count']
     search_fields = ('telegram_id', 'first_name')
-    list_editable = ['has_status']
+    list_editable = ['has_status', 'role']
 
 
 @admin.register(models.TelegramChat)
