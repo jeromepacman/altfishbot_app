@@ -86,8 +86,16 @@ MEMBERS_ROLES = "🐳 Whale\nHigh grade, a whale is a connoisseur, dev, investor
                 "\n" \
                 "Various privileges according to status"
 
+
+ACTIVE_ADMINS_LIST = "Chat active admins:\n\n" \
+                    "@jeromepacman 🔰\n\n" \
+                    "@jimster480 🔰\n\n" \
+                    "@LA4440 🔰\n\n" \
+                    "@CryptoAnon 🔰"
+
+
 SERV_MSG = [
 
     "🔺 You're not allowed to use the bot,\nTrusted member status missing",
-
+    "🔺 Use keyboard instead",
 ]

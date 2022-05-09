@@ -137,7 +137,7 @@ class BotAPIUser:
     def getMe(self) -> User:
         return self.request_and_result(create_params_from_args(), User)
 
-    def gexitetMyCommands(self) -> List[BotCommand]:
+    def getMyCommands(self) -> List[BotCommand]:
         return self.request_and_result(create_params_from_args(), [BotCommand])
 
     def setMyCommands(self, commands: List[BotCommand]) -> bool:
