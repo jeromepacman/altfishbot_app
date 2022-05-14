@@ -16,7 +16,7 @@ from .quotes import QUOTES_STRINGS, TRADE_STRINGS, ACTIVE_ADMINS_LIST, MEMBERS_R
 from .helpers import get_tendency
 
 
-# commands #########
+# monitor ins & outs #########
 
 
 # Internal direct requests #######################
@@ -32,7 +32,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
         a.post_count += 1
         a.updated_at = now()
         a.save()
-
+        s
 
 #  requests #######################
 @processor(state_manager, from_states=state_types.All, message_types=[message_types.Text],
@@ -106,7 +106,12 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
             a = TelegramUser.objects.get(telegram_id=hook)
             if a.role is not None:
                 response = f'▫️{a} got a new status:\n▫️    ➖ {a.get_role_display()}  ➖  '
-                bot.sendMessage(chat_id, response)
+                if a.role == "Member":
+                    bot.sendMessage(hook, response)
+                else:
+                    bot.sendMessage(chat_id, response)
+            else:
+                bot.sendMessage(user_id, f'user {a} has no role')
         else:
             bot.sendMessage(chat_id, 'Bad request')
 
