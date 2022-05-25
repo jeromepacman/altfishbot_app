@@ -32,7 +32,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
         a.post_count += 1
         a.updated_at = now()
         a.save()
-        s
+
 
 #  requests #######################
 @processor(state_manager, from_states=state_types.All, message_types=[message_types.Text],
@@ -195,12 +195,12 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
 
     if text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
         a = TelegramUser.objects.get(telegram_id=user_id)
-        if not a.role:
+        if a.role == "Hustler" or None:
             bot.sendMessage(chat_id, SERV_MSG[0])
         else:
             bot.sendMessage(
                 chat_direct,
-                text='Hi there 🐳',
+                f'Hi {a.first_name} 🐳',
                 reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
                     [KeyboardButton.a('My status'), KeyboardButton.a('Admins list')],
                     [KeyboardButton.a('Status'), KeyboardButton.a('Hustlers list')],
@@ -221,18 +221,19 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     if chat_type == 'private':
         bot.deleteMessage(chat_id, msg_ref)
         try:
-            TelegramUser.objects.get(telegram_id=chat_id)
+            user = TelegramUser.objects.get(telegram_id=chat_id)
         except TelegramUser.DoesNotExist:
             bot.sendMessage(chat_id, SERV_MSG[0])
         else:
+            user.updated_at = now()
+            user.save()
             if text == 'My status':
-                b = TelegramUser.objects.get(telegram_id=chat_id)
-                if b.role is not None:
-                    c = f'{b.get_role_display()}'
+                if user.role is not None:
+                    st = f'{user.get_role_display()}'
                     bot.sendMessage(chat_id,
-                                    f"Hi {b.first_name} 😎\n\nYour Status is {c}\n\nYou're in the group since {b.joined}\n\n Date may be incorrect, i'm still in beta")
+                                    f"{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n")
                 else:
-                    bot.sendMessage(chat_id, f"😶 You don't have any status yet")
+                    bot.sendMessage(chat_id, "You don't have any status yet 😶")
 
             elif text == 'Admins list':
                 bot.sendMessage(chat_id, ACTIVE_ADMINS_LIST)
@@ -241,9 +242,9 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, MEMBERS_ROLES)
 
             elif text == 'Hustlers list':
-                bot.sendMessage(chat_id, f'Mostly scams...')
-                for a in TelegramUser.objects.filter(role="Hustler"):
-                    bot.sendMessage(chat_id, f'{a.name()} #id{a.telegram_id} {a.get_role_display()}')
+                bot.sendMessage(chat_id, 'Mostly scams...\n')
+                for user in TelegramUser.objects.filter(role="Hustler"):
+                    bot.sendMessage(chat_id, f'{user.name()} id_{user.telegram_id} {user.get_role_display()}')
 
             elif text == 'News':
                 news = requests.get(url='https://min-api.cryptocompare.com/data/v2/news/?lang=EN')

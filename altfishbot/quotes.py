@@ -11,8 +11,6 @@ QUOTES_STRINGS = [
     "🔈 Round numbers are meant to be bought\n©️Zhu",
     "🔈 Diversification is often a sign of ignorance",
     "🔈 Having seen a bear market before doesn't make you an expert in either bears or markets\n©️Zhu",
-    "🔈 Don't know what to do with that money? "
-    "/trade command might be for you",
     "🔈 Call your mother instead of calling tops!\n©️Zhu",
     "🔈 You can run, but you can't hide...",
     "🔈 If you wait until everyone understands it, you won't be able to afford it. \n©️M.Saylor",
@@ -69,6 +67,12 @@ QUOTES_STRINGS = [
     "🔈 Governments can slow the adoption of Bitcoin, but Bitcoin will prevail in the end.\n"
     "Bitcoin is an idea whose time has come, and nobody can fight that.\n©SatoshiLabs",
     "🔈 View trading as a marathon, not a sprint\n©️️Peter Brandt",
+    "🔈 Everyone makes money in bull market, so just concentrate on saving capital on the dump\n©EmperorBTC",
+    "🔈 You need to believe in yourself when nobody else does. \n"
+    "Years later, you’ll understand the people who were so ready to shovel the dirt on top of your grave… \n"
+    "they blew out the candle on their dreams and wanted to blow out yours.\n©Gainzy",
+    "🔈 If you think crypto is dead, you really haven't been around long enough\n©Gabsy",
+
 ]
 
 TRADE_STRINGS = [
