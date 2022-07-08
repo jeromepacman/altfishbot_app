@@ -197,6 +197,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
             user = TelegramUser.objects.get(telegram_id=chat_id)
         except TelegramUser.DoesNotExist:
             bot.sendMessage(chat_id, SERV_MSG[0])
+            bot.leaveChat(chat_id)
         else:
             user.updated_at = now()
             user.save()

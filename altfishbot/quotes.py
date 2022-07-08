@@ -39,7 +39,7 @@ QUOTES_STRINGS = [
     "The next level up is even harder as it requires figuring out how others will react to what's happening and "
     "reacting to 'that'.\n©️Sam Trabucco",
     "🔈 WAGMI :)",
-    "🔈 I am a big fan of Bitcoin, always have been!\n©️Jamie Dimon - October 21, 2021... D",
+    "🔈 I am a big fan of Bitcoin, always have been!\n©️Jamie Dimon - October 21, 2021... :D",
     "🔈 Believe nothing you hear. And be suspect even of your own eyes. A world ruled by the powerful, the clever and "
     "the corrupt is never what it seems.\n©️John McAfee",
     "🔈 Some tradfi plebs asked 'what catalysts are left for BTC'. I asked if they realized Bitcoin will be "
@@ -72,6 +72,10 @@ QUOTES_STRINGS = [
     "Years later, you’ll understand the people who were so ready to shovel the dirt on top of your grave… \n"
     "they blew out the candle on their dreams and wanted to blow out yours.\n©Gainzy",
     "🔈 If you think crypto is dead, you really haven't been around long enough\n©Gabsy",
+    "🔈 When the animal feed prices start to increase, that’s when you need to start paying attention for a financial crisis.\n"
+    "©Anonymous whale",
+    "🔈 Leverage is the enemy, crypto is so volatile there is no need to add gasoline to the fire. \n©ThinkingUSD",
+    "🔈 FA is why you trade it. TA is how you trade it\n©Bitcoin Jack",
 
 ]
 
