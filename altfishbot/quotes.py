@@ -11,7 +11,6 @@ QUOTES_STRINGS = [
     "🔈 Round numbers are meant to be bought\n©️Zhu",
     "🔈 Diversification is often a sign of ignorance",
     "🔈 Having seen a bear market before doesn't make you an expert in either bears or markets\n©️Zhu",
-    "🔈 Call your mother instead of calling tops!\n©️Zhu",
     "🔈 You can run, but you can't hide...",
     "🔈 If you wait until everyone understands it, you won't be able to afford it. \n©️M.Saylor",
     "🔈 Buy the dips, sell the rips !)",
@@ -76,6 +75,11 @@ QUOTES_STRINGS = [
     "©Anonymous whale",
     "🔈 Leverage is the enemy, crypto is so volatile there is no need to add gasoline to the fire. \n©ThinkingUSD",
     "🔈 FA is why you trade it. TA is how you trade it\n©Bitcoin Jack",
+    "🔈 People don’t think how they feel. They don’t say what they think and they don’t do what they say \n©David Ogilvy",
+    "🔈 Trading isn't about how well you win, It's about how well you lose\n"
+    "If you take a few losses, accept that it may take you a period of time to make them back\n"
+    "The quickest way to make more losses is by trying to make up previous losses right away\n"
+    "©Nebraskangooner",
 
 ]
 
