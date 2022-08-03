@@ -80,6 +80,9 @@ QUOTES_STRINGS = [
     "If you take a few losses, accept that it may take you a period of time to make them back\n"
     "The quickest way to make more losses is by trying to make up previous losses right away\n"
     "©Nebraskangooner",
+    "🔈 The best way to predict the future is to create it.\n©Alan Kay",
+    "🔈 If you want to be a successful trader, you need to be a trader.\n©BitcoinJack",
+    "🔈 If you're good enough, age is just another number\n©Sam Alameda",
 
 ]
 
