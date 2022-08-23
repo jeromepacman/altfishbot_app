@@ -83,7 +83,9 @@ QUOTES_STRINGS = [
     "🔈 The best way to predict the future is to create it.\n©Alan Kay",
     "🔈 If you want to be a successful trader, you need to be a trader.\n©BitcoinJack",
     "🔈 If you're good enough, age is just another number\n©Sam Alameda",
-
+    "🔈 Feeling regret for missing good trades is what forces bad trades .\n©Cred",
+    "🔈 You become rich in your mind long before you become rich in your bank account.\n"
+    "Your mentality is your reality.\n©RektProof",
 ]
 
 TRADE_STRINGS = [
