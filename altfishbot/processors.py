@@ -228,7 +228,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                                     f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬")
 
                 else:
-                    bot.sendMessage(chat_id, "\nYou don't have any status yet 😶")
+                    bot.sendMessage(chat_id, "\nYou don't have any status yet. Bot access is limited 😶")
 
             elif text == 'Admins list':
                 bot.sendMessage(chat_id, ACTIVE_ADMINS_LIST)
