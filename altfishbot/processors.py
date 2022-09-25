@@ -193,6 +193,9 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     text = str(update.get_message().get_text())
     msg_ref = int(update.get_message().get_message_id())
     chat_type = update.get_chat().get_type()
+    angel = f' mais un Angel dans ce groupe... \nPatricia va pêté un cable...🤪\n bon les données sont juste sur le bot en local\n pas sur le groupe.. no pb 🥳'
+    patricia = f' Hey Mama Ciera 🥹,\n Data are temporally stored in the bot db, not on the Telegram group\n no worries 😇 '
+    kerrbox = f' Hi Ker,\n Data are temporally stored in the bot db, not on the Telegram group\n no worries 😇'
 
     if chat_type == 'private':
         bot.deleteMessage(chat_id, msg_ref)
@@ -205,10 +208,25 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
             user.updated_at = now()
             user.save()
             if text == 'My status':
-                if user.role is not None:
+                if user.role is not None and chat_id == '1451090701' or '1661501113' or '5196270084' or '1040226419' or '1594496298' or '1492866560' or '5036469991' or '1561242190' or '1335606118' or '1664006227':
                     st = f'{user.get_role_display()}\n'
-                    bot.sendMessage(chat_id,
-                                    f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬")
+                    bot.sendMessage(chat_id, f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {angel}")
+                elif user.role is not None and chat_id == '1197567238':
+                    st = f'{user.get_role_display()}\n'
+                    bot.sendMessage(chat_id, f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {patricia}")
+
+                elif user.role is not None and chat_id == '1727226889':
+                    st = f'{user.get_role_display()}\n'
+                    bot.sendMessage(chat_id, f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {kerrbox}")
+
+                elif user.role is not None and chat_id == '342785208':
+                    st = f'{user.get_role_display()}\n'
+                    bot.sendMessage(chat_id, f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {kerrbox}")
+
+                elif user.role is not None:
+                    st = f'{user.get_role_display()}\n'
+                    bot.sendMessage(chat_id, f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬")
+
                 else:
                     bot.sendMessage(chat_id, "\nYou don't have any status yet 😶")
 
