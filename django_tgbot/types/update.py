@@ -20,6 +20,7 @@ class Update(BasicType):
         'pre_checkout_query': precheckoutquery.PreCheckoutQuery,
         'poll': poll.Poll,
         'poll_answer': pollanswer.PollAnswer
+
     }
 
     def __init__(self, obj=None):

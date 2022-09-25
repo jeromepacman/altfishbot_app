@@ -43,6 +43,7 @@ class AbstractTelegramUser(models.Model):
     last_name = models.CharField(max_length=128, null=True, blank=True)
     username = models.CharField(max_length=128, null=True, blank=True)
     language_code = models.CharField(max_length=128, null=True, blank=True)
+    is_premium = models.BooleanField(default=False)
 
     def get_chat_state(self, chat: AbstractTelegramChat):
         state = AbstractTelegramState.objects.get_or_create(

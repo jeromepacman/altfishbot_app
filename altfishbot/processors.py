@@ -51,10 +51,6 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
         else:
             bot.sendMessage(chat_id, text == 'I dont get it, I need the acronym of the ponzi')
 
-    elif text == '/active':
-        n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
-        bot.sendMessage(user_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
-
     elif text == '/db' and user_id == '342785208':
         try:
             TelegramUser.objects.filter(has_status=False).delete()
@@ -181,7 +177,6 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
                     [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
                     [KeyboardButton.a('Market trend'), KeyboardButton.a('Quote')],
 
-
                 ])
             )
 
@@ -210,22 +205,27 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
             if text == 'My status':
                 if chat_id == '1451090701' or chat_id == '1661501113' or chat_id == '5196270084' or chat_id == '1040226419' or chat_id == '1594496298' or chat_id == '1492866560' or chat_id == '5036469991' or chat_id == '1561242190' or chat_id == '1335606118' or chat_id == '1664006227':
                     st = f'{user.get_role_display()}\n'
-                    bot.sendMessage(chat_id, f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {angel}")
+                    bot.sendMessage(chat_id,
+                                    f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {angel}")
                 elif chat_id == '1197567238':
                     st = f'{user.get_role_display()}\n'
-                    bot.sendMessage(chat_id, f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {patricia}")
+                    bot.sendMessage(chat_id,
+                                    f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {patricia}")
 
                 elif user.role and chat_id == '1727226889':
                     st = f'{user.get_role_display()}\n'
-                    bot.sendMessage(chat_id, f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {box}")
+                    bot.sendMessage(chat_id,
+                                    f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {box}")
 
                 elif user.role and chat_id == '342785208':
                     st = f'{user.get_role_display()}\n'
-                    bot.sendMessage(chat_id, f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {box}")
+                    bot.sendMessage(chat_id,
+                                    f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬\n\n {box}")
 
                 elif user.role:
                     st = f'{user.get_role_display()}\n'
-                    bot.sendMessage(chat_id, f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬")
+                    bot.sendMessage(chat_id,
+                                    f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬")
 
                 else:
                     bot.sendMessage(chat_id, "\nYou don't have any status yet 😶")
@@ -252,7 +252,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                     response = f'🌎{source.title()}\n<a href="{url}">{title}</a>'
                     bot.sendMessage(chat_id, {response}, disable_web_page_preview=True, parse_mode='html')
 
-            elif text == 'Gecko trend coins' and user.role:
+            elif text == 'Gecko trendy coins' and user.role:
                 request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
                 result = request.json()
                 coins = result["coins"]

@@ -9,6 +9,7 @@ class User(BasicType):
         'last_name': str,
         'username': str,
         'language_code': str,
+        'is_premium': BasicType.bool_interpreter,
         'can_join_groups': BasicType.bool_interpreter,
         'can_read_all_group_messages': BasicType.bool_interpreter,
         'supports_inline_queries': BasicType.bool_interpreter

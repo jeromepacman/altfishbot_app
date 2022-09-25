@@ -13,6 +13,7 @@ class Message(BasicType):
         'message_id': str,
         'date': str,
         'forward_from_message_id': str,
+        'forward_from': str,
         'forward_signature': str,
         'forward_sender_name': str,
         'forward_date': str,
