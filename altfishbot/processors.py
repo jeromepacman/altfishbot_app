@@ -175,10 +175,13 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
                 chat_direct,
                 f'Hi {a.first_name}  🐳\n',
                 reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
-                    [KeyboardButton.a('My status'), KeyboardButton.a('Admins list')],
-                    [KeyboardButton.a('Status'), KeyboardButton.a('Hustlers list')],
-                    [KeyboardButton.a('News'), KeyboardButton.a('Gecko trend coins')],
-                    [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Channel')],
+                    [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Active users')],
+                    [KeyboardButton.a('Admins list'), KeyboardButton.a('Hustlers list')],
+                    [KeyboardButton.a('Group status'), KeyboardButton.a('My status')],
+                    [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
+                    [KeyboardButton.a('Market trend'), KeyboardButton.a('Quote')],
+
+
                 ])
             )
 
@@ -212,15 +215,15 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
             elif text == 'Admins list':
                 bot.sendMessage(chat_id, ACTIVE_ADMINS_LIST)
 
-            elif text == 'Status':
+            elif text == 'Group status':
                 bot.sendMessage(chat_id, MEMBERS_ROLES)
 
             elif text == 'Hustlers list' and user.role is not None:
-                bot.sendMessage(chat_id, '\nMostly scams...\n')
+                bot.sendMessage(chat_id, '\nMostly scammers...\n')
                 for user in TelegramUser.objects.filter(role="Hustler"):
                     bot.sendMessage(chat_id, f'{user.name()} id_{user.telegram_id} {user.get_role_display()}')
 
-            elif text == 'News' and user.role:
+            elif text == 'Market news' and user.role:
                 news = requests.get(url='https://min-api.cryptocompare.com/data/v2/news/?lang=EN')
                 api = news.json()
                 data = api["Data"][:5]
@@ -253,8 +256,50 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                                 reply_markup=InlineKeyboardMarkup.a(
                                     inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
 
+            elif text == 'Quote':
+                quote = random.choices(QUOTES_STRINGS)
+                bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
+
+            elif text == 'Active users':
+                n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
+                bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
+
+            elif text == "Market trend":
+                cap = requests.get(url='https://api.coingecko.com/api/v3/global')
+                fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
+                tendency = requests.get(
+                    url='https://api.cryptometer.io/trend-indicator-v3/?api_key=KLT7vnP42Bf4k55z07sA9ImHpVd2lN11s4B3854Y')
+                result_1 = cap.json()
+                result_2 = fear.json()
+                result_3 = tendency.json()
+                data = result_1["data"]
+                change = data["market_cap_change_percentage_24h_usd"]
+                btc = data["market_cap_percentage"]["btc"]
+                eth = data["market_cap_percentage"]["eth"]
+                change = round(change, 2)
+                change_price = '{:,}'.format(change)
+                btc = round(btc, 2)
+                domi_btc = '{:,}'.format(btc)
+                eth = round(eth, 2)
+                domi_eth = '{:,}'.format(eth)
+                data2 = result_2["data"][0]
+                feeling = data2["value_classification"]
+                number = data2["value"]
+                data3 = result_3["data"][0]
+                buy = data3["buy_pressure"]
+                sell = data3["sell_pressure"]
+                score = data3["trend_score"]
+                buy = round(buy)
+                sell = round(sell)
+                score = round(score)
+                score = get_tendency(score)
+                total = f' 📊 <b>Total market change:</> {change_price}% <i>(last 24 hours)</>\n🪙 <b>Bitcoin dominance:</> {domi_btc}%\n🌑 <b>Ethereum dominance:</> {domi_eth}%\n' \
+                        f'😵 <b>Fear&Greed index: </>{feeling} ({number}|100)\n\n' \
+                        f' 〽️<b>Current market trend:</> {score} <i>(last 4 hours)</>\n🐮 <b>Buy pressure:</> {buy}%\n🐻 <b>Sell pressure:</> {sell}%'
+                bot.sendMessage(chat_id, total, parse_mode='html')
+
             elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
-                bot.sendMessage(chat_id, "use the menu")
+                bot.sendMessage(chat_id, "Use the menu")
 
             elif text:
                 bot.sendMessage(chat_id, SERV_MSG[1])
