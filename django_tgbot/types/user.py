@@ -37,4 +37,4 @@ class User(BasicType):
         return getattr(self, 'language_code', None)
 
     def get_is_premium(self):
-        return getattr(self, 'is_premium', None)
+        return getattr(self, 'is_premium', False)
