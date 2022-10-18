@@ -21,6 +21,9 @@ class User(BasicType):
     def get_id(self):
         return getattr(self, 'id', None)
 
+    def get_is_bot(self):
+        return getattr(self, 'is_bot', None)
+
     def get_username(self):
         return getattr(self, 'username', None)
 
@@ -32,3 +35,6 @@ class User(BasicType):
 
     def get_language_code(self):
         return getattr(self, 'language_code', None)
+
+    def get_is_premium(self):
+        return getattr(self, 'is_premium', None)

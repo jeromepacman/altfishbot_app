@@ -64,6 +64,8 @@ class AbstractTelegramBot(BotAPIUser):
             db_user.last_name = user.get_last_name()
             db_user.username = user.get_username()
             db_user.language_code = user.get_language_code()
+            db_user.is_bot = user.get_is_bot()
+            db_user.is_premium = user.get_is_premium()
             db_user.save()
 
         if db_chat is not None:
