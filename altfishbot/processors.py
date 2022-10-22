@@ -289,9 +289,9 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 sell = round(sell)
                 score = round(score)
                 score = get_tendency(score)
-                total = f' 📊 <b>Total market change:</> {change_price}% <i>(last 24 hours)</>\n🪙 <b>Bitcoin dominance:</> {domi_btc}%\n🌑 <b>Ethereum dominance:</> {domi_eth}%\n' \
-                        f'😵 <b>Fear&Greed index: </>{feeling} ({number}|100)\n\n' \
-                        f' 〽️<b>Current market trend:</> {score} <i>(last 4 hours)</>\n🐮 <b>Buy pressure:</> {buy}%\n🐻 <b>Sell pressure:</> {sell}%'
+                total = f' 📊 <b>24h market change:</> {change_price}%\n<b>Bitcoin</> dom: {domi_btc}%\n<b>Ethereum</> dom: {domi_eth}%\n' \
+                        f' 😵 {feeling} ({number}/100)\n\n' \
+                        f' 〽️<b>Last 4h trend:</> {score}\n🐮 {buy}%\n🐻 {sell}%'
                 bot.sendMessage(chat_id, total, parse_mode='html')
 
             elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
