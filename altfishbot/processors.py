@@ -18,6 +18,19 @@ from .helpers import get_tendency
 
 # commands #########
 # Internal direct requests #######################
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.LeftChatMember],
+           update_types=update_types.Message)
+def door(bot: TelegramBot, update: Update, state: TelegramState):
+    left_id = update.get_message().get_from().get_id()
+    try:
+        user_quit = TelegramUser.objects.get(telegram_id=left_id)
+    except TelegramUser.DoesNotExist:
+        bot.sendMessage(chat_id='342785208', text='error')
+    else:
+        user_quit.delete()
+        bot.sendMessage(chat_id='342785208', text="left")
+
+
 @processor(state_manager, from_states=state_types.All, message_types=[message_types.Text],
            update_types=update_types.Message)
 def post_count(bot: TelegramBot, update: Update, state: TelegramState):
