@@ -23,11 +23,10 @@ from .helpers import get_tendency
 def door(bot: TelegramBot, update: Update, state: TelegramState):
     left_id = update.get_message().get_from().get_id()
     try:
-        user_quit = TelegramUser.objects.get(telegram_id=left_id)
+        TelegramUser.objects.get(telegram_id=left_id).delete()
     except TelegramUser.DoesNotExist:
         bot.sendMessage(chat_id='342785208', text='error')
     else:
-        user_quit.delete()
         bot.sendMessage(chat_id='342785208', text="left")
 
 
