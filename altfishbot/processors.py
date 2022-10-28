@@ -18,16 +18,18 @@ from .helpers import get_tendency
 
 # commands #########
 # Internal direct requests #######################
-@processor(state_manager, from_states=state_types.All, message_types=[message_types.LeftChatMember],
+@processor(state_manager, from_states=state_types.All, message_types=[],
            update_types=update_types.Message)
-def door(bot: TelegramBot, update: Update, state: TelegramState):
-    left_id = update.get_message().get_from().get_id()
-    try:
-        TelegramUser.objects.get(telegram_id=left_id).delete()
-    except TelegramUser.DoesNotExist:
-        bot.sendMessage(chat_id='342785208', text='error')
-    else:
-        bot.sendMessage(chat_id='342785208', text="left")
+def check(bot: TelegramBot, update: Update, state: TelegramState):
+    chat_id = update.get_chat().get_id()
+    user_id = update.get_user().get_id()
+
+    if bot.getChatMember(chat_id, user_id).status in ('left', 'kicked'):
+        try:
+            a = TelegramUser.objects.get(telegram_id=user_id)
+            a.delete()
+        except TelegramUser.DoesNotExist:
+            bot.sendMessage(chat_id=342785208, text="user does not exist")
 
 
 @processor(state_manager, from_states=state_types.All, message_types=[message_types.Text],

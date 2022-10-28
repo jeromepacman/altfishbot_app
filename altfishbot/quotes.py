@@ -2,16 +2,13 @@ QUOTES_STRINGS = [
     "🔈'What if' ?\n©️Alex Wice",
     "🔈 Keep calm, there's always a trade",
     "🔈 Human beings are so indulged in satisfying their immediate urges",
-    "🔈 Buy fear, sell euphoria",
     "🔈 Any idiot can make money. Keeping money, very few can do.\n©️McAfee",
-    "🔈 Your best investment is in yourself.\n©️W.Buffet",
     "🔈 'No pain, no gain !'",
     "🔈 My Bitcoin price target is $238,855. I arrived at this price target by googling the distance "
     "between the earth and the moon and converting it from miles to dollars. \n©️CryptoCobain",
     "🔈 Round numbers are meant to be bought\n©️Zhu",
     "🔈 Diversification is often a sign of ignorance",
     "🔈 Having seen a bear market before doesn't make you an expert in either bears or markets\n©️Zhu",
-    "🔈 You can run, but you can't hide...",
     "🔈 If you wait until everyone understands it, you won't be able to afford it. \n©️M.Saylor",
     "🔈 Buy the dips, sell the rips !)",
     "🔈 Crypto has been one of the great stories in finance over the course of the last 15 years. "
