@@ -72,7 +72,7 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id='342785208', text="Data failed")
         else:
             bot.sendMessage(chat_id='342785208', text="Data purged")
-
+            
 
 @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
@@ -266,7 +266,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                                 reply_markup=InlineKeyboardMarkup.a(
                                     inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
 
-            elif text == 'Quote':
+            elif text == 'Quote' and user.role:
                 quote = random.choices(QUOTES_STRINGS)
                 bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
 
@@ -274,7 +274,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
                 bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
 
-            elif text == "Market trend":
+            elif text == "Market trend" and user.role:
                 cap = requests.get(url='https://api.coingecko.com/api/v3/global')
                 fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
                 tendency = requests.get(
