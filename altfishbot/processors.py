@@ -18,18 +18,32 @@ from .helpers import get_tendency
 
 # commands #########
 # Internal direct requests #######################
-@processor(state_manager, from_states=state_types.All, message_types=[],
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.LeftChatMember],
            update_types=update_types.Message)
-def check(bot: TelegramBot, update: Update, state: TelegramState):
+def door(bot: TelegramBot, update: Update, state: TelegramState):
+    msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
     user_id = update.get_user().get_id()
+    bot.deleteMessage(chat_id, msg_id)
+    if user_id is not None:
+        TelegramUser.objects.get(telegram_id=user_id).delete()
 
-    if bot.getChatMember(chat_id, user_id).status in ('left', 'kicked'):
+
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.NewChatMembers],
+           update_types=update_types.Message)
+def check(bot: TelegramBot, update: Update, state: TelegramState):
+    msg_id = update.get_message().get_message_id()
+    chat_id = update.get_chat().get_id()
+    user_id = update.get_user().get_id()
+    bot.deleteMessage(chat_id, msg_id)
+    if bot.getChatMember(chat_id, user_id).status in ['kicked']:
         try:
-            a = TelegramUser.objects.get(telegram_id=user_id)
-            a.delete()
+            TelegramUser.objects.get(telegram_id=user_id).delete()
         except TelegramUser.DoesNotExist:
             bot.sendMessage(chat_id=342785208, text="user does not exist")
+
+    elif bot.getChatMember(chat_id, user_id).status in ['member']:
+        TelegramUser.objects.get(telegram_id=user_id).has_status = True
 
 
 @processor(state_manager, from_states=state_types.All, message_types=[message_types.Text],
@@ -58,7 +72,7 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
         quote = random.choices(QUOTES_STRINGS)
         bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
 
-    elif text.startswith('$trade '):
+    elif text.startswith('$flip '):
         if len(text) > 8 and (text[7:]).isupper:
             quote = random.choices(TRADE_STRINGS)
             bot.sendMessage(chat_id, quote[0])
@@ -200,11 +214,11 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
 def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = str(update.get_message().get_text())
-    msg_ref = int(update.get_message().get_message_id())
+    msg_id = int(update.get_message().get_message_id())
     chat_type = update.get_chat().get_type()
 
     if chat_type == 'private':
-        bot.deleteMessage(chat_id, msg_ref)
+        bot.deleteMessage(chat_id, msg_id)
         try:
             user = TelegramUser.objects.get(telegram_id=chat_id)
         except TelegramUser.DoesNotExist:
@@ -213,103 +227,107 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
         else:
             user.updated_at = now()
             user.save()
-            if text == 'My status':
-                if user.role:
-                    st = f'{user.get_role_display()}\n'
+            if user.role == "Hustler" or not user.has_status:
+                bot.sendMessage(chat_id, SERV_MSG[0])
+                bot.leaveChat(chat_id)
+            else:
+                if text == 'My status':
+                    if user.role:
+                        st = f'{user.get_role_display()}\n'
+                        bot.sendMessage(chat_id,
+                                        f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬")
+
+                    else:
+                        bot.sendMessage(chat_id, "\nYou don't have any status yet. Bot access is limited 😶")
+
+                elif text == 'Admins list':
+                    bot.sendMessage(chat_id, ACTIVE_ADMINS_LIST)
+
+                elif text == 'Group status':
+                    bot.sendMessage(chat_id, MEMBERS_ROLES)
+
+                elif text == 'Hustlers list' and user.role is not None:
+                    bot.sendMessage(chat_id, '\nMostly scammers...\n')
+                    for user in TelegramUser.objects.filter(role="Hustler"):
+                        bot.sendMessage(chat_id, f'{user.name()} id_{user.telegram_id} {user.get_role_display()}')
+
+                elif text == 'Market news' and user.role:
+                    news = requests.get(url='https://min-api.cryptocompare.com/data/v2/news/?lang=EN')
+                    api = news.json()
+                    data = api["Data"][:5]
+                    for x in data:
+                        title = x["title"]
+                        url = x["url"]
+                        source = x["source"]
+                        response = f'🌎{source.title()}\n<a href="{url}">{title}</a>'
+                        bot.sendMessage(chat_id, {response}, disable_web_page_preview=True, parse_mode='html')
+
+                elif text == 'Gecko trendy coins' and user.role:
+                    request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
+                    result = request.json()
+                    coins = result["coins"]
+                    url = f'https://coingecko.com/coins/'
+                    bot.sendMessage(chat_id, text='📈 Trending coins searched on Gecko:', parse_mode='html')
+                    for x in coins:
+                        symbol = x["item"]["symbol"]
+                        num = x["item"]["slug"]
+                        response = f'➖ <a href="{url}{num}">{symbol}</a>'
+                        bot.sendMessage(chat_id, response, disable_web_page_preview=True, parse_mode='html')
+
+                elif text == 'Rules of the group':
+                    bot.sendMessage(chat_id, text='appreciated that 😉, check there', reply_markup=InlineKeyboardMarkup.a(
+                        inline_keyboard=[[InlineKeyboardButton.a('Rules & more', url='https://altcoinwhales.com/rules/')]]))
+
+                elif text == 'Channel':
                     bot.sendMessage(chat_id,
-                                    f"\n{user.first_name} 😎\n\nYour Status is {st}\n\nYou're in the group since {user.joined}\n\nDate might be incorrect, i'm still in beta 😬")
+                                    "Go to @altcoinwhales\n\nCharts from channel admins 🐳:\n➖Artem\n➖Rocketbomb\n➖LA440\n➖Liquidity Hunter\n➖Excavo\n➖Edward Morra\n➖Jerome\n& more...\n",
+                                    reply_markup=InlineKeyboardMarkup.a(
+                                        inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
 
-                else:
-                    bot.sendMessage(chat_id, "\nYou don't have any status yet. Bot access is limited 😶")
+                elif text == 'Quote' and user.role:
+                    quote = random.choices(QUOTES_STRINGS)
+                    bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
 
-            elif text == 'Admins list':
-                bot.sendMessage(chat_id, ACTIVE_ADMINS_LIST)
+                elif text == 'Active users':
+                    n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
+                    bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
 
-            elif text == 'Group status':
-                bot.sendMessage(chat_id, MEMBERS_ROLES)
+                elif text == "Market trend" and user.role:
+                    cap = requests.get(url='https://api.coingecko.com/api/v3/global')
+                    fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
+                    tendency = requests.get(
+                        url='https://api.cryptometer.io/trend-indicator-v3/?api_key=KLT7vnP42Bf4k55z07sA9ImHpVd2lN11s4B3854Y')
+                    result_1 = cap.json()
+                    result_2 = fear.json()
+                    result_3 = tendency.json()
+                    data = result_1["data"]
+                    change = data["market_cap_change_percentage_24h_usd"]
+                    btc = data["market_cap_percentage"]["btc"]
+                    eth = data["market_cap_percentage"]["eth"]
+                    change = round(change, 2)
+                    change_price = '{:,}'.format(change)
+                    btc = round(btc, 2)
+                    domi_btc = '{:,}'.format(btc)
+                    eth = round(eth, 2)
+                    domi_eth = '{:,}'.format(eth)
+                    data2 = result_2["data"][0]
+                    feeling = data2["value_classification"]
+                    number = data2["value"]
+                    data3 = result_3["data"][0]
+                    buy = data3["buy_pressure"]
+                    sell = data3["sell_pressure"]
+                    score = data3["trend_score"]
+                    buy = round(buy)
+                    sell = round(sell)
+                    score = round(score)
+                    score = get_tendency(score)
+                    total = f'📊 <b>24h market change:</> {change_price}%\n▪️<b>BTC</> dom: {domi_btc}%\n▪️<b>ETH</> dom: {domi_eth}%\n\n' \
+                            f'〽️<b>Last 4h trend:</> {score}\n🐮 {buy}%\n🐻 {sell}%\n\n' \
+                            f'😵 {feeling} ({number}/100)'
+                    bot.sendMessage(chat_id, total, parse_mode='html')
 
-            elif text == 'Hustlers list' and user.role is not None:
-                bot.sendMessage(chat_id, '\nMostly scammers...\n')
-                for user in TelegramUser.objects.filter(role="Hustler"):
-                    bot.sendMessage(chat_id, f'{user.name()} id_{user.telegram_id} {user.get_role_display()}')
+                elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
+                    bot.sendMessage(chat_id, "Use the menu")
 
-            elif text == 'Market news' and user.role:
-                news = requests.get(url='https://min-api.cryptocompare.com/data/v2/news/?lang=EN')
-                api = news.json()
-                data = api["Data"][:5]
-                for x in data:
-                    title = x["title"]
-                    url = x["url"]
-                    source = x["source"]
-                    response = f'🌎{source.title()}\n<a href="{url}">{title}</a>'
-                    bot.sendMessage(chat_id, {response}, disable_web_page_preview=True, parse_mode='html')
-
-            elif text == 'Gecko trendy coins' and user.role:
-                request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
-                result = request.json()
-                coins = result["coins"]
-                url = f'https://coingecko.com/coins/'
-                bot.sendMessage(chat_id, text='📈 Trending coins searched on Gecko:', parse_mode='html')
-                for x in coins:
-                    symbol = x["item"]["symbol"]
-                    num = x["item"]["slug"]
-                    response = f'➖ <a href="{url}{num}">{symbol}</a>'
-                    bot.sendMessage(chat_id, response, disable_web_page_preview=True, parse_mode='html')
-
-            elif text == 'Rules of the group':
-                bot.sendMessage(chat_id, text='appreciated that 😉, check there', reply_markup=InlineKeyboardMarkup.a(
-                    inline_keyboard=[[InlineKeyboardButton.a('Rules & more', url='https://altcoinwhales.com/rules/')]]))
-
-            elif text == 'Channel':
-                bot.sendMessage(chat_id,
-                                "Go to @altcoinwhales\n\nCharts from channel admins 🐳:\n➖Artem\n➖Rocketbomb\n➖LA440\n➖Liquidity Hunter\n➖Excavo\n➖Edward Morra\n➖Jerome\n& more...\n",
-                                reply_markup=InlineKeyboardMarkup.a(
-                                    inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
-
-            elif text == 'Quote' and user.role:
-                quote = random.choices(QUOTES_STRINGS)
-                bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
-
-            elif text == 'Active users':
-                n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
-                bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
-
-            elif text == "Market trend" and user.role:
-                cap = requests.get(url='https://api.coingecko.com/api/v3/global')
-                fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
-                tendency = requests.get(
-                    url='https://api.cryptometer.io/trend-indicator-v3/?api_key=KLT7vnP42Bf4k55z07sA9ImHpVd2lN11s4B3854Y')
-                result_1 = cap.json()
-                result_2 = fear.json()
-                result_3 = tendency.json()
-                data = result_1["data"]
-                change = data["market_cap_change_percentage_24h_usd"]
-                btc = data["market_cap_percentage"]["btc"]
-                eth = data["market_cap_percentage"]["eth"]
-                change = round(change, 2)
-                change_price = '{:,}'.format(change)
-                btc = round(btc, 2)
-                domi_btc = '{:,}'.format(btc)
-                eth = round(eth, 2)
-                domi_eth = '{:,}'.format(eth)
-                data2 = result_2["data"][0]
-                feeling = data2["value_classification"]
-                number = data2["value"]
-                data3 = result_3["data"][0]
-                buy = data3["buy_pressure"]
-                sell = data3["sell_pressure"]
-                score = data3["trend_score"]
-                buy = round(buy)
-                sell = round(sell)
-                score = round(score)
-                score = get_tendency(score)
-                total = f'📊 <b>24h market change:</> {change_price}%\n▪️<b>BTC</> dom: {domi_btc}%\n▪️<b>ETH</> dom: {domi_eth}%\n\n' \
-                        f'〽️<b>Last 4h trend:</> {score}\n🐮 {buy}%\n🐻 {sell}%\n\n' \
-                        f'😵 {feeling} ({number}/100)'
-                bot.sendMessage(chat_id, total, parse_mode='html')
-
-            elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
-                bot.sendMessage(chat_id, "Use the menu")
-
-            elif text:
-                bot.sendMessage(chat_id, SERV_MSG[1])
+                elif text:
+                    bot.sendMessage(chat_id, SERV_MSG[1])
