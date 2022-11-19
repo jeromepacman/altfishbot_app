@@ -110,5 +110,5 @@ ACTIVE_ADMINS_LIST = "Chat active admins:\n\n" \
 
 SERV_MSG = [
     "\n🔺 You're not allowed to use the bot\n",
-    "\n🟠 👇🏼\n",
+    "\n🟠 Your status does not allow you to access this one 🐳\n",
 ]

@@ -119,10 +119,11 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
             hook = sender.get_from().get_id()
             a = TelegramUser.objects.get(telegram_id=hook)
             if a.role is not None:
-                response = f'▫️{a} got a new status:\n▫️    ➖ {a.get_role_display()}  ➖  '
                 if a.role == "Member":
+                    response = f'▫️You got a new status in Alt Whales 🐳:\n  ➖ {a.get_role_display()}  ➖  '
                     bot.sendMessage(hook, response)
                 else:
+                    response = f'▫️{a} got a new status:\n▫️    ➖ {a.get_role_display()}  ➖  '
                     bot.sendMessage(chat_id, response)
             else:
                 bot.sendMessage(user_id, f'user {a} has no role')
@@ -236,33 +237,42 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 elif text == 'Group status':
                     bot.sendMessage(chat_id, MEMBERS_ROLES)
 
-                elif text == 'Hustlers list' and user.role is not None:
-                    bot.sendMessage(chat_id, '\nMostly scammers...\n')
-                    for user in TelegramUser.objects.filter(role="Hustler"):
-                        bot.sendMessage(chat_id, f'{user.name()} id_{user.telegram_id} {user.get_role_display()}')
+                elif text == 'Hustlers list':
+                    if user.role:
+                        bot.sendMessage(chat_id, '\nMostly scams...\n')
+                        for user in TelegramUser.objects.filter(role="Hustler"):
+                            bot.sendMessage(chat_id, f'{user.name()} id_{user.telegram_id} {user.get_role_display()}')
+                    else:
+                        bot.sendMessage(chat_id, SERV_MSG[1])
 
-                elif text == 'Market news' and user.role:
-                    news = requests.get(url='https://min-api.cryptocompare.com/data/v2/news/?lang=EN')
-                    api = news.json()
-                    data = api["Data"][:5]
-                    for x in data:
-                        title = x["title"]
-                        url = x["url"]
-                        source = x["source"]
-                        response = f'🌎{source.title()}\n<a href="{url}">{title}</a>'
-                        bot.sendMessage(chat_id, {response}, disable_web_page_preview=True, parse_mode='html')
+                elif text == 'Market news':
+                    if user.role:
+                        news = requests.get(url='https://min-api.cryptocompare.com/data/v2/news/?lang=EN')
+                        api = news.json()
+                        data = api["Data"][:5]
+                        for x in data:
+                            title = x["title"]
+                            url = x["url"]
+                            source = x["source"]
+                            response = f'🌎{source.title()}\n<a href="{url}">{title}</a>'
+                            bot.sendMessage(chat_id, {response}, disable_web_page_preview=True, parse_mode='html')
+                    else:
+                        bot.sendMessage(chat_id, SERV_MSG[1])
 
-                elif text == 'Gecko trendy coins' and user.role:
-                    request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
-                    result = request.json()
-                    coins = result["coins"]
-                    url = f'https://coingecko.com/coins/'
-                    bot.sendMessage(chat_id, text='📈 Trending coins searched on Gecko:', parse_mode='html')
-                    for x in coins:
-                        symbol = x["item"]["symbol"]
-                        num = x["item"]["slug"]
-                        response = f'➖ <a href="{url}{num}">{symbol}</a>'
-                        bot.sendMessage(chat_id, response, disable_web_page_preview=True, parse_mode='html')
+                elif text == 'Gecko trendy coins':
+                    if user.role is not None and user.role not in ['Member']:
+                        request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
+                        result = request.json()
+                        coins = result["coins"]
+                        url = f'https://coingecko.com/coins/'
+                        bot.sendMessage(chat_id, text='📈 Trending coins searched on Gecko:', parse_mode='html')
+                        for x in coins:
+                            symbol = x["item"]["symbol"]
+                            num = x["item"]["slug"]
+                            response = f'➖ <a href="{url}{num}">{symbol}</a>'
+                            bot.sendMessage(chat_id, response, disable_web_page_preview=True, parse_mode='html')
+                    else:
+                        bot.sendMessage(chat_id, SERV_MSG[1])
 
                 elif text == 'Rules of the group':
                     bot.sendMessage(chat_id, text='appreciated that 😉, check there', reply_markup=InlineKeyboardMarkup.a(
@@ -274,50 +284,56 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                                     reply_markup=InlineKeyboardMarkup.a(
                                         inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
 
-                elif text == 'Quote' and user.role is not None and user.role not in ['Member']:
-                    quote = random.choices(QUOTES_STRINGS)
-                    bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
-
                 elif text == 'Active users':
                     n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
                     bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
 
-                elif text == "Market trend" and user.role:
-                    cap = requests.get(url='https://api.coingecko.com/api/v3/global')
-                    fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
-                    tendency = requests.get(
-                        url='https://api.cryptometer.io/trend-indicator-v3/?api_key=KLT7vnP42Bf4k55z07sA9ImHpVd2lN11s4B3854Y')
-                    result_1 = cap.json()
-                    result_2 = fear.json()
-                    result_3 = tendency.json()
-                    data = result_1["data"]
-                    change = data["market_cap_change_percentage_24h_usd"]
-                    btc = data["market_cap_percentage"]["btc"]
-                    eth = data["market_cap_percentage"]["eth"]
-                    change = round(change, 2)
-                    change_price = '{:,}'.format(change)
-                    btc = round(btc, 2)
-                    domi_btc = '{:,}'.format(btc)
-                    eth = round(eth, 2)
-                    domi_eth = '{:,}'.format(eth)
-                    data2 = result_2["data"][0]
-                    feeling = data2["value_classification"]
-                    number = data2["value"]
-                    data3 = result_3["data"][0]
-                    buy = data3["buy_pressure"]
-                    sell = data3["sell_pressure"]
-                    score = data3["trend_score"]
-                    buy = round(buy)
-                    sell = round(sell)
-                    score = round(score)
-                    score = get_tendency(score)
-                    total = f'📊 <b>24h market change:</> {change_price}%\n▪️<b>BTC</> dom: {domi_btc}%\n▪️<b>ETH</> dom: {domi_eth}%\n\n' \
-                            f'〽️<b>Last 4h trend:</> {score}\n🐮 {buy}%\n🐻 {sell}%\n\n' \
-                            f'😵 {feeling} ({number}/100)'
-                    bot.sendMessage(chat_id, total, parse_mode='html')
+                elif text == 'Quote':
+                    if user.role is not None and user.role not in ['Member']:
+                        quote = random.choices(QUOTES_STRINGS)
+                        bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
+                    else:
+                        bot.sendMessage(chat_id, SERV_MSG[1])
 
-                elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
-                    bot.sendMessage(chat_id, "Use the menu")
+                elif text == "Market trend":
+                    if user.role is not None and user.role not in ['Member']:
+                        cap = requests.get(url='https://api.coingecko.com/api/v3/global')
+                        fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
+                        tendency = requests.get(
+                            url='https://api.cryptometer.io/trend-indicator-v3/?api_key=KLT7vnP42Bf4k55z07sA9ImHpVd2lN11s4B3854Y')
+                        result_1 = cap.json()
+                        result_2 = fear.json()
+                        result_3 = tendency.json()
+                        data = result_1["data"]
+                        change = data["market_cap_change_percentage_24h_usd"]
+                        btc = data["market_cap_percentage"]["btc"]
+                        eth = data["market_cap_percentage"]["eth"]
+                        change = round(change, 2)
+                        change_price = '{:,}'.format(change)
+                        btc = round(btc, 2)
+                        domi_btc = '{:,}'.format(btc)
+                        eth = round(eth, 2)
+                        domi_eth = '{:,}'.format(eth)
+                        data2 = result_2["data"][0]
+                        feeling = data2["value_classification"]
+                        number = data2["value"]
+                        data3 = result_3["data"][0]
+                        buy = data3["buy_pressure"]
+                        sell = data3["sell_pressure"]
+                        score = data3["trend_score"]
+                        buy = round(buy)
+                        sell = round(sell)
+                        score = round(score)
+                        score = get_tendency(score)
+                        total = f'📊 <b>24h market change:</> {change_price}%\n▪️<b>BTC</> dom: {domi_btc}%\n▪️<b>ETH</> dom: {domi_eth}%\n\n' \
+                                f'〽️<b>Last 4h trend:</> {score}\n🐮 {buy}%\n🐻 {sell}%\n\n' \
+                                f'😵 {feeling} ({number}/100)'
+                        bot.sendMessage(chat_id, total, parse_mode='html')
+                    else:
+                        bot.sendMessage(chat_id, SERV_MSG[1])
 
-                elif text:
-                    bot.sendMessage(chat_id, SERV_MSG[1])
+                elif text == '/start':
+                    bot.sendMessage(chat_id, "use the button menu")
+
+                elif text != '/up':
+                    bot.sendMessage(chat_id, "I don't understand that")
