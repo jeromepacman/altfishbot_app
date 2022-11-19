@@ -79,14 +79,6 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
         else:
             bot.sendMessage(chat_id, text == 'I dont get it, I need the acronym of the ponzi')
 
-    elif text == '/db' and user_id == '342785208':
-        try:
-            TelegramUser.objects.filter(has_status=False).delete()
-        except:
-            bot.sendMessage(chat_id='342785208', text="Data failed")
-        else:
-            bot.sendMessage(chat_id='342785208', text="Data purged")
-            
 
 @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
@@ -181,7 +173,6 @@ def trendy(bot: TelegramBot, update: Update, state: TelegramState):
 
 # Private chat actions  #######################
 
-
 # Private bot   #######################
 @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
@@ -204,7 +195,6 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
                     [KeyboardButton.a('Group status'), KeyboardButton.a('My status')],
                     [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
                     [KeyboardButton.a('Market trend'), KeyboardButton.a('Quote')],
-
                 ])
             )
 
