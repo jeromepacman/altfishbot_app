@@ -274,7 +274,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                                     reply_markup=InlineKeyboardMarkup.a(
                                         inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
 
-                elif text == 'Quote' and user.role:
+                elif text == 'Quote' and user.role is not None and user.role not in ['Member']:
                     quote = random.choices(QUOTES_STRINGS)
                     bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
 
