@@ -106,15 +106,7 @@ def role(bot: TelegramBot, update: Update, state: TelegramState):
         else:
             bot.sendMessage(chat_id, f"😶 You don't have any status {b.first_name}")
 
-
-@processor(state_manager, from_states=state_types.Reset, message_types=message_types.Text,
-           update_types=update_types.Message)
-def promote(bot: TelegramBot, update: Update, state: TelegramState):
-    text = update.get_message().get_text()
-    user_id = update.get_user().get_id()
-    chat_id = update.get_chat().get_id()
-    sender = update.get_message().get_reply_to_message()
-    if text == '/promote' and user_id == '342785208':
+    elif text == '/promote' and user_id == '342785208':
         if sender is not None:
             hook = sender.get_from().get_id()
             a = TelegramUser.objects.get(telegram_id=hook)
@@ -130,14 +122,15 @@ def promote(bot: TelegramBot, update: Update, state: TelegramState):
         else:
             bot.sendMessage(chat_id, f'Bad request')
 
+    elif text == '/db' and user_id == '342785208':
+        try:
+            TelegramUser.objects.filter(has_status=False).delete()
+        except:
+            bot.sendMessage(chat_id='342785208', text="Data failed")
+        else:
+            bot.sendMessage(chat_id='342785208', text="Data purged")
 
-@processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
-           update_types=update_types.Message)
-def trendy(bot: TelegramBot, update: Update, state: TelegramState):
-    chat_id = update.get_chat().get_id()
-    text = update.get_message().get_text()
-
-    if text == "/cap":
+    elif text == "/cap":
         cap = requests.get(url='https://api.coingecko.com/api/v3/global')
         fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
         tendency = requests.get(
@@ -199,6 +192,8 @@ def welcome(bot: TelegramBot, update: Update, state: TelegramState):
                 ])
             )
 
+
+#    #### BOT IN PRIVATE CHAT ######
 
 @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
