@@ -15,7 +15,7 @@ from .bot import state_manager
 from .models import TelegramState, TelegramUser
 from .bot import TelegramBot
 from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, ADMINS_ID, MEMBERS_ROLES, SERV_MSG
-from .helpers import get_tendency, slowdown
+from .helpers import get_tendency
 
 
 # commands #########
