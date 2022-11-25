@@ -86,10 +86,10 @@ QUOTES_STRINGS = [
 ]
 
 TRADE_STRINGS = [
-    "It's a ✅ BUY ✅",
-    "You wanna 🛑 SELL 🛑",
-    "Just 🔅 HODL 🔅",
-    "No idea ❕DYOR❕",
+    "It's a ✅ <b>BUY</b> ✅",
+    "You wanna 🛑 <b>SELL</b> 🛑",
+    "Just 🔅 <b>HODL</b> 🔅",
+    "No idea bro \n❕DYOR❕",
 ]
 
 MEMBERS_ROLES = "🐳 Whale\n" \
@@ -98,10 +98,10 @@ MEMBERS_ROLES = "🐳 Whale\n" \
                 "🐡 Member\n" \
                 "🚫 Hustler\n" \
                 "\n" \
-                "Various privileges according to status"
+                "<i>Various privileges according to status</i>"
 
 
-ACTIVE_ADMINS_LIST = "Chat active admins:\n\n" \
+ACTIVE_ADMINS_LIST = "<u>Chat active admins</u>:\n\n" \
                     "@jeromepacman 🔰\n\n" \
                     "@jimster480 🔰\n\n" \
                     "@LA4440 🔰\n\n" \
@@ -109,6 +109,8 @@ ACTIVE_ADMINS_LIST = "Chat active admins:\n\n" \
 
 
 SERV_MSG = [
-    "\n🔺 You're not allowed to use the bot\n",
+    "\n🔴 You're not allowed to use the bot\n",
     "\n🟠 Your status does not allow you to access this one 🐳\n",
 ]
+
+ADMINS_ID = ['342785208', '189873395']
