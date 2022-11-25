@@ -1,9 +1,9 @@
 dj-database-url
 Django
-django-countries
 django-debug-toolbar
 gunicorn
 psycopg2-binary
 python-dotenv
 whitenoise
 requests
+django-countries

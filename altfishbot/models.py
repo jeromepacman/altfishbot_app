@@ -20,6 +20,7 @@ class TelegramUser(AbstractTelegramUser):
     joined = models.DateField(default=date.today)
     updated_at = models.DateTimeField(auto_now=True)
     has_status = models.BooleanField("Mb", default=False)
+    warnings = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f' {self.name()}'

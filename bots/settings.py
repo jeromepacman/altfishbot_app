@@ -28,10 +28,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
     'django_tgbot',
     'altwhales',
     'altfishbot',
-    'django_countries',
+    'moderation',
     'debug_toolbar',
 ]
 

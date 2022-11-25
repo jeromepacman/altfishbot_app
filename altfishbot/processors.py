@@ -9,6 +9,7 @@ from django_tgbot.types.inlinekeyboardmarkup import InlineKeyboardMarkup
 from django_tgbot.types.keyboardbutton import KeyboardButton
 from django_tgbot.types.replykeyboardmarkup import ReplyKeyboardMarkup
 from django_tgbot.types.update import Update
+from moderation.models import BannedList
 from .bot import state_manager
 from .models import TelegramState, TelegramUser
 from .bot import TelegramBot
@@ -50,14 +51,26 @@ def check(bot: TelegramBot, update: Update, state: TelegramState):
            update_types=update_types.Message)
 def post_count(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
+    chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
     user_id = update.get_user().get_id()
+    message_id = update.get_message().get_message_id()
 
-    if chat_type == 'supergroup' and len(text) >= 5 and not text.startswith('/'):
+    if chat_type == 'supergroup' and len(text) >= 4 and not text.startswith('/'):
+        sentence = str(text.lower())
+        words = BannedList.objects.values_list('banned_word', flat=True)
         a = TelegramUser.objects.get(telegram_id=user_id)
-        a.post_count += 1
-        a.updated_at = now()
-        a.save()
+        for w in words:
+            if w in sentence:
+                bot.deleteMessage(chat_id, message_id)
+                a.warnings += 1
+            if a.warnings >= 2:
+                bot.banChatMember(chat_id, user_id)
+                a.delete()
+        else:
+            a.post_count += 1
+            a.updated_at = now()
+            a.save()
 
 
 #  requests #######################
@@ -72,12 +85,12 @@ def quotes(bot: TelegramBot, update: Update, state: TelegramState):
         quote = random.choices(QUOTES_STRINGS)
         bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
 
-    elif text.startswith('$flip '):
-        if len(text) > 8 and (text[7:]).isupper:
+    elif text.startswith('$'):
+        if len(text) > 2 and (text[1:]).isupper:
             quote = random.choices(TRADE_STRINGS)
             bot.sendMessage(chat_id, quote[0])
         else:
-            bot.sendMessage(chat_id, text == 'I dont get it, I need the acronym of the ponzi')
+            bot.sendMessage(chat_id, text == "what's that?, I need the acronym of the ponzi")
 
 
 @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
