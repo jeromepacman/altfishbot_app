@@ -26,13 +26,12 @@ from .helpers import get_tendency
 def door(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
-    user_id = update.get_user().get_id()
-    a = TelegramUser.objects.get(telegram_id=user_id)
-    try:
-        a.delete()
-    except TelegramUser.DoesNotExist:
-        bot.sendMessage('342785208', f" User {user_id} is not in the group")
-    else:
+    left_id = update.get_message().get_from().get(id)
+    if bot.getChatMember(chat_id, left_id).status in ['left']:
+        try:
+            TelegramUser.objects.get(telegram_id=left_id).delete()
+        except TelegramUser.DoesNotExist:
+            bot.sendMessage('342785208', text="user does not exist")
         bot.deleteMessage(chat_id, msg_id)
 
 
@@ -44,7 +43,7 @@ def check(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     user_id = update.get_user().get_id()
     bot.deleteMessage(chat_id, msg_id)
-    if bot.getChatMember(chat_id, user_id).status in ['kicked']:
+    if bot.getChatMember(chat_id, user_id).status in ['kicked', 'banned']:
         try:
             TelegramUser.objects.get(telegram_id=user_id).delete()
         except TelegramUser.DoesNotExist:
@@ -80,10 +79,9 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                     bot.kickChatMember(chat_id, user_id)
                     return
                 else:
-                    bot.sendMessage(chat_id, f"{a.name()} you're not allowed to post that shit, you're warned")
-                    a.save()
+                    bot.sendMessage(chat_id, f"<i>{a.name()} you're not allowed to post that shit, you're warned</i>", parse_mode='html')
                     return
-        if len(text) >= 4 and not text.startswith('/') and a.warnings < 2:
+        if len(text) >= 4 and not text.startswith('/'):
             a.post_count += 1
             a.updated_at = now()
             a.save()
@@ -181,6 +179,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, total, parse_mode='html')
 
             elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
+                print(chat_direct)
                 a = TelegramUser.objects.get(telegram_id=user_id)
                 if a.role == "Hustler":
                     bot.sendMessage(chat_id, SERV_MSG[0])

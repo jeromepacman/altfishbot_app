@@ -111,6 +111,8 @@ ACTIVE_ADMINS_LIST = "<u>Chat active admins</u>:\n\n" \
 SERV_MSG = [
     "\n🔴 You're not allowed to use the bot\n",
     "\n🟠 Your status does not allow you to access this one 🐳\n",
+    "\n🟠 You need to enter this command from the group 🐳\n",
+    "\n🔴 I don't understand that\n",
 ]
 
 ADMINS_ID = ['342785208', '189873395']

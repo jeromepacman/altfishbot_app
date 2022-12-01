@@ -16,9 +16,9 @@ class TelegramUserAdmin(admin.ModelAdmin):
 
 @admin.register(models.TelegramChat)
 class TelegramChatAdmin(admin.ModelAdmin):
-    list_display = ['telegram_id', 'username', 'type', 'title', ]
+    list_display = ['telegram_id', 'username', 'type', 'title']
 
 
 @admin.register(models.TelegramState)
 class TelegramStateAdmin(admin.ModelAdmin):
-    list_display = ['name', 'telegram_user', 'telegram_chat', ]
+    list_display = ['name', 'telegram_user', 'telegram_chat']

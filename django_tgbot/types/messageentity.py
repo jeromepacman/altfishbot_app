@@ -16,6 +16,9 @@ class MessageEntity(BasicType):
     def get_type(self) -> str:
         return getattr(self, 'type', None)
 
+    def get_language(self) -> str:
+        return getattr(self, 'language', None)
+
 
 from . import user
 MessageEntity.fields.update({
