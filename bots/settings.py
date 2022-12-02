@@ -122,4 +122,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if not DEBUG:
-    DATABASES = {'default': dj_database_url.config(conn_max_age=600)}
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600)
