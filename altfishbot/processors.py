@@ -14,7 +14,7 @@ from moderation.models import BannedList
 from .bot import state_manager
 from .models import TelegramState, TelegramUser
 from .bot import TelegramBot
-from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, ADMINS_ID, MEMBERS_ROLES, SERV_MSG
+from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, ADMINS, OWNER, MEMBERS_ROLES, SERV_MSG
 from .helpers import get_tendency
 
 
@@ -31,12 +31,12 @@ def door(bot: TelegramBot, update: Update, state: TelegramState):
         try:
             TelegramUser.objects.get(telegram_id=left_id).delete()
         except TelegramUser.DoesNotExist:
-            bot.sendMessage('342785208', text="user does not exist")
+            bot.sendMessage(OWNER, text="user does not exist")
     if bot.getChatMember(chat_id, left_id).status in ['kicked']:
         try:
             TelegramUser.objects.get(telegram_id=left_id).delete()
         except TelegramUser.DoesNotExist:
-            bot.sendMessage('342785208', text="user does not exist")
+            bot.sendMessage(OWNER, text="user does not exist")
 
     bot.deleteMessage(chat_id, msg_id)
 
@@ -85,17 +85,16 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                     bot.kickChatMember(chat_id, user_id)
                     return
                 else:
-                    bot.sendMessage(chat_id, f"<i>{a.name()} you're not allowed to post that shit, you're warned</i>",
-                                    parse_mode='html')
+                    bot.sendMessage(chat_id, f"{a.name()} you're not allowed to post that shit, you're warned")
                     a.save()
                     return
-        if len(text) >= 4 and not text.startswith('/') and a.warned < 2:
+        if len(text) >= 4 and not text.startswith('/') and a.warnings < 2:
             a.post_count += 1
             a.updated_at = now()
             a.save()
 
         if text.startswith('/'):
-            if text == '/quote':
+            if text == '/quote' and user_id in [ADMINS]:
                 quote = random.choices(QUOTES_STRINGS)
                 bot.deleteMessage(chat_id, user_id)
                 bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
@@ -128,7 +127,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                 else:
                     bot.sendMessage(chat_id, f"😶 You don't have any status {b.first_name}")
 
-            elif text == '/promote' and user_id == '342785208':
+            elif text == '/promote' and user_id == OWNER:
                 if sender is not None:
                     hook = sender.get_from().get_id()
                     a = TelegramUser.objects.get(telegram_id=hook)
@@ -137,22 +136,29 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                             response = f'▫️You got a new status in Alt Whales 🐳:\n  ➖ {a.get_role_display()}  ➖  '
                             bot.sendMessage(hook, response)
                         else:
-                            response = f'▫️{a} got a new status:\n    ➖ {a.get_role_display()}  ➖  '
+                            response = f'📦️{a} got a new status:\n    ➖ {a.get_role_display()}  ➖  '
                             bot.sendMessage(chat_id, response)
                     else:
-                        bot.sendMessage(user_id, f'user {a} has no role')
+                        bot.sendMessage(OWNER, f'user {a} has no role')
                 else:
                     bot.sendMessage(chat_id, 'Bad request')
 
-            elif text == '/db' and user_id == '342785208':
+            elif text == '/db' and user_id == OWNER:
                 try:
                     TelegramUser.objects.filter(has_status=False).delete()
                 except:
-                    bot.sendMessage(chat_id='342785208', text="Data failed")
+                    bot.sendMessage(chat_id=OWNER, text="Data failed")
                 else:
-                    bot.sendMessage(chat_id='342785208', text="Data purged")
+                    bot.sendMessage(chat_id=OWNER, text="Data purged")
 
-            elif text == "/cap" and user_id == '342785208':
+            elif text == '/unwarn' and user_id in [ADMINS]:
+                if sender is not None:
+                    hook = sender.get_from().get_id()
+                    h = TelegramUser.objects.get(telegram_id=hook)
+                    h.warned = 0
+                    h.save()
+
+            elif text == "/cap" and user_id in [ADMINS]:
                 cap = requests.get(url='https://api.coingecko.com/api/v3/global')
                 fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
                 tendency = requests.get(
@@ -187,14 +193,13 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, total, parse_mode='html')
 
             elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
-                print(chat_direct)
                 a = TelegramUser.objects.get(telegram_id=user_id)
                 if a.role == "Hustler":
                     bot.sendMessage(chat_id, SERV_MSG[0])
                 else:
                     bot.sendMessage(
                         chat_direct,
-                        f'🐳\n',
+                        f'🐳',
                         reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
                             [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Active users')],
                             [KeyboardButton.a('Admins list'), KeyboardButton.a('Hustlers list')],
@@ -248,7 +253,6 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
 
     if chat_type == 'private':
-        bot.deleteMessage(chat_id, msg_id)
         try:
             user = TelegramUser.objects.get(telegram_id=chat_id)
         except TelegramUser.DoesNotExist:
@@ -265,7 +269,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                     if user.role:
                         st = f'{user.get_role_display()}\n'
                         bot.sendMessage(chat_id,
-                                        f"<b>{user.first_name}</b> 😎\n\n\nYour Status is {st}\nYou're in the group since {user.joined}\n\n<i>Date might be incorrect, i'm still in beta</i> 😬",
+                                        f"<b>{user.first_name}</b> 😎\n\nId {user.telegram_id}\n\n\nYour Status is {st}\nYou're in the group since {user.joined}\n\n<i>Date might be incorrect, i'm still in beta</i> 😬",
                                         parse_mode="html")
                     else:
                         bot.sendMessage(chat_id, "\nYou don't have any status yet 😶")
@@ -298,7 +302,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                         bot.sendMessage(chat_id, SERV_MSG[1])
 
                 elif text == 'Gecko trendy coins':
-                    if user.role is not None and user.role not in ['Member']:
+                    if user.role and user.role not in ['Member']:
                         request = requests.get(url='https://api.coingecko.com/api/v3/search/trending')
                         result = request.json()
                         coins = result["coins"]
@@ -329,7 +333,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                     bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
 
                 elif text == 'Quote':
-                    if user.role is not None and user.role not in ['Member']:
+                    if user.role and user.role not in ['Member']:
                         quote = random.choices(QUOTES_STRINGS)
                         bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
                     else:
@@ -375,7 +379,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 elif text == '/start':
                     bot.sendMessage(chat_id, "🟠 start the bot from the group")
 
-                elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
+                elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot' or text == '/AltbabyWhale_bot':
                     bot.sendMessage(chat_id, SERV_MSG[2])
 
                 else:

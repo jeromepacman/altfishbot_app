@@ -1,3 +1,5 @@
+import os.path
+
 QUOTES_STRINGS = [
     "🔈'What if' ?\n©️Alex Wice",
     "🔈 Keep calm, there's always a trade",
@@ -115,4 +117,6 @@ SERV_MSG = [
     "\n🔴 I don't understand that\n",
 ]
 
-ADMINS_ID = ['342785208', '189873395']
+ADMINS = os.getenv('JIM', 'OWNER')
+
+OWNER = os.getenv('OWNER')
