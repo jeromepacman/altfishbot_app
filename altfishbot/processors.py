@@ -32,7 +32,13 @@ def door(bot: TelegramBot, update: Update, state: TelegramState):
             TelegramUser.objects.get(telegram_id=left_id).delete()
         except TelegramUser.DoesNotExist:
             bot.sendMessage('342785208', text="user does not exist")
-        bot.deleteMessage(chat_id, msg_id)
+    if bot.getChatMember(chat_id, left_id).status in ['kicked']:
+        try:
+            TelegramUser.objects.get(telegram_id=left_id).delete()
+        except TelegramUser.DoesNotExist:
+            bot.sendMessage('342785208', text="user does not exist")
+
+    bot.deleteMessage(chat_id, msg_id)
 
 
 # NEW CHAT MEMBER #######################
@@ -41,18 +47,18 @@ def door(bot: TelegramBot, update: Update, state: TelegramState):
 def check(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
-    user_id = update.get_user().get_id()
+    new_id = update.get_user().get_id()
     bot.deleteMessage(chat_id, msg_id)
-    if bot.getChatMember(chat_id, user_id).status in ['kicked', 'banned']:
-        try:
-            TelegramUser.objects.get(telegram_id=user_id).delete()
-        except TelegramUser.DoesNotExist:
-            bot.sendMessage('342785208', text="user does not exist")
-
-    elif bot.getChatMember(chat_id, user_id).status in ['member']:
-        a = TelegramUser.objects.get(telegram_id=user_id)
-        a.has_status = True
-        a.save()
+    # if bot.getChatMember(chat_id, user_id).status in ['kicked', 'banned']:
+    #     try:
+    #         TelegramUser.objects.get(telegram_id=user_id).delete()
+    #     except TelegramUser.DoesNotExist:
+    #         bot.sendMessage('342785208', text="user does not exist")
+    #
+    # elif bot.getChatMember(chat_id, user_id).status in ['member']:
+    #     a = TelegramUser.objects.get(telegram_id=user_id)
+    #     a.has_status = True
+    #     a.save()
 
 
 # CHECKS & UPDATES#######
@@ -79,9 +85,11 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                     bot.kickChatMember(chat_id, user_id)
                     return
                 else:
-                    bot.sendMessage(chat_id, f"<i>{a.name()} you're not allowed to post that shit, you're warned</i>", parse_mode='html')
+                    bot.sendMessage(chat_id, f"<i>{a.name()} you're not allowed to post that shit, you're warned</i>",
+                                    parse_mode='html')
+                    a.save()
                     return
-        if len(text) >= 4 and not text.startswith('/'):
+        if len(text) >= 4 and not text.startswith('/') and a.warned < 2:
             a.post_count += 1
             a.updated_at = now()
             a.save()
