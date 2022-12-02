@@ -379,8 +379,17 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 elif text == '/start':
                     bot.sendMessage(chat_id, "🟠 start the bot from the group")
 
-                elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot' or text == '/AltbabyWhale_bot':
-                    bot.sendMessage(chat_id, SERV_MSG[2])
-
+                elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
+                    bot.sendMessage(
+                        chat_id,
+                        f'🐳',
+                        reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
+                            [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Active users')],
+                            [KeyboardButton.a('Admins list'), KeyboardButton.a('Hustlers list')],
+                            [KeyboardButton.a('Group status'), KeyboardButton.a('My status')],
+                            [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
+                            [KeyboardButton.a('Market trend'), KeyboardButton.a('Quote')],
+                        ])
+                    )
                 else:
                     bot.sendMessage(chat_id, SERV_MSG[3])
