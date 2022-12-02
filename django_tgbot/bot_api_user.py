@@ -143,7 +143,7 @@ class BotAPIUser:
     def setMyCommands(self, commands: List[BotCommand]) -> bool:
         return self.request_and_result(create_params_from_args(locals()), bool)
 
-    def getUpdates(self, offset=None, limit=100, timeout=0, allow_updates=['chat_member']) -> List[Update]:
+    def getUpdates(self, offset=None, limit=100, timeout=0, allow_updates=None) -> List[Update]:
         """
         Returns a list of UNPARSED updates. The json objects in the list should still be sent to Update class to become
         Update objects.
