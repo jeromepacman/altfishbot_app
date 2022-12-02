@@ -123,3 +123,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if not DEBUG:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+    SECURE_SSL_REDIRECT = True
