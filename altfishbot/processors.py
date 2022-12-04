@@ -14,7 +14,7 @@ from moderation.models import BannedList
 from .bot import state_manager
 from .models import TelegramState, TelegramUser
 from .bot import TelegramBot
-from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, ADMINS, OWNER, MEMBERS_ROLES, SERV_MSG
+from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, JIM, OWNER, MEMBERS_ROLES, SERV_MSG
 from .helpers import get_tendency
 
 
@@ -94,7 +94,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
             a.save()
 
         if text.startswith('/'):
-            if text == '/quote' and user_id in [ADMINS]:
+            if text == '/quote' and user_id == OWNER or user_id == JIM:
                 quote = random.choices(QUOTES_STRINGS)
                 bot.deleteMessage(chat_id, user_id)
                 bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
@@ -151,14 +151,14 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                 else:
                     bot.sendMessage(chat_id=OWNER, text="Data purged")
 
-            elif text == '/unwarn' and user_id in [ADMINS]:
+            elif text == '/unwarn' and user_id == OWNER or user_id == JIM:
                 if sender is not None:
                     hook = sender.get_from().get_id()
                     h = TelegramUser.objects.get(telegram_id=hook)
                     h.warned = 0
                     h.save()
 
-            elif text == "/cap" and user_id in [ADMINS]:
+            elif text == "/cap" and user_id == OWNER or user_id == JIM:
                 cap = requests.get(url='https://api.coingecko.com/api/v3/global')
                 fear = requests.get(url='https://api.alternative.me/fng/?limit=1')
                 tendency = requests.get(

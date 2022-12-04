@@ -4,6 +4,8 @@ from altwhales import views
 from altfishbot import urls as altfishbot_urls
 import debug_toolbar
 
+admin.site.site_header = 'AltFishBot'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('altfishbot/', include(altfishbot_urls)),

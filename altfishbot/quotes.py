@@ -117,6 +117,6 @@ SERV_MSG = [
     "\n🔴 I don't understand that\n",
 ]
 
-ADMINS = os.getenv('JIM', 'OWNER')
+JIM = os.getenv('JIM')
 
 OWNER = os.getenv('OWNER')
