@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import BannedList
+from .models import BannedWord
 
 
-@admin.register(BannedList)
-class BannedListAdmin(admin.ModelAdmin):
+@admin.register(BannedWord)
+class BannedWordAdmin(admin.ModelAdmin):
     list_display = ['banned_word']

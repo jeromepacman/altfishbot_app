@@ -10,7 +10,7 @@ from django_tgbot.types.keyboardbutton import KeyboardButton
 from django_tgbot.types.replykeyboardmarkup import ReplyKeyboardMarkup
 from django_tgbot.types.replykeyboardremove import ReplyKeyboardRemove
 from django_tgbot.types.update import Update
-from moderation.models import BannedList
+from moderation.models import BannedWord, Referral
 from .bot import state_manager
 from .models import TelegramState, TelegramUser
 from .bot import TelegramBot
@@ -75,20 +75,33 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
 
     if chat_type == 'supergroup':
-        words = BannedList.objects.values_list('banned_word', flat=True)
+        words = BannedWord.objects.values_list('banned_word', flat=True)
+        ref = Referral.objects.values_list('ref_list', flat=True)
         a = TelegramUser.objects.get(telegram_id=user_id)
         for w in words:
             if w in text.lower():
                 bot.deleteMessage(chat_id, msg_id)
                 a.warnings += 1
-                if a.warnings == 2:
+                if a.warnings >= 2:
                     bot.kickChatMember(chat_id, user_id)
                     return
                 else:
                     bot.sendMessage(chat_id, f"{a.name()} you're not allowed to post that shit, you're warned")
                     a.save()
                     return
-        if len(text) >= 4 and not text.startswith('/') and a.warnings < 2:
+
+        for r in ref:
+            if r in text.lower():
+                bot.deleteMessage(chat_id, msg_id)
+                a.warned += 1
+                if a.warned >= 3:
+                    bot.kickChatMember(chat_id, user_id)
+                    return
+                else:
+                    bot.sendMessage(chat_id, f"{a.name()} referral or self promo is not allowed, you're warned")
+                    a.save()
+                    return
+        if len(text) >= 4 and not text.startswith('/'):
             a.post_count += 1
             a.updated_at = now()
             a.save()
