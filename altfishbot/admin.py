@@ -1,17 +1,25 @@
 from django.contrib import admin
-
 from . import models
 
 
 @admin.register(models.TelegramUser)
 class TelegramUserAdmin(admin.ModelAdmin):
-    list_display = (
-        'telegram_id', 'first_name', 'last_name', 'username', 'has_status', 'role', 'post_count', 'warnings', 'is_premium', 'language_code', 'updated_at',
-        'joined')
-    ordering = ('-updated_at',)
-    filter_by = ['role', 'post_count']
+    list_display = ['telegram_id', 'first_name', 'last_name', 'username', 'has_status', 'role', 'posts', 'warned',
+                    'is_premium', 'language_code', 'updated_at',
+                    'created_at']
+    ordering = ['-updated_at']
+    list_filter = ['role', 'created_at', 'posts']
     search_fields = ['telegram_id', 'first_name', 'username']
-    list_editable = ['has_status', 'role']
+    list_editable = ['role']
+    actions = ['tag_user', 'make_member']
+
+    @admin.action(description='Grant selected as members')
+    def make_member(self, request, queryset):
+        queryset.update(role='Member')
+
+    @admin.action(description='Tag selected users')
+    def tag_user(self, request, queryset):
+        queryset.update(has_status=True)
 
 
 @admin.register(models.TelegramChat)
