@@ -36,8 +36,8 @@ def door(bot: TelegramBot, update: Update, state: TelegramState):
 
 
 # NEW CHAT MEMBER #######################
-@processor(state_manager, from_states=state_types.All, message_types=[message_types.NewChatMembers],
-           update_types=update_types.Message)
+@processor(state_manager, from_states=[state_types.All], message_types=[message_types.NewChatMembers],
+           update_types=[update_types.Message])
 def check(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
@@ -45,8 +45,8 @@ def check(bot: TelegramBot, update: Update, state: TelegramState):
 
 
 # CHECKS & UPDATES#######
-@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
-           update_types=update_types.Message)
+@processor(state_manager, from_states=[state_types.Reset], message_types=[message_types.Text],
+           update_types=[update_types.Message])
 def post_count(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
     chat_id = update.get_chat().get_id()
@@ -95,6 +95,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
     sender = update.get_message().get_reply_to_message()
     user_name = update.get_message().get_from()
     chat_direct = update.get_message().get_from().get_id()
+    msg_id = update.get_message().get_message_id()
 
     if chat_type == 'supergroup' and text.startswith('/'):
 
@@ -161,6 +162,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 h = TelegramUser.objects.get(telegram_id=hook)
                 h.warned = 0
                 h.save()
+                bot.sendMessage(h.telegram_id, f"✅warnings cleared")
 
         elif text == "/cap" and user_id == OWNER or user_id == JIM:
             bot.sendMessage(chat_id, get_market_cap(), parse_mode='html')
@@ -182,6 +184,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                     ])
                 )
 
+    bot.deleteMessage(chat_id, msg_id)
 
 # ADMIN #######################
 # Private chat actions  #######################
@@ -217,8 +220,8 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
 
 
 #    #### BOT IN PRIVATE CHAT ######
-@processor(state_manager, from_states=state_types, message_types=[message_types.Text],
-           update_types=update_types.Message)
+@processor(state_manager, from_states=[state_types.All], message_types=[message_types.Text],
+           update_types=[update_types.Message])
 def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
