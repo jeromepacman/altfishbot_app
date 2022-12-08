@@ -4,11 +4,11 @@ from . import models
 
 @admin.register(models.TelegramUser)
 class TelegramUserAdmin(admin.ModelAdmin):
-    list_display = ['telegram_id', 'first_name', 'last_name', 'username', 'has_status', 'role', 'posts', 'warned',
+    list_display = ['telegram_id', 'first_name', 'last_name', 'username', 'has_status', 'role', 'post_count', 'warnings',
                     'is_premium', 'language_code', 'updated_at',
-                    'created_at']
+                    'joined']
     ordering = ['-updated_at']
-    list_filter = ['role', 'created_at', 'posts']
+    list_filter = ['role', 'joined', 'post_count']
     search_fields = ['telegram_id', 'first_name', 'username']
     list_editable = ['role']
     actions = ['tag_user', 'make_member']
