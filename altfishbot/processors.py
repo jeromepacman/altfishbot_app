@@ -32,12 +32,13 @@ def door(bot: TelegramBot, update: Update, state: TelegramState):
             TelegramUser.objects.get(telegram_id=left_id).delete()
         except TelegramUser.DoesNotExist:
             bot.sendMessage(OWNER, text="user does not exist")
+
     bot.deleteMessage(chat_id, msg_id)
 
 
 # NEW CHAT MEMBER #######################
-@processor(state_manager, from_states=[state_types.All], message_types=[message_types.NewChatMembers],
-           update_types=[update_types.Message])
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.NewChatMembers],
+           update_types=update_types.Message)
 def check(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
@@ -45,8 +46,8 @@ def check(bot: TelegramBot, update: Update, state: TelegramState):
 
 
 # CHECKS & UPDATES#######
-@processor(state_manager, from_states=[state_types.Reset], message_types=[message_types.Text],
-           update_types=[update_types.Message])
+@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
+           update_types=update_types.Message)
 def post_count(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
     chat_id = update.get_chat().get_id()
@@ -73,8 +74,8 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
         for r in ref:
             if r in text.lower():
                 bot.deleteMessage(chat_id, msg_id)
-                a.warned += 1
-                if a.warned >= 3:
+                a.warnings += 1
+                if a.warnings >= 3:
                     bot.kickChatMember(chat_id, user_id)
                     return
                 else:
@@ -166,6 +167,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
 
         elif text == "/cap" and user_id == OWNER or user_id == JIM:
             bot.sendMessage(chat_id, get_market_cap(), parse_mode='html')
+            bot.deleteMessage(chat_id, msg_id)
 
         elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
             a = TelegramUser.objects.get(telegram_id=user_id)
@@ -184,7 +186,6 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                     ])
                 )
 
-    bot.deleteMessage(chat_id, msg_id)
 
 # ADMIN #######################
 # Private chat actions  #######################
@@ -220,8 +221,8 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
 
 
 #    #### BOT IN PRIVATE CHAT ######
-@processor(state_manager, from_states=[state_types.All], message_types=[message_types.Text],
-           update_types=[update_types.Message])
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.Text],
+           update_types=update_types.Message)
 def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
