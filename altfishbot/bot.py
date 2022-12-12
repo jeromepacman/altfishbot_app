@@ -36,7 +36,7 @@ bot = TelegramBot(bot_token, state_manager)
 import_processors()
 # bot.getMyCommands()
 
-bot.setMyCommands([BotCommand({
-    'command': "up",
-    'description': "dm infos"
-})])
+# bot.setMyCommands([BotCommand({
+#     'command': "up",
+#     'description': "dm infos"
+# })])
