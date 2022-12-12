@@ -161,13 +161,12 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
             if sender is not None:
                 hook = sender.get_from().get_id()
                 h = TelegramUser.objects.get(telegram_id=hook)
-                h.warned = 0
+                h.warnings = 0
                 h.save()
                 bot.sendMessage(h.telegram_id, f"✅warnings cleared")
 
         elif text == "/cap" and user_id == OWNER or user_id == JIM:
             bot.sendMessage(chat_id, get_market_cap(), parse_mode='html')
-            bot.deleteMessage(chat_id, msg_id)
 
         elif text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
             a = TelegramUser.objects.get(telegram_id=user_id)
