@@ -103,90 +103,90 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
 
     if chat_type == 'supergroup' and text.startswith('/'):
-      if text == '/quote' and user_id == OWNER or user_id == JIM:
-        quote = random.choices(QUOTES_STRINGS)
-        bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
+        if text == '/quote' and user_id == OWNER or user_id == JIM:
+            quote = random.choices(QUOTES_STRINGS)
+            bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
 
-    elif text == '/who':
-        if sender is not None:
-            hook = sender.get_from().get_id()
-            c = TelegramUser.objects.get(telegram_id=hook)
-            if c.role is not None:
-                response = f'Hey {user_name.first_name}\n{c} is {c.get_role_display()}'
-                bot.sendMessage(chat_id, response)
-            else:
-                bot.sendMessage(chat_id, 'no status found')
-
-    elif text == '/whop':
-        if sender is not None:
-            hook = sender.get_from().get_id()
-            c = TelegramUser.objects.get(telegram_id=hook)
-            if c.role is not None:
-                response = f'Hey {user_name.first_name}\n{c} is {c.get_role_display()}'
-                bot.sendMessage(user_id, response)
-            else:
-                bot.sendMessage(user_id, 'no status found')
-
-    elif text == '/role':
-        b = TelegramUser.objects.get(telegram_id=user_id)
-        if b.role is not None:
-            c = f'{b.get_role_display()}'
-            bot.sendMessage(chat_id, f'Hi {b.first_name} 😎\nYour Status: \n{c}')
-        else:
-            bot.sendMessage(chat_id, f"😶 You don't have any status {b.first_name}")
-
-    elif text == '/promote' and user_id == OWNER:
-        if sender is not None:
-            hook = sender.get_from().get_id()
-            c = TelegramUser.objects.get(telegram_id=hook)
-            if c.role is not None:
-                if c.role == "Member":
-                    response = f'▫️You got a new status in Alt Whales 🐳:\n  ➖ {c.get_role_display()}  ➖  '
-                    bot.sendMessage(hook, response)
-                else:
-                    response = f'📦️{c} got a new status:\n    ➖ {c.get_role_display()}  ➖  '
+        elif text == '/who':
+            if sender is not None:
+                hook = sender.get_from().get_id()
+                c = TelegramUser.objects.get(telegram_id=hook)
+                if c.role is not None:
+                    response = f'Hey {user_name.first_name}\n{c} is {c.get_role_display()}'
                     bot.sendMessage(chat_id, response)
+                else:
+                    bot.sendMessage(chat_id, 'no status found')
+
+        elif text == '/whop':
+            if sender is not None:
+                hook = sender.get_from().get_id()
+                c = TelegramUser.objects.get(telegram_id=hook)
+                if c.role is not None:
+                    response = f'Hey {user_name.first_name}\n{c} is {c.get_role_display()}'
+                    bot.sendMessage(user_id, response)
+                else:
+                    bot.sendMessage(user_id, 'no status found')
+
+        elif text == '/role':
+            b = TelegramUser.objects.get(telegram_id=user_id)
+            if b.role is not None:
+                c = f'{b.get_role_display()}'
+                bot.sendMessage(chat_id, f'Hi {b.first_name} 😎\nYour Status: \n{c}')
             else:
-                bot.sendMessage(OWNER, f'user {c} has no role')
-        else:
-            bot.sendMessage(chat_id, 'Bad request')
+                bot.sendMessage(chat_id, f"😶 You don't have any status {b.first_name}")
 
-    elif text == '/db' and user_id == OWNER:
-        try:
-            TelegramUser.objects.filter(has_status=False).delete()
-        except:
-            bot.sendMessage(chat_id=OWNER, text="Data failed")
-        else:
-            bot.sendMessage(chat_id=OWNER, text="Data purged")
+        elif text == '/promote' and user_id == OWNER:
+            if sender is not None:
+                hook = sender.get_from().get_id()
+                c = TelegramUser.objects.get(telegram_id=hook)
+                if c.role is not None:
+                    if c.role == "Member":
+                        response = f'▫️You got a new status in Alt Whales 🐳:\n  ➖ {c.get_role_display()}  ➖  '
+                        bot.sendMessage(hook, response)
+                    else:
+                        response = f'📦️{c} got a new status:\n    ➖ {c.get_role_display()}  ➖  '
+                        bot.sendMessage(chat_id, response)
+                else:
+                    bot.sendMessage(OWNER, f'user {c} has no role')
+            else:
+                bot.sendMessage(chat_id, 'Bad request')
 
-    elif text == "/cap" and user_id == OWNER or user_id == JIM:
-        bot.sendMessage(chat_id, get_market_cap(), parse_mode='html')
+        elif text == '/db' and user_id == OWNER:
+            try:
+                TelegramUser.objects.filter(has_status=False).delete()
+            except:
+                bot.sendMessage(chat_id=OWNER, text="Data failed")
+            else:
+                bot.sendMessage(chat_id=OWNER, text="Data purged")
 
-    elif text == '/clear' and user_id == OWNER or user_id == JIM:
-        if sender is not None:
-            hook = sender.get_from().get_id()
-            h = TelegramUser.objects.get(telegram_id=hook)
-            h.warnings = 0
-            h.save()
-            bot.sendMessage(h.telegram_id, f"✅warnings cleared")
+        elif text == "/cap" and user_id == OWNER or user_id == JIM:
+            bot.sendMessage(chat_id, get_market_cap(), parse_mode='html')
+
+        elif text == '/clear' and user_id == OWNER or user_id == JIM:
+            if sender is not None:
+                hook = sender.get_from().get_id()
+                h = TelegramUser.objects.get(telegram_id=hook)
+                h.warnings = 0
+                h.save()
+                bot.sendMessage(h.telegram_id, f"✅warnings cleared")
 
 
-    elif text == '/up' or text == '/up@AltFishBot':
-        a = TelegramUser.objects.get(telegram_id=user_id)
-        if a.role == "Hustler":
-            bot.sendMessage(chat_id, SERV_MSG[0])
-        else:
-            bot.sendMessage(
-                chat_direct,
-                f'🐳',
-                reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
-                    [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Active users')],
-                    [KeyboardButton.a('Admins list'), KeyboardButton.a('Hustlers list')],
-                    [KeyboardButton.a('Group status'), KeyboardButton.a('My status')],
-                    [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
-                    [KeyboardButton.a('Market trend'), KeyboardButton.a('Quote')],
-                ])
-            )
+        elif text == '/up' or text == '/up@AltFishBot':
+            a = TelegramUser.objects.get(telegram_id=user_id)
+            if a.role == "Hustler":
+                bot.sendMessage(chat_id, SERV_MSG[0])
+            else:
+                bot.sendMessage(
+                    chat_direct,
+                    f'🐳',
+                    reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
+                        [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Active users')],
+                        [KeyboardButton.a('Admins list'), KeyboardButton.a('Hustlers list')],
+                        [KeyboardButton.a('Group status'), KeyboardButton.a('My status')],
+                        [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
+                        [KeyboardButton.a('Market trend'), KeyboardButton.a('Quote')],
+                    ])
+                )
 
 
 # ADMIN #######################
@@ -234,7 +234,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     if chat_type == 'private':
         try:
             user = TelegramUser.objects.get(telegram_id=chat_id)
-        except TelegramUser.DoesNotExist:
+        except TelegramUser.telegram_id.DoesNotExist:
             bot.sendMessage(chat_id, SERV_MSG[0], reply_markup=ReplyKeyboardRemove.a(remove_keyboard=True))
             bot.leaveChat(chat_id)
         else:
