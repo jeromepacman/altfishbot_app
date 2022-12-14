@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from . import models
 
 
@@ -15,11 +15,15 @@ class TelegramUserAdmin(admin.ModelAdmin):
 
     @admin.action(description='Grant selected as members')
     def make_member(self, request, queryset):
-        queryset.update(role='Member')
+        updated_count = queryset.update(role='Member', has_status=True)
+        self.message_user(request, f'{updated_count} telegram users were successfully granted',
+                          messages.SUCCESS)
 
     @admin.action(description='Tag selected users')
     def tag_user(self, request, queryset):
-        queryset.update(has_status=True)
+        updated_count = queryset.update(has_status=True)
+        self.message_user(request, f'{updated_count} telegram users were successfully tagged',
+                          messages.SUCCESS)
 
 
 @admin.register(models.TelegramChat)

@@ -1,12 +1,19 @@
 from django.contrib import admin
-from .models import BannedWord, Referral
+from . import models
 
 
-@admin.register(BannedWord)
+class OrderItemInline(admin.TabularInline):
+    model = models.BannedWord
+    extra = 0
+
+
+@admin.register(models.WarningText)
+class WarningTextAdmin(admin.ModelAdmin):
+    list_display = ['warning_text']
+    inlines = [OrderItemInline]
+
+
+@admin.register(models.BannedWord)
 class BannedWordAdmin(admin.ModelAdmin):
-    list_display = ['banned_word']
-
-
-@admin.register(Referral)
-class ReferralAdmin(admin.ModelAdmin):
-    list_display = ['ref_list']
+    list_display = ['banned_word', 'warning_text']
+    list_editable = ['warning_text']
