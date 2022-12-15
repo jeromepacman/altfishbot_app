@@ -235,6 +235,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, SERV_MSG[0])
                 bot.leaveChat(chat_id)
             else:
+                bot.deleteMessage(chat_id, msg_id)
                 if text == 'My status':
                     if user.role:
                         st = f'{user.get_role_display()}\n'
