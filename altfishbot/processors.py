@@ -14,9 +14,9 @@ from moderation.models import BannedWord, WarningText
 from .bot import state_manager
 from .models import TelegramState, TelegramUser
 from .bot import TelegramBot
-from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, JIM, OWNER, MEMBERS_ROLES, SERV_MSG
+from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
 from .helpers import get_market_cap
-
+from .credentials import OWNER, JIM, CHAT_INVITE_LINK
 
 # commands #########
 # Internal direct requests
@@ -95,7 +95,10 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
             quote = random.choices(QUOTES_STRINGS)
             bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
 
-        elif text == '/who':
+        elif text == '/strike':
+            bot.sendDice(chat_id, '🎳')
+
+        elif text == '/who' or text == '/who@AltFishBot':
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             if sender is not None:
                 c = TelegramUser.objects.get(telegram_id=sender)
@@ -115,7 +118,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 else:
                     bot.sendMessage(user_id, 'no status found')
 
-        elif text == '/role':
+        elif text == '/role' or text == '/role@AltFishBot':
             b = TelegramUser.objects.get(telegram_id=user_id)
             if b.role is not None:
                 c = f'{b.get_role_display()}'
@@ -168,15 +171,15 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                     chat_direct,
                     f'🐳',
                     reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
-                        [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Active users')],
+                        [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Invite link')],
                         [KeyboardButton.a('Admins list'), KeyboardButton.a('Hustlers list')],
                         [KeyboardButton.a('Group status'), KeyboardButton.a('My status')],
                         [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
-                        [KeyboardButton.a('Market trend'), KeyboardButton.a('Quote')],
+                        [KeyboardButton.a('Market trend'), KeyboardButton.a('Quit')],
                     ])
                 )
 
-
+    return None
 # ADMIN #######################
 # Private chat actions  #######################
 
@@ -245,7 +248,10 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                     bot.sendMessage(chat_id, ACTIVE_ADMINS_LIST, parse_mode='html')
 
                 elif text == 'Group status':
-                    bot.sendMessage(chat_id, MEMBERS_ROLES)
+                    active_members = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
+                    bot.sendMessage(chat_id,
+                                    f'<u>Members roles</u> \n\n{MEMBERS_ROLES} \n🌐 <b>{active_members} users are currently active</b>',
+                                    parse_mode="html")
 
                 elif text == 'Hustlers list':
                     if user.role:
@@ -295,16 +301,9 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                                     reply_markup=InlineKeyboardMarkup.a(
                                         inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
 
-                elif text == 'Active users':
-                    n = TelegramUser.objects.filter(updated_at__gte=now() - timedelta(hours=24)).count()
-                    bot.sendMessage(chat_id, f'🌐 <b>{n}</b> users are currently active', parse_mode="html")
-
-                elif text == 'Quote':
-                    if user.role and user.role not in ['Member']:
-                        quote = random.choices(QUOTES_STRINGS)
-                        bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
-                    else:
-                        bot.sendMessage(chat_id, SERV_MSG[1])
+                elif text == 'Quit':
+                    bot.sendMessage(chat_id, '', reply_markup=ReplyKeyboardRemove.a(remove_keyboard=True))
+                    bot.leaveChat(chat_id)
 
                 elif text == "Market trend":
                     if user.role is not None and user.role not in ['Member']:
@@ -317,11 +316,11 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                         chat_id,
                         f'🐳',
                         reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
-                            [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Active users')],
+                            [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Invite link')],
                             [KeyboardButton.a('Admins list'), KeyboardButton.a('Hustlers list')],
                             [KeyboardButton.a('Group status'), KeyboardButton.a('My status')],
                             [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
-                            [KeyboardButton.a('Market trend'), KeyboardButton.a('Quote')],
+                            [KeyboardButton.a('Market trend'), KeyboardButton.a('Quit')],
                         ])
                     )
                 else:

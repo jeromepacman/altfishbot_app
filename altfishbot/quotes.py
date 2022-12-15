@@ -100,7 +100,8 @@ MEMBERS_ROLES = "🐳 Whale\n" \
                 "🐡 Member\n" \
                 "🚫 Hustler\n" \
                 "\n" \
-                "<i>Various privileges according to status</i>"
+                "Various privileges according to status\n" \
+                "<i>New comers have no status, they're xrestricted & monitored to avoid potential spam</i>\n" \
 
 
 ACTIVE_ADMINS_LIST = "<u>Chat active admins</u>:\n\n" \
@@ -116,7 +117,3 @@ SERV_MSG = [
     "\n🟠 You need to enter this command from the group 🐳\n",
     "\n🔴 I don't understand that\n",
 ]
-
-JIM = os.getenv('JIM')
-
-OWNER = os.getenv('OWNER')
