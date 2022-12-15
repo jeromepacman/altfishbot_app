@@ -5,6 +5,7 @@ from altfishbot import urls as altfishbot_urls
 import debug_toolbar
 
 admin.site.site_header = 'AltFishBot'
+admin.site.index_title = "Admin"
 
 urlpatterns = [
     path('admin/', admin.site.urls),

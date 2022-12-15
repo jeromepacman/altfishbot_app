@@ -5,4 +5,4 @@ APP_NAME = os.getenv('APP_NAME')
 
 JIM = os.getenv('JIM')
 OWNER = os.getenv('OWNER')
-CHAT_INVITE_LINK = 'https://t.me/+sfp8zUuMJM5lNGQ0'
+CHAT_INVITE_LINK = 'https://t.me/+MFju7ZSjuEU4Zjg0'
