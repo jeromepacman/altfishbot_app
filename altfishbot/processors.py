@@ -302,6 +302,12 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                                     reply_markup=InlineKeyboardMarkup.a(
                                         inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
 
+                elif text == 'Invite link':
+                    if user.role:
+                        bot.sendMessage(chat_id, CHAT_INVITE_LINK, parse_mode="html", disable_web_page_preview=True)
+                    else:
+                        bot.sendMessage(chat_id, SERV_MSG[1])
+
                 elif text == 'Quit':
                     bot.sendMessage(chat_id, '', reply_markup=ReplyKeyboardRemove.a(remove_keyboard=True))
                     bot.leaveChat(chat_id)
