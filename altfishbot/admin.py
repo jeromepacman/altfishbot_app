@@ -8,10 +8,10 @@ class TelegramUserAdmin(admin.ModelAdmin):
                     'is_premium', 'language_code', 'updated_at',
                     'joined']
     ordering = ['-updated_at']
-    list_filter = ['role', 'joined', 'post_count']
+    list_filter = ['role', 'joined']
     search_fields = ['telegram_id', 'first_name', 'username']
     list_editable = ['role']
-    actions = ['tag_user', 'make_member']
+    actions = ['tag_user', 'make_member', 'unwarn_user']
 
     @admin.action(description='Grant selected as members')
     def make_member(self, request, queryset):
