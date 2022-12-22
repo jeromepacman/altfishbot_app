@@ -73,14 +73,12 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
 
 
         for w in words:
-            if w in text.lower():
+            if w in text.lower() and not a.role:
                 a.warnings += 1
-                if a.warnings >= 2 and not a.role:
+                if a.warnings >= 2:
                     bot.deleteMessage(chat_id, msg_id)
                     bot.kickChatMember(chat_id, user_id)
                     return
-                elif a.role in ['Admin', 'Whale', 'Babywhale']:
-                    break
                 else:
                     sig = WarningText.objects.get(bannedword__banned_word=w)
                     bot.deleteMessage(chat_id, msg_id)
