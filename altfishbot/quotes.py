@@ -85,6 +85,7 @@ QUOTES_STRINGS = [
     "🔈 Feeling regret for missing good trades is what forces bad trades .\n©Cred",
     "🔈 You become rich in your mind long before you become rich in your bank account.\n"
     "Your mentality is your reality.\n©RektProof",
+    "🔈 BTC is a liquidity hunter, algos chase 'stops'. It's all about that, nothing else\n©Altwhales",
 ]
 
 TRADE_STRINGS = [

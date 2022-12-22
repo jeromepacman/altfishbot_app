@@ -57,6 +57,21 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
     if chat_type == 'supergroup' and not text.startswith('/'):
         words = BannedWord.objects.values_list('banned_word', flat=True)
         a = TelegramUser.objects.get(telegram_id=user_id)
+        forward_from_chat = update.get_message().get_forward_from_chat()
+
+        if forward_from_chat is not None and not a.role:
+            if WarningText.objects.filter(bannedword__banned_word='!forward_from_chat').exists():
+                warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from_chat')
+                a.warned += 1
+                if a.warned > warn_text.warning_number:
+                    bot.deleteMessage(chat_id, msg_id)
+                    bot.kickChatMember(chat_id, user_id)
+                else:
+                    bot.deleteMessage(chat_id, msg_id)
+                    bot.sendMessage(chat_id, f"{a.name()} {warn_text}")
+                    a.save()
+
+
         for w in words:
             if w in text.lower():
                 a.warnings += 1

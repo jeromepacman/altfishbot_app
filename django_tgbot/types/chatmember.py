@@ -34,7 +34,7 @@ class ChatMember(BasicType):
 
 
 # Placed here to avoid import cycles
-from . import user
+from django_tgbot.types import user
 
 ChatMember.fields.update({
     'user': user.User

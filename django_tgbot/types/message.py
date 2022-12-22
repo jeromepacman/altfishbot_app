@@ -97,6 +97,11 @@ class Message(BasicType):
     def get_reply_markup(self):
         return getattr(self, 'reply_markup', None)
 
+    def get_forward_from_chat(self):
+        return getattr(self, 'forward_from_chat', None)
+
+
+
 
 # Placed here to avoid import cycles
 from . import user, chat, messageentity, audio, document, animation, game, photosize, \

@@ -4,7 +4,7 @@ from . import models
 
 class OrderItemInline(admin.TabularInline):
     model = models.BannedWord
-    extra = 0
+    extra = 1
 
 
 @admin.register(models.WarningText)
