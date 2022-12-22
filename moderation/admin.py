@@ -4,12 +4,12 @@ from . import models
 
 class OrderItemInline(admin.TabularInline):
     model = models.BannedWord
-    extra = 1
+    extra = 0
 
 
 @admin.register(models.WarningText)
 class WarningTextAdmin(admin.ModelAdmin):
-    list_display = ['warning_text']
+    list_display = ['warning_text', 'warning_number']
     inlines = [OrderItemInline]
 
 

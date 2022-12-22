@@ -3,6 +3,7 @@ from django.db import models
 
 class WarningText(models.Model):
     warning_text = models.CharField(max_length=150, blank=True)
+    warning_number = models.IntegerField('Warnings max before banning user', default=3)
 
     def __str__(self):
         return self.warning_text

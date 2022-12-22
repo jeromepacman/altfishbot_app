@@ -62,8 +62,8 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
         if forward_from_chat is not None and not a.role:
             if WarningText.objects.filter(bannedword__banned_word='!forward_from_chat').exists():
                 warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from_chat')
-                a.warned += 1
-                if a.warned > warn_text.warning_number:
+                a.warnings += 1
+                if a.warnings > warn_text.warning_number:
                     bot.deleteMessage(chat_id, msg_id)
                     bot.kickChatMember(chat_id, user_id)
                 else:
@@ -74,15 +74,15 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
 
         for w in words:
             if w in text.lower() and not a.role:
+                warn_text = WarningText.objects.get(bannedword__banned_word=w)
                 a.warnings += 1
-                if a.warnings >= 2:
+                if a.warnings > warn_text.warning_number:
                     bot.deleteMessage(chat_id, msg_id)
                     bot.kickChatMember(chat_id, user_id)
                     return
                 else:
-                    sig = WarningText.objects.get(bannedword__banned_word=w)
                     bot.deleteMessage(chat_id, msg_id)
-                    bot.sendMessage(chat_id, f"{a.name()} {sig})")
+                    bot.sendMessage(chat_id, f"{a.name()} {warn_text})")
                     a.save()
                     return
         else:
