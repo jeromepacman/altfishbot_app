@@ -214,7 +214,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                         [KeyboardButton.a('Admins list'), KeyboardButton.a('Hustlers list')],
                         [KeyboardButton.a('Group status'), KeyboardButton.a('My status')],
                         [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
-                        [KeyboardButton.a('Market trend'), KeyboardButton.a('Quit')],
+                        [KeyboardButton.a('Market trend'), KeyboardButton.a('Channel')],
                     ])
                 )
 
@@ -350,9 +350,6 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 else:
                     bot.sendMessage(chat_id, SERV_MSG[1])
 
-            elif text == 'Quit':
-                bot.sendMessage(chat_id, '', reply_markup=ReplyKeyboardRemove.a(remove_keyboard=True))
-                bot.leaveChat(chat_id)
 
             elif text == '/start' or text == '/up' or text == '/up@AltBabybot' or text == '/up@AltFishBot':
                 bot.sendMessage(
@@ -363,7 +360,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                         [KeyboardButton.a('Admins list'), KeyboardButton.a('Hustlers list')],
                         [KeyboardButton.a('Group status'), KeyboardButton.a('My status')],
                         [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
-                        [KeyboardButton.a('Market trend'), KeyboardButton.a('Quit')],
+                        [KeyboardButton.a('Market trend'), KeyboardButton.a('Channel')],
                     ])
                 )
 
