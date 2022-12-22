@@ -17,3 +17,17 @@ class WarningTextAdmin(admin.ModelAdmin):
 class BannedWordAdmin(admin.ModelAdmin):
     list_display = ['banned_word', 'warning_text']
     list_editable = ['warning_text']
+
+
+@admin.register(models.Rule)
+class RuleAdmin(admin.ModelAdmin):
+    list_display = ['rules_text']
+    list_editable = ['rules_text']
+    list_display_links = None
+
+
+@admin.register(models.WelcomeMessage)
+class WelcomeMessageAdmin(admin.ModelAdmin):
+    list_display = ['welcome_text']
+    list_editable = ['welcome_text']
+    list_display_links = None

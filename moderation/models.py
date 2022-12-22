@@ -12,6 +12,7 @@ class WarningText(models.Model):
         ordering = ['warning_text']
 
 
+
 class BannedWord(models.Model):
     warning_text = models.ForeignKey(WarningText, on_delete=models.CASCADE, null=True)
     banned_word = models.CharField(max_length=25, unique=True)
@@ -21,3 +22,19 @@ class BannedWord(models.Model):
 
     class Meta:
         ordering = ['banned_word']
+
+
+
+class Rule(models.Model):
+    rules_text = models.TextField()
+
+    def __str__(self):
+        return self.rules_text
+
+
+
+class WelcomeMessage(models.Model):
+    welcome_text = models.TextField()
+
+    def __str__(self):
+        return self.welcome_text

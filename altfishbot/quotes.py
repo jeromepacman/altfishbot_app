@@ -98,7 +98,7 @@ TRADE_STRINGS = [
 MEMBERS_ROLES = "🐳 Whale\n" \
                 "🐋 Babywhale \n" \
                 "🐬 Dolphin\n" \
-                "🐡 Member\n" \
+                "🐡 Trusted\n" \
                 "🚫 Hustler\n" \
                 "\n" \
                 "Various privileges according to status\n" \
