@@ -27,7 +27,7 @@ class TelegramUserAdmin(admin.ModelAdmin):
 
     @admin.action(description='Unwarn selected users')
     def unwarn_user(self, request, queryset):
-        updated_count = queryset.update(warned=0)
+        updated_count = queryset.update(warnings=0)
         self.message_user(request, f'{updated_count} telegram users were successfully unwarned',
                           messages.SUCCESS)
 
