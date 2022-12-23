@@ -100,7 +100,8 @@ class Message(BasicType):
     def get_forward_from_chat(self):
         return getattr(self, 'forward_from_chat', None)
 
-
+    def get_forward_from(self):
+        return getattr(self, 'forward_from', None)
 
 
 # Placed here to avoid import cycles

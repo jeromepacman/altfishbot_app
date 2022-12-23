@@ -1,7 +1,9 @@
-import requests
 import random
 from datetime import timedelta
+
+import requests
 from django.utils.timezone import now
+
 from django_tgbot.decorators import processor
 from django_tgbot.state_manager import message_types, update_types, state_types
 from django_tgbot.types.inlinekeyboardbutton import InlineKeyboardButton
@@ -11,22 +13,24 @@ from django_tgbot.types.replykeyboardmarkup import ReplyKeyboardMarkup
 from django_tgbot.types.replykeyboardremove import ReplyKeyboardRemove
 from django_tgbot.types.update import Update
 from moderation.models import BannedWord, WarningText, Rule
-from .bot import state_manager
-from .models import TelegramState, TelegramUser
 from .bot import TelegramBot
-from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
-from .helpers import get_market_cap
+from .bot import state_manager
 from .credentials import OWNER, JIM, CHAT_INVITE_LINK
+from .helpers import get_market_cap
+from .models import TelegramState, TelegramUser
+from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
+
 
 # commands #########
 # Internal direct requests
 # LEFT CHAT MEMBER #######################
 @processor(state_manager, from_states=state_types.All, message_types=[message_types.LeftChatMember],
            update_types=update_types.Message)
-def door(bot: TelegramBot, update: Update, state: TelegramState):
+def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
     left_id = update.get_message().get_from().get_id()
+
     if bot.getChatMember(chat_id, left_id).status in ['left']:
         try:
             TelegramUser.objects.get(telegram_id=left_id).delete()
@@ -38,13 +42,50 @@ def door(bot: TelegramBot, update: Update, state: TelegramState):
 # NEW CHAT MEMBER #######################
 @processor(state_manager, from_states=state_types.All, message_types=[message_types.NewChatMembers],
            update_types=update_types.Message)
-def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
+def indoor(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
     bot.deleteMessage(chat_id, msg_id)
 
 
 # CHECKS & UPDATES#######
+#   FORWARDS  ####
+@processor(state_manager, from_states=state_types.All,
+           exclude_message_types=[message_types.NewChatMembers, message_types.LeftChatMember],
+           update_types=update_types.Message)
+def post_count(bot: TelegramBot, update: Update, state: TelegramState):
+    chat_type = update.get_chat().get_type()
+    chat_id = update.get_chat().get_id()
+    user_id = update.get_user().get_id()
+    msg_id = update.get_message().get_message_id()
+
+    if chat_type == 'supergroup':
+        user = TelegramUser.objects.get(telegram_id=user_id)
+        forward_from_channel = update.get_message().get_forward_from_chat()
+        forward_from = update.get_message().get_forward_from()
+
+        if forward_from_channel and not user.role:
+            if WarningText.objects.filter(bannedword__banned_word='!forward_from_channel').exists():
+                warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from_channel')
+                user.warnings += 1
+                if user.warnings > warn_text.warning_number:
+                    bot.kickChatMember(chat_id, user_id)
+                else:
+                    bot.sendMessage(chat_id, f"{user.name()} {warn_text}")
+                    user.save()
+                bot.deleteMessage(chat_id, msg_id)
+
+        elif forward_from and not user.role:
+            if WarningText.objects.filter(bannedword__banned_word='!forward_from').exists():
+                warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from')
+                user.warnings += 1
+                if user.warnings > warn_text.warning_number:
+                    bot.kickChatMember(chat_id, user_id)
+                else:
+                    bot.sendMessage(chat_id, f"{user.name()} {warn_text}")
+                    user.save()
+                bot.deleteMessage(chat_id, msg_id)
+
 @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
            update_types=update_types.Message)
 def post_count(bot: TelegramBot, update: Update, state: TelegramState):
@@ -54,24 +95,9 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
     user_id = update.get_user().get_id()
     msg_id = update.get_message().get_message_id()
 
-    if chat_type == 'supergroup' and not text.startswith('/'):
+    if chat_type == 'supergroup':
         words = BannedWord.objects.values_list('banned_word', flat=True)
         a = TelegramUser.objects.get(telegram_id=user_id)
-        forward_from_chat = update.get_message().get_forward_from_chat()
-
-        if forward_from_chat is not None and not a.role:
-            if WarningText.objects.filter(bannedword__banned_word='!forward_from_channel').exists():
-                warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from_channel')
-                a.warnings += 1
-                if a.warnings > warn_text.warning_number:
-                    bot.deleteMessage(chat_id, msg_id)
-                    bot.kickChatMember(chat_id, user_id)
-                else:
-                    bot.deleteMessage(chat_id, msg_id)
-                    bot.sendMessage(chat_id, f"{a.name()} {warn_text}")
-                    a.save()
-
-
         for w in words:
             if w in text.lower() and not a.role:
                 warn_text = WarningText.objects.get(bannedword__banned_word=w)
@@ -79,17 +105,16 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                 if a.warnings > warn_text.warning_number:
                     bot.deleteMessage(chat_id, msg_id)
                     bot.kickChatMember(chat_id, user_id)
-                    return
+                    break
                 else:
                     bot.deleteMessage(chat_id, msg_id)
                     bot.sendMessage(chat_id, f"{a.name()} {warn_text})")
                     a.save()
-                    return
+                    break
 
         else:
             if len(text) >= 4:
                 a.post_count += 1
-                a.updated_at = now()
                 a.save()
 
 
@@ -168,16 +193,6 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 h.save()
                 bot.sendMessage(sender, f"✅ warnings cleared")
 
-        elif text == '/flag' and user_id == OWNER or user_id == JIM:
-            sender = update.get_message().get_reply_to_message().get_from().get_id()
-            sender_msg = update.get_message().get_reply_to_message().get_message_id()
-            if sender is not None:
-                f = TelegramUser.objects.get(telegram_id=sender)
-                f.warnings += 1
-                f.save()
-                bot.deleteMessage(chat_id, sender_msg)
-
-
         elif text == '/db' and user_id == OWNER:
             try:
                 tourist = TelegramUser.objects.filter(has_status=False)
@@ -199,6 +214,16 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
 
         elif text == "/cap" and user_id == OWNER or user_id == JIM:
             bot.sendMessage(chat_id, get_market_cap(), parse_mode='html')
+
+
+        elif text == '/flag' and user_id == OWNER or user_id == JIM:
+            sender = update.get_message().get_reply_to_message().get_from().get_id()
+            sender_msg = update.get_message().get_reply_to_message().get_message_id()
+            if sender is not None:
+                f = TelegramUser.objects.get(telegram_id=sender)
+                f.warnings += 1
+                f.save()
+                bot.deleteMessage(chat_id, sender_msg)
 
 
         elif text == '/up' or text == '/up@AltFishBot':
