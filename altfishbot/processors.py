@@ -182,8 +182,6 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                         bot.sendMessage(chat_id, response)
                 else:
                     bot.sendMessage(OWNER, f'user {d} has no role')
-            else:
-                bot.sendMessage(chat_id, 'Bad request')
 
         elif text == '/clear' and user_id == OWNER or user_id == JIM:
             sender = update.get_message().get_reply_to_message().get_from().get_id()
@@ -243,7 +241,9 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                     ])
                 )
 
-    return None
+        bot.deleteMessage(chat_id, msg_id)
+
+
 # ADMIN #######################
 # Private chat actions  #######################
 
@@ -293,7 +293,6 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
             bot.sendMessage(chat_id, SERV_MSG[0], reply_markup=ReplyKeyboardRemove.a(remove_keyboard=True))
             bot.leaveChat(chat_id)
         else:
-            bot.deleteMessage(chat_id, msg_id)
             if text == 'My status':
                 if user.role:
                     st = f'{user.get_role_display()}\n'
