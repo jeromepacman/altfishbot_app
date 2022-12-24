@@ -21,7 +21,7 @@ class TelegramUser(AbstractTelegramUser):
     warnings = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f' {self.name()}'
+        return f'{self.name()}'
 
     def name(self):
         name = self.first_name
@@ -30,6 +30,11 @@ class TelegramUser(AbstractTelegramUser):
         if self.username is not None:
             name = f' @{self.username}'
         return name
+
+    def is_bot(self):
+        if self.is_bot:
+            self.role = 'Bot'
+            self.save()
 
 
 class TelegramChat(AbstractTelegramChat):

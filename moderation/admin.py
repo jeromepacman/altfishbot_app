@@ -21,13 +21,13 @@ class BannedWordAdmin(admin.ModelAdmin):
 
 @admin.register(models.Rule)
 class RuleAdmin(admin.ModelAdmin):
-    list_display = ['rules_text']
-    list_editable = ['rules_text']
+    list_display = ['rules_text', 'active']
+    list_editable = ['rules_text', 'active']
     list_display_links = None
 
 
 @admin.register(models.WelcomeMessage)
 class WelcomeMessageAdmin(admin.ModelAdmin):
-    list_display = ['welcome_text']
-    list_editable = ['welcome_text']
+    list_display = ['welcome_text', 'active']
+    list_editable = ['welcome_text', 'active']
     list_display_links = None

@@ -88,7 +88,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
 
 @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
            update_types=update_types.Message)
-def post_count(bot: TelegramBot, update: Update, state: TelegramState):
+def text_count(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
@@ -394,4 +394,6 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
             else:
                 bot.sendMessage(chat_id, SERV_MSG[3])
 
+
+            bot.deleteMessage(chat_id, msg_id)
             user.save()
