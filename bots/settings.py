@@ -118,6 +118,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 if not DEBUG:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600)
     SECURE_SSL_REDIRECT = True
