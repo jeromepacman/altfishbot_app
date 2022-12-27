@@ -4,7 +4,6 @@ charset-normalizer==2.1.1
 dj-database-url==1.2.0
 Django==4.1.4
 django-countries==7.5
-django-requests-debug-toolbar==0.0.3
 django_debug_toolbar==3.8.1
 gunicorn==20.1.0
 idna==3.4

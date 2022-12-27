@@ -350,10 +350,11 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
 
             elif text == 'Rules of the group':
                 user.has_status = True
-                bot.sendMessage(chat_id, text='appreciated that 😉, check there',
-                                reply_markup=InlineKeyboardMarkup.a(
-                                    inline_keyboard=[[InlineKeyboardButton.a('Rules & more',
-                                                                             url='https://altcoinwhales.com/rules/')]]))
+                Rule.objects.all()
+                rules = Rule.objects.filter(active=True)[0]
+                if rules is not None:
+                    bot.sendMessage(chat_id, f'appreciated that 😉\n\n {rules}', parse_mode='html')
+
 
             elif text == 'Channel':
                 bot.sendMessage(chat_id,
