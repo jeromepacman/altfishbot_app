@@ -1,7 +1,7 @@
 import os.path
 from pathlib import Path
 from dotenv import load_dotenv
-import dj_database_url
+
 
 load_dotenv()
 
@@ -119,5 +119,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if not DEBUG:
+    import dj_database_url
     DATABASES['default'] = dj_database_url.config(conn_max_age=600)
     SECURE_SSL_REDIRECT = True

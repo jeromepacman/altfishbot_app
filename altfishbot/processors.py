@@ -175,7 +175,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 d = TelegramUser.objects.get(telegram_id=sender)
                 if d.role is not None:
                     if d.role == "Member":
-                        response = f'▫️You got a new status in Alt Whales 🐳:\n  ➖ {d.get_role_display()}  ➖  '
+                        response = f'▫️You got a new status in AltWhales 🐳:\n  ➖ {d.get_role_display()}  ➖  '
                         bot.sendMessage(sender, response)
                     else:
                         response = f'📦️{d} got a new status:\n    ➖ {d.get_role_display()}  ➖  '
@@ -222,6 +222,28 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 f.warnings += 1
                 f.save()
                 bot.deleteMessage(chat_id, sender_msg)
+
+        elif text.startswith('/f @') and user_id == OWNER or user_id == JIM:
+            flag = text[4:]
+            try:
+                b = TelegramUser.objects.get(username=flag)
+            except TelegramUser.DoesNotExist:
+                bot.sendMessage(OWNER, 'unknown user')
+            else:
+                b = b.telegram_id
+                sta = bot.getChatMember(chat_id, b).status
+                bot.sendMessage(OWNER, sta)
+
+        elif text.startswith('/f ') and text[3:].isdigit() and user_id == OWNER or user_id == JIM:
+            flag = text[3:]
+            try:
+                b = TelegramUser.objects.get(telegram_id=flag)
+            except TelegramUser.DoesNotExist:
+                bot.sendMessage(OWNER, 'unknown user')
+            else:
+                b = b.telegram_id
+                sta = bot.getChatMember(chat_id, b).status
+                bot.sendMessage(OWNER, sta)
 
 
         elif text == '/up' or text == '/up@AltFishBot':
@@ -312,7 +334,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                                 parse_mode="html")
 
             elif text == 'Hustlers list':
-                if user.role:
+                if user.role and user.role not in ['Hustler']:
                     bot.sendMessage(chat_id, '\nMostly scams..\n')
                     for user in TelegramUser.objects.filter(role="Hustler"):
                         bot.sendMessage(chat_id, f'{user.name()} id_{user.telegram_id} {user.get_role_display()}')
@@ -363,7 +385,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                                     inline_keyboard=[[InlineKeyboardButton.a('Go', url='t.me/altcoinwhales')]]))
 
             elif text == 'Invite link':
-                if user.role:
+                if user.role and user.role not in ['Hustler']:
                     bot.sendMessage(chat_id, f'—————Your invite link—————\n{CHAT_INVITE_LINK}\n', parse_mode="html",
                                     disable_web_page_preview=True)
                 else:
@@ -394,7 +416,6 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
 
             else:
                 bot.sendMessage(chat_id, SERV_MSG[3])
-
 
             bot.deleteMessage(chat_id, msg_id)
             user.save()
