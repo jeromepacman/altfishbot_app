@@ -29,7 +29,7 @@ from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
 def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
-    left_id = update.get_message().get_from().get_id()
+    left_id = update.get_user().get_id()
 
     if bot.getChatMember(chat_id, left_id).status in ['left']:
         try:

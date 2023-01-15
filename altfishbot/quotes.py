@@ -21,6 +21,9 @@ QUOTES_STRINGS = [
     "🔈 Lost coins only make everyone else’s coins worth slightly more. Think of it as a donation to everyone.\n"
     "©️Satoshi Nakamoto",
     "I can provide info in private: /up",
+    "I can provide info in private: /up",
+    "I can provide info in private: /up",
+    "I can provide info in private: /up",
     "🔈 Remember this:\n"
     "When you are doing nothing, those speculators who feel they must trade day in and day out, "
     "are laying the foundation for your next venture. You will reap benefits from their mistakes. \n©️Jesse Livermore",
@@ -86,6 +89,9 @@ QUOTES_STRINGS = [
     "🔈 You become rich in your mind long before you become rich in your bank account.\n"
     "Your mentality is your reality.\n©RektProof",
     "🔈 BTC is a liquidity hunter, algos chase 'stops'. It's all about that, nothing else\n©Altwhales",
+    "🔈 You wrestle more with those things outside of the candlesticks than you ever consider when starting out.\n"
+    "I just want to remind you that it's normal.\n©ICT",
+    
 ]
 
 TRADE_STRINGS = [
@@ -102,7 +108,7 @@ MEMBERS_ROLES = "🐳 Whale\n" \
                 "🚫 Hustler\n" \
                 "\n" \
                 "Various privileges according to status\n" \
-                "<i>New comers have no status, they're xrestricted & monitored to avoid potential spam</i>\n" \
+                "<i>New comers have no status, they're eestricted to avoid potential spam</i>\n" \
 
 
 ACTIVE_ADMINS_LIST = "<u>Chat active admins</u>:\n\n" \

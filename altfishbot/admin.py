@@ -13,10 +13,10 @@ class TelegramUserAdmin(admin.ModelAdmin):
     list_editable = ['role']
     actions = ['tag_user', 'make_member', 'unwarn_user']
 
-    @admin.action(description='Grant selected as members')
+    @admin.action(description='Make selected users as trusted')
     def make_member(self, request, queryset):
         updated_count = queryset.update(role='Member', has_status=True)
-        self.message_user(request, f'{updated_count} telegram users were successfully granted',
+        self.message_user(request, f'{updated_count} telegram users have been turned to trusted members',
                           messages.SUCCESS)
 
     @admin.action(description='Tag selected users')
@@ -30,6 +30,7 @@ class TelegramUserAdmin(admin.ModelAdmin):
         updated_count = queryset.update(warnings=0)
         self.message_user(request, f'{updated_count} telegram users were successfully unwarned',
                           messages.SUCCESS)
+
 
 
 @admin.register(models.TelegramChat)
