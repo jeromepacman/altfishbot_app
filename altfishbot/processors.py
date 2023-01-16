@@ -145,12 +145,16 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
         elif text == '/role' or text == '/role@AltFishBot':
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             if sender is not None:
-                c = TelegramUser.objects.get(telegram_id=sender)
-                if c.role is not None:
-                    response = f'Hey {user_name.first_name}\n{c} is {c.get_role_display()}'
-                    bot.sendMessage(chat_id, response)
+                try:
+                    c = TelegramUser.objects.get(telegram_id=sender)
+                except TelegramUser.DoesNotExist:
+                    bot.sendMessage(chat_id, 'no data')
                 else:
-                    bot.sendMessage(chat_id, 'no status found')
+                    if c.role is not None:
+                        response = f'Hey {user_name.first_name}\n{c} is {c.get_role_display()}'
+                        bot.sendMessage(chat_id, response)
+                    else:
+                        bot.sendMessage(chat_id, 'no status found')
 
         elif text == '/rolep':
             sender = update.get_message().get_reply_to_message().get_from().get_id()
