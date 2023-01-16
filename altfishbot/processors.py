@@ -25,17 +25,18 @@ from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
 # Internal direct requests
 # LEFT CHAT MEMBER #######################
 @processor(state_manager, from_states=state_types.All, message_types=[message_types.LeftChatMember],
-           update_types=update_types.Message)
+           update_types=update_types.ChatMember)
 def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
-    left_id = update.get_user().get_id()
+    left_id = update.get_message().get_from().get_id()
 
-    if bot.getChatMember(chat_id, left_id).status in ['left']:
+    if bot.getChatMember(chat_id, left_id).status in ['left', 'kicked']:
         try:
             TelegramUser.objects.get(telegram_id=left_id).delete()
         except TelegramUser.DoesNotExist:
             bot.sendMessage(OWNER, text="user does not exist")
+    print(left_id)
     bot.deleteMessage(chat_id, msg_id)
 
 
@@ -141,7 +142,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
             rules = Rule.objects.get(pk=1)
             bot.sendMessage(user_id, f'{rules}', parse_mode='html')
 
-        elif text == '/who' or text == '/who@AltFishBot':
+        elif text == '/role' or text == '/role@AltFishBot':
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             if sender is not None:
                 c = TelegramUser.objects.get(telegram_id=sender)
@@ -151,7 +152,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 else:
                     bot.sendMessage(chat_id, 'no status found')
 
-        elif text == '/whop':
+        elif text == '/rolep':
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             if sender is not None:
                 c = TelegramUser.objects.get(telegram_id=sender)
@@ -161,7 +162,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 else:
                     bot.sendMessage(user_id, 'no status found')
 
-        elif text == '/role' or text == '/role@AltFishBot':
+        elif text == '/status' or text == '/status@AltFishBot':
             b = TelegramUser.objects.get(telegram_id=user_id)
             if b.role is not None:
                 c = f'{b.get_role_display()}'
@@ -245,6 +246,30 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 sta = bot.getChatMember(chat_id, b).status
                 bot.sendMessage(OWNER, sta)
 
+        elif text.startswith('/k @') and user_id == OWNER or user_id == JIM:
+            klag = text[4:]
+            try:
+                b = TelegramUser.objects.get(username=klag)
+            except TelegramUser.DoesNotExist:
+                bot.sendMessage(OWNER, 'unknown user')
+            else:
+                b = b.telegram_id
+                bot.kickChatMember(chat_id, b)
+                sta = bot.getChatMember(chat_id, b).status
+                bot.sendMessage(OWNER, sta)
+
+        elif text.startswith('/k ') and text[3:].isdigit() and user_id == OWNER or user_id == JIM:
+            klag = text[3:]
+            try:
+                b = TelegramUser.objects.get(telegram_id=klag)
+            except TelegramUser.DoesNotExist:
+                bot.sendMessage(OWNER, 'unknown user')
+            else:
+                b = b.telegram_id
+                bot.kickChatMember(chat_id, b)
+                sta = bot.getChatMember(chat_id, b).status
+                bot.sendMessage(OWNER, sta)
+
 
         elif text == '/up' or text == '/up@AltFishBot':
             a = TelegramUser.objects.get(telegram_id=user_id)
@@ -311,7 +336,7 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
     if chat_type == 'private':
         try:
             user = TelegramUser.objects.get(telegram_id=chat_id)
-        except:
+        except TelegramUser.DoesNotExist:
             bot.sendMessage(chat_id, SERV_MSG[0], reply_markup=ReplyKeyboardRemove.a(remove_keyboard=True))
             bot.leaveChat(chat_id)
         else:

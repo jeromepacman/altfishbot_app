@@ -107,11 +107,13 @@ MEMBERS_ROLES = "🐳 Whale\n" \
                 "🐡 Trusted\n" \
                 "🚫 Hustler\n" \
                 "\n" \
-                "Various privileges according to status\n" \
-                "<i>New comers have no status, they're eestricted to avoid potential spam</i>\n" \
+                    "<b>Various privileges depending on status\n\n</b>" \
+                     "You can also show your status in the group by typing command <del>/status</del>\n" \
+                    "If you want to know about a user state, type <del>/role</del> in reply to one of his posts.\n\n" \
+                    "<i>Newcomers have no status, they are first restricted and monitored by bots to avoid potential spam</i>\n\n" \
 
 
-ACTIVE_ADMINS_LIST = "<u>Chat active admins</u>:\n\n" \
+ACTIVE_ADMINS_LIST = "<u><b>Chat active admins</b></u>:\n\n" \
                     "@jeromepacman 🔰\n\n" \
                     "@jimster480 🔰\n\n" \
                     "@LA4440 🔰\n\n" \
