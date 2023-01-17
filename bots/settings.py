@@ -19,6 +19,7 @@ DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://*.zaltfishbot.jcloud-ver-jpe.ik-server.com/', 'http://localhost']
 # Application definition
 
 INSTALLED_APPS = [
