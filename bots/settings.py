@@ -19,6 +19,8 @@ DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://*.app.jpe.infomaniak.com/', 'http://localhost']
+
 # Application definition
 
 INSTALLED_APPS = [
