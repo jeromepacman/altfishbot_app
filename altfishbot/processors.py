@@ -447,4 +447,5 @@ def resp_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, SERV_MSG[3])
 
             bot.deleteMessage(chat_id, msg_id)
+            user.updated_at = now()
             user.save()
