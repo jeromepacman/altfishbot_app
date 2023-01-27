@@ -41,17 +41,12 @@ def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
 
 
 # NEW CHAT MEMBER #######################
-@processor(state_manager, from_states=state_types.All, message_types=[message_types.NewChatMembers],
-           update_types=update_types.Message)
-def indoor(bot: TelegramBot, update: Update, state: TelegramState):
-    msg_id = update.get_message().get_message_id()
-    chat_id = update.get_chat().get_id()
-    user_id = update.get_user().get_id()
-    try:
-        TelegramUser.objects.get(telegram_id=user_id)
-    except TelegramUser.DoesNotExist:
-        print(user_id)
-    bot.deleteMessage(chat_id, msg_id)
+# @processor(state_manager, from_states=state_types.All, message_types=[message_types.NewChatMembers],
+#            update_types=update_types.Message)
+# def indoor(bot: TelegramBot, update: Update, state: TelegramState):
+#     msg_id = update.get_message().get_message_id()
+#     chat_id = update.get_chat().get_id()
+#     bot.deleteMessage(chat_id, msg_id)
 
 
 # CHECKS & UPDATES#######
