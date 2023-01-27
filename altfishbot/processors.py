@@ -31,7 +31,7 @@ def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     left_id = update.get_message().get_from().get_id()
 
-    if bot.getChatMember(chat_id, left_id).status in ['left', 'kicked']:
+    if bot.getChatMember(chat_id, left_id).status in ['left', 'banned']:
         try:
             TelegramUser.objects.get(telegram_id=left_id).delete()
         except TelegramUser.DoesNotExist:
@@ -46,6 +46,11 @@ def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
 def indoor(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
+    user_id = update.get_user().get_id()
+    try:
+        TelegramUser.objects.get(telegram_id=user_id)
+    except TelegramUser.DoesNotExist:
+        print(user_id)
     bot.deleteMessage(chat_id, msg_id)
 
 
