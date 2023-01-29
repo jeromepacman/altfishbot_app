@@ -31,3 +31,9 @@ class WelcomeMessageAdmin(admin.ModelAdmin):
     list_display = ['welcome_text', 'active']
     list_editable = ['welcome_text', 'active']
     list_display_links = None
+
+
+@admin.register(models.Quote)
+class QuoteAdmin(admin.ModelAdmin):
+    list_display = ['text', 'author', 'active']
+    list_editable = ['active']

@@ -49,7 +49,7 @@ def get_market_cap():
     score = get_tendency(score)
     total = str(
         f' 📊 Total market change: <b>{change_price}%</b> <i>(last 24 hours)</>\n🪙 Bitcoin dominance:  <b>{domi_btc}%</b>\n🌑 Ethereum dominance:  <b>{domi_eth}%</b>\n'
-        f'😵 Fear&Greed index: <b>{feeling}</b> ({number}|100)\n\n'
+        f'😵 Fear&Greed index: <b>{feeling}</b>\n\n'
         f' 〽️Current trend: <b>{score}</b> <i>(last 4 hours)</>\n🐮 Buy pressure: <b>{buy}%</b>\n🐻 Sell pressure: <b>{sell}%</b>')
     req_market_cap = total
     return req_market_cap

@@ -12,7 +12,7 @@ from django_tgbot.types.keyboardbutton import KeyboardButton
 from django_tgbot.types.replykeyboardmarkup import ReplyKeyboardMarkup
 from django_tgbot.types.replykeyboardremove import ReplyKeyboardRemove
 from django_tgbot.types.update import Update
-from moderation.models import BannedWord, WarningText, Rule
+from moderation.models import BannedWord, WarningText, Rule, Quote
 from .bot import TelegramBot
 from .bot import state_manager
 from .credentials import OWNER, JIM, CHAT_INVITE_LINK
@@ -121,9 +121,10 @@ def text_count(bot: TelegramBot, update: Update, state: TelegramState):
                     break
 
         else:
+            a.updated_at = now()
             if len(text) >= 4:
                 a.post_count += 1
-                a.save()
+            a.save()
 
 
 @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
@@ -138,9 +139,14 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
 
     if chat_type == 'supergroup' and text.startswith('/'):
+
         if text == '/quote' and user_id == OWNER or user_id == JIM:
-            quote = random.choices(QUOTES_STRINGS)
-            bot.sendMessage(chat_id, {quote[0]}, parse_mode="html")
+            quote = Quote.objects.filter(active=True).order_by('?')[0]
+            bot.sendMessage(chat_id, f'🔈"{quote.text}"\n©️{quote.author}', parse_mode='HTML')
+
+        elif text == '/quotedb' and user_id == OWNER or user_id == JIM:
+            quote = Quote.objects.order_by('?')[0]
+            bot.sendMessage(chat_id, {quote}, parse_mode='HTML')
 
         elif text == '/strike':
             bot.sendDice(chat_id, '🎳')
