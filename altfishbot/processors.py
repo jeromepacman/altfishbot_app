@@ -31,7 +31,7 @@ def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     left_id = update.get_message().get_from().get_id()
 
-    if bot.getChatMember(chat_id, left_id).status in ['left', 'banned']:
+    if bot.getChatMember(chat_id, left_id).status in ['left', 'banned', 'kicked']:
         try:
             TelegramUser.objects.get(telegram_id=left_id).delete()
         except TelegramUser.DoesNotExist:
@@ -79,7 +79,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                 if user.warnings > warn_text.warning_number:
                     bot.kickChatMember(chat_id, user_id)
                 else:
-                    bot.sendMessage(chat_id, f"{user.name()} {warn_text}")
+                    bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                     user.save()
                 bot.deleteMessage(chat_id, msg_id)
 
@@ -90,7 +90,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                 if user.warnings > warn_text.warning_number:
                     bot.kickChatMember(chat_id, user_id)
                 else:
-                    bot.sendMessage(chat_id, f"{user.name()} {warn_text}")
+                    bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                     user.save()
                 bot.deleteMessage(chat_id, msg_id)
 
@@ -116,7 +116,7 @@ def text_count(bot: TelegramBot, update: Update, state: TelegramState):
                     break
                 else:
                     bot.deleteMessage(chat_id, msg_id)
-                    bot.sendMessage(chat_id, f"{a.name()} {warn_text})")
+                    bot.sendMessage(chat_id, f"{a.name()} <i>{warn_text}</i>", parse_mode='HTML')
                     a.save()
                     break
 
@@ -143,10 +143,6 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
         if text == '/quote' and user_id == OWNER or user_id == JIM:
             quote = Quote.objects.filter(active=True).order_by('?')[0]
             bot.sendMessage(chat_id, f'🔈"{quote.text}"\n©️{quote.author}', parse_mode='HTML')
-
-        elif text == '/quotedb' and user_id == OWNER or user_id == JIM:
-            quote = Quote.objects.order_by('?')[0]
-            bot.sendMessage(chat_id, {quote}, parse_mode='HTML')
 
         elif text == '/strike':
             bot.sendDice(chat_id, '🎳')
