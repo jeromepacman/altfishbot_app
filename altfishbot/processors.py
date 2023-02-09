@@ -156,7 +156,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
 
     if chat_type == 'supergroup' and text.lower() == 'hi' or "hello":
         user = TelegramUser.objects.get(telegram_id=user_id)
-        if not user.has_status and not user.posts:
+        if not user.has_status:
             unix = now().timestamp()
             unix2 = int(unix + 86400)
             bot.deleteMessage(chat_id, msg_id)
