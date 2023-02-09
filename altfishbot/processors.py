@@ -57,6 +57,22 @@ def indoor(bot: TelegramBot, update: Update, state: TelegramState):
     bot.deleteMessage(chat_id, msg_id)
 
 # CHECKS & UPDATES#######
+
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.Photo, message_types.Video],
+           update_types=update_types.Message)
+def media(bot: TelegramBot, update: Update, state: TelegramState):
+    chat_type = update.get_chat().get_type()
+    chat_id = update.get_chat().get_id()
+    msg_id = update.get_message().get_message_id()
+    user_id = update.get_user().get_id()
+
+    if chat_type == 'supergroup':
+        user = TelegramUser.objects.get(telegram_id=user_id)
+        if not user.has_status:
+        #if user.objects.get(created_at__lt=now() - timedelta(hours=24)):
+            bot.deleteMessage(chat_id, msg_id)
+
+
 #   FORWARDS  ####
 @processor(state_manager, from_states=state_types.All,
            exclude_message_types=[message_types.NewChatMembers, message_types.LeftChatMember],
@@ -137,6 +153,15 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
     user_name = update.get_message().get_from()
     chat_direct = update.get_message().get_from().get_id()
     msg_id = update.get_message().get_message_id()
+
+    if chat_type == 'supergroup' and text.lower() == 'hi' or "hello":
+        user = TelegramUser.objects.get(telegram_id=user_id)
+        if not user.has_status and not user.posts:
+            unix = now().timestamp()
+            unix2 = int(unix + 86400)
+            bot.deleteMessage(chat_id, msg_id)
+            bot.banChatMember(chat_id, user, unix2)
+            user.delete()
 
     if chat_type == 'supergroup' and text.startswith('/'):
 
@@ -224,11 +249,14 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
             else:
                 bot.sendMessage(chat_id=OWNER, text=f'{inactive.count()} users purged')
 
+        elif text == '/hook' and user_id == OWNER:
+            bot.setWebhook(url='')
+
         elif text == "/cap" and user_id == OWNER or user_id == JIM:
             bot.sendMessage(chat_id, get_market_cap(), parse_mode='html')
 
 
-        elif text == '/flag' and user_id == OWNER or user_id == JIM:
+        elif text == '/w' and user_id == OWNER or user_id == JIM:
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             sender_msg = update.get_message().get_reply_to_message().get_message_id()
             if sender is not None:
