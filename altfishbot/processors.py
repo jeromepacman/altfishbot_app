@@ -18,7 +18,7 @@ from .bot import state_manager
 from .credentials import OWNER, JIM, CHAT_INVITE_LINK
 from .helpers import get_market_cap
 from .models import TelegramState, TelegramUser
-from .quotes import QUOTES_STRINGS, ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
+from .quotes import ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
 
 
 # commands #########
