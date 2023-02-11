@@ -93,7 +93,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                 warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from_channel')
                 user.warnings += 1
                 if user.warnings > warn_text.warning_number:
-                    bot.kickChatMember(chat_id, user_id)
+                    bot.banChatMember(chat_id, user_id)
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                     user.save()
@@ -104,7 +104,7 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                 warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from')
                 user.warnings += 1
                 if user.warnings > warn_text.warning_number:
-                    bot.kickChatMember(chat_id, user_id)
+                    bot.banChatMember(chat_id, user_id)
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                     user.save()
@@ -128,7 +128,7 @@ def text_count(bot: TelegramBot, update: Update, state: TelegramState):
                 a.warnings += 1
                 if a.warnings > warn_text.warning_number:
                     bot.deleteMessage(chat_id, msg_id)
-                    bot.kickChatMember(chat_id, user_id)
+                    bot.banChatMember(chat_id, user_id)
                     break
                 else:
                     bot.deleteMessage(chat_id, msg_id)
@@ -154,13 +154,13 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
     chat_direct = update.get_message().get_from().get_id()
     msg_id = update.get_message().get_message_id()
 
-    if chat_type == 'supergroup' and text.lower() == 'hi' or "hello":
+    if chat_type == 'supergroup' and text.lower() == 'hi' or 'hello':
         user = TelegramUser.objects.get(telegram_id=user_id)
         if not user.has_status:
             unix = now().timestamp()
-            unix2 = int(unix + 86400)
+            unix_future = int(unix + 86400)
             bot.deleteMessage(chat_id, msg_id)
-            bot.banChatMember(chat_id, user, unix2)
+            bot.banChatMember(chat_id, user_id, unix_future)
             user.delete()
 
     if chat_type == 'supergroup' and text.startswith('/'):
