@@ -154,7 +154,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
     chat_direct = update.get_message().get_from().get_id()
     msg_id = update.get_message().get_message_id()
 
-    if chat_type == 'supergroup' and text.lower() == 'hi' or 'hello':
+    if chat_type == 'supergroup' and text.lower() == 'hi' or text.lower() == 'hello':
         user = TelegramUser.objects.get(telegram_id=user_id)
         if not user.has_status:
             unix = now().timestamp()
