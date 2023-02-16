@@ -23,38 +23,33 @@ from .quotes import ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
 
 # commands #########
 # Internal direct requests
-# LEFT CHAT MEMBER #######################
-@processor(state_manager, from_states=state_types.All, message_types=[message_types.LeftChatMember],
-           update_types=update_types.ChatMember)
-def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
+
+# LEFT / NEW  CHAT MEMBER #######################
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.LeftChatMember, message_types.NewChatMembers],
+            update_types=update_types.Message)
+def door(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
-    left_id = update.get_message().get_from().get_id()
+    custom_id = update.get_message().get_from().get_id()
 
-    if bot.getChatMember(chat_id, left_id).status in ['left', 'banned', 'kicked']:
+
+    if bot.getChatMember(chat_id, custom_id).status in ['left', 'banned', 'kicked']:
+         try:
+             TelegramUser.objects.get(telegram_id=custom_id).delete()
+         except TelegramUser.DoesNotExist:
+             bot.sendMessage(OWNER, text="user does not exist")
+
+    elif bot.getChatMember(chat_id, custom_id).status in ['member']:
         try:
-            TelegramUser.objects.get(telegram_id=left_id).delete()
+            user = TelegramUser.objects.get(telegram_id=custom_id)
         except TelegramUser.DoesNotExist:
             bot.sendMessage(OWNER, text="user does not exist")
+        else:
+            user.has_status=True
+            user.save()
 
     bot.deleteMessage(chat_id, msg_id)
 
-
-# NEW CHAT MEMBER #######################
-@processor(state_manager, from_states=state_types.All, message_types=[message_types.NewChatMembers],
-           update_types=update_types.Message)
-def indoor(bot: TelegramBot, update: Update, state: TelegramState):
-    chat_id = update.get_chat().get_id()
-    msg_id = update.get_message().get_message_id()
-    new_id = update.get_user().get_id()
-
-    if bot.getChatMember(chat_id, new_id).status in ['member']:
-        try:
-            TelegramUser.objects.get(telegram_id=new_id).has_status=True
-        except TelegramUser.DoesNotExist:
-            bot.sendMessage(OWNER, text="user does not exist")
-
-    bot.deleteMessage(chat_id, msg_id)
 
 # CHECKS & UPDATES#######
 
@@ -68,16 +63,19 @@ def media(bot: TelegramBot, update: Update, state: TelegramState):
 
     if chat_type == 'supergroup':
         user = TelegramUser.objects.get(telegram_id=user_id)
-        if not user.has_status:
+        if not user.role:
         #if user.objects.get(created_at__lt=now() - timedelta(hours=24)):
             bot.deleteMessage(chat_id, msg_id)
+        else:
+            user.post_count += 1
+            user.save()
 
 
 #   FORWARDS  ####
 @processor(state_manager, from_states=state_types.All,
            exclude_message_types=[message_types.NewChatMembers, message_types.LeftChatMember],
            update_types=update_types.Message)
-def post_count(bot: TelegramBot, update: Update, state: TelegramState):
+def post_test(bot: TelegramBot, update: Update, state: TelegramState):
     chat_type = update.get_chat().get_type()
     chat_id = update.get_chat().get_id()
     user_id = update.get_user().get_id()
@@ -93,23 +91,26 @@ def post_count(bot: TelegramBot, update: Update, state: TelegramState):
                 warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from_channel')
                 user.warnings += 1
                 if user.warnings > warn_text.warning_number:
+                    user.has_status=False
                     bot.banChatMember(chat_id, user_id)
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
-                    user.save()
-                bot.deleteMessage(chat_id, msg_id)
+                user.save()
+            bot.deleteMessage(chat_id, msg_id)
 
         elif forward_from and not user.role:
             if WarningText.objects.filter(bannedword__banned_word='!forward_from').exists():
                 warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from')
                 user.warnings += 1
                 if user.warnings > warn_text.warning_number:
+                    user.has_status=False
                     bot.banChatMember(chat_id, user_id)
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
-                    user.save()
-                bot.deleteMessage(chat_id, msg_id)
+                user.save()
+            bot.deleteMessage(chat_id, msg_id)
 
+#   BANNED WORDS #####
 @processor(state_manager, from_states=state_types.Reset, message_types=[message_types.Text],
            update_types=update_types.Message)
 def text_count(bot: TelegramBot, update: Update, state: TelegramState):
@@ -123,26 +124,24 @@ def text_count(bot: TelegramBot, update: Update, state: TelegramState):
         words = BannedWord.objects.values_list('banned_word', flat=True)
         a = TelegramUser.objects.get(telegram_id=user_id)
         for w in words:
-            if w in text.lower() and not a.role:
+            if w in text.lower():
                 warn_text = WarningText.objects.get(bannedword__banned_word=w)
                 a.warnings += 1
-                if a.warnings > warn_text.warning_number:
-                    bot.deleteMessage(chat_id, msg_id)
+                if a.warnings > warn_text.warning_number and not a.role:
+                    a.has_status = False
                     bot.banChatMember(chat_id, user_id)
-                    break
                 else:
-                    bot.deleteMessage(chat_id, msg_id)
                     bot.sendMessage(chat_id, f"{a.name()} <i>{warn_text}</i>", parse_mode='HTML')
-                    a.save()
-                    break
-
+                bot.deleteMessage(chat_id, msg_id)
+                a.save()
+                break
         else:
             a.updated_at = now()
             if len(text) >= 4:
                 a.post_count += 1
             a.save()
 
-
+#  ACTIONS  #####
 @processor(state_manager, from_states=state_types.All, message_types=message_types.Text,
            update_types=update_types.Message)
 def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
@@ -162,6 +161,8 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
             bot.deleteMessage(chat_id, msg_id)
             bot.banChatMember(chat_id, user_id, unix_future)
             user.delete()
+
+#   SLASH COMMANDS #####
 
     if chat_type == 'supergroup' and text.startswith('/'):
 
