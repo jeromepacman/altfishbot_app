@@ -127,7 +127,7 @@ def text_count(bot: TelegramBot, update: Update, state: TelegramState):
             if w in text.lower():
                 warn_text = WarningText.objects.get(bannedword__banned_word=w)
                 user.warnings += 1
-                if user.warnings > warn_text.warning_number
+                if user.warnings > warn_text.warning_number:
                     user.has_status = False
                     bot.banChatMember(chat_id, user_id)
                 else:
