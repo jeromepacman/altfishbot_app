@@ -34,7 +34,7 @@ class Chat(BasicType):
     def get_first_name(self) -> Optional[str]:
         return getattr(self, 'first_name', None)
 
-    def get_last_name(self):
+    def get_last_name(self) -> Optional[str]:
         return getattr(self, 'last_name', None)
 
     def get_photo(self):
@@ -43,7 +43,7 @@ class Chat(BasicType):
 
 # These are placed here to avoid import cycles
 
-from . import chatphoto, message, chatpermissions
+from django_tgbot.types import chatphoto, message, chatpermissions
 
 Chat.fields.update({
     'pinned_message': message.Message,

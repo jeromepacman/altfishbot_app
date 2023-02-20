@@ -103,6 +103,9 @@ class Message(BasicType):
     def get_forward_from(self):
         return getattr(self, 'forward_from', None)
 
+    def get_photo(self):
+        return getattr(self, 'photo', None)
+
 
 # Placed here to avoid import cycles
 from django_tgbot.types import user, chat, messageentity, audio, document, animation, game, photosize, \

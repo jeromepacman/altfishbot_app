@@ -16,11 +16,11 @@ class ChatMember(BasicType):
         'can_invite_users': BasicType.bool_interpreter,
         'can_pin_messages': BasicType.bool_interpreter,
         'is_member': BasicType.bool_interpreter,
-        'can_send_messages': BasicType.bool_interpreter,
-        'can_send_media_messages': BasicType.bool_interpreter,
+        'can_manage_topics': BasicType.bool_interpreter,
+        'can_manage_video_chats': BasicType.bool_interpreter,
         'can_send_polls': BasicType.bool_interpreter,
         'can_send_other_messages': BasicType.bool_interpreter,
-        'can_add_web_page_previews': BasicType.bool_interpreter
+        'can_manage_chat': BasicType.bool_interpreter
     }
 
     def __init__(self, obj=None):
