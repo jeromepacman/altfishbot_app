@@ -340,7 +340,7 @@ class BotAPIUser:
     def kickChatMember(self, chat_id, user_id, until_date=None):
         return self.request_and_result(create_params_from_args(locals()), bool)
 
-    def banChatMember(self, chat_id, user_id, until_date=None, revoke_messages=True):
+    def banChatMember(self, chat_id, user_id, until_date=None, revoke_messages=None):
         return self.request_and_result(create_params_from_args(locals()), bool)
 
     def unbanChatMember(self, chat_id, user_id):

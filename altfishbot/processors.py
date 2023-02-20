@@ -129,7 +129,7 @@ def text_count(bot: TelegramBot, update: Update, state: TelegramState):
                 user.warnings += 1
                 if user.warnings > warn_text.warning_number:
                     user.has_status = False
-                    bot.banChatMember(chat_id, user_id)
+                    bot.banChatMember(chat_id, user_id, revoke_messages=True)
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                 bot.deleteMessage(chat_id, msg_id)
