@@ -133,7 +133,7 @@ def text_count(bot: TelegramBot, update: Update, state: TelegramState):
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                 bot.deleteMessage(chat_id, msg_id)
-                a.save()
+                user.save()
                 break
         else:
             user.updated_at = now()

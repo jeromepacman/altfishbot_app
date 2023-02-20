@@ -105,9 +105,9 @@ class Message(BasicType):
 
 
 # Placed here to avoid import cycles
-from . import user, chat, messageentity, audio, document, animation, game, photosize, \
-    inlinekeyboardmarkup, passportdata, successfulpayment, invoice, poll, \
-    venue, location, contact, videonote, voice, video, sticker, dice
+from django_tgbot.types import user, chat, messageentity, audio, document, animation, game, photosize, \
+    inlinekeyboardmarkup, passportdata, successfulpayment, invoice, poll, venue, location, contact, videonote, voice, \
+    video, sticker, dice
 
 
 Message.fields.update({

@@ -33,7 +33,7 @@ class ChosenInlineResult(BasicType):
 
 
 # Placed here to avoid import cycles
-from . import user, location
+from django_tgbot.types import user, location
 
 ChosenInlineResult.fields.update({
     'from': user.User,
