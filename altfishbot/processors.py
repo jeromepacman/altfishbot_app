@@ -80,9 +80,9 @@ def post_test(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     user_id = update.get_user().get_id()
     msg_id = update.get_message().get_message_id()
-    user = TelegramUser.objects.get(telegram_id=user_id)
 
     if chat_type == 'supergroup':
+        user = TelegramUser.objects.get(telegram_id=user_id)
         forward_from_channel = update.get_message().get_forward_from_chat()
         forward_from = update.get_message().get_forward_from()
 
@@ -93,6 +93,7 @@ def post_test(bot: TelegramBot, update: Update, state: TelegramState):
                 if user.warnings > warn_text.warning_number:
                     user.has_status=False
                     bot.banChatMember(chat_id, user_id)
+                    bot.sendMessage(OWNER, f'{user.name()} banned')
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                 user.save()
@@ -105,6 +106,7 @@ def post_test(bot: TelegramBot, update: Update, state: TelegramState):
                 if user.warnings > warn_text.warning_number:
                     user.has_status=False
                     bot.banChatMember(chat_id, user_id)
+                    bot.sendMessage(OWNER, f'{user.name()} banned')
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                 user.save()
@@ -119,17 +121,18 @@ def text_count(bot: TelegramBot, update: Update, state: TelegramState):
     text = update.get_message().get_text()
     user_id = update.get_user().get_id()
     msg_id = update.get_message().get_message_id()
-    user = TelegramUser.objects.get(telegram_id=user_id)
 
-    if chat_type == 'supergroup' and user.role is None:
+    if chat_type == 'supergroup':
+        user = TelegramUser.objects.get(telegram_id=user_id)
         words = BannedWord.objects.values_list('banned_word', flat=True)
         for w in words:
             if w in text.lower():
                 warn_text = WarningText.objects.get(bannedword__banned_word=w)
                 user.warnings += 1
-                if user.warnings > warn_text.warning_number:
+                if user.warnings > warn_text.warning_number and not user.role:
                     user.has_status = False
                     bot.banChatMember(chat_id, user_id, revoke_messages=True)
+                    bot.sendMessage(OWNER, f'{user.name()} banned')
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                 bot.deleteMessage(chat_id, msg_id)
@@ -155,7 +158,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
 
     if chat_type == 'supergroup' and text.lower() == 'hi' or text.lower() == 'hello':
         user = TelegramUser.objects.get(telegram_id=user_id)
-        if user.role is None:
+        if not user.role:
             unix = now().timestamp()
             unix_future = int(unix + 86400)
             bot.deleteMessage(chat_id, msg_id)
