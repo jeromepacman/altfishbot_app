@@ -86,7 +86,7 @@ def post_test(bot: TelegramBot, update: Update, state: TelegramState):
         forward_from_channel = update.get_message().get_forward_from_chat()
         forward_from = update.get_message().get_forward_from()
 
-        if forward_from_channel and user.role is None:
+        if forward_from_channel and not user.role:
             if WarningText.objects.filter(bannedword__banned_word='!forward_from_channel').exists():
                 warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from_channel')
                 user.warnings += 1
@@ -99,7 +99,7 @@ def post_test(bot: TelegramBot, update: Update, state: TelegramState):
                 user.save()
             bot.deleteMessage(chat_id, msg_id)
 
-        elif forward_from and user.role is None:
+        elif forward_from and not user.role:
             if WarningText.objects.filter(bannedword__banned_word='!forward_from').exists():
                 warn_text = WarningText.objects.get(bannedword__banned_word='!forward_from')
                 user.warnings += 1
