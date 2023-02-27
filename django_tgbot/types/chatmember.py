@@ -32,8 +32,8 @@ class ChatMember(BasicType):
     def get_status(self) -> str:
         return getattr(self, 'status', None)
 
-    def get_is_anonymous(self) -> bool:
-        return getattr(self, 'is_anonymous', None)
+    def get_is_member(self) -> bool:
+        return getattr(self, 'is_member', None)
 
 # Placed here to avoid import cycles
 from django_tgbot.types import user

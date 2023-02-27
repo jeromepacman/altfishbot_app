@@ -25,28 +25,28 @@ from .quotes import ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
 # Internal direct requests
 
 # LEFT / NEW  CHAT MEMBER #######################
-@processor(state_manager, from_states=state_types.All, message_types=[message_types.LeftChatMember, message_types.NewChatMembers],
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.LeftChatMember],
             update_types=update_types.Message)
-def door(bot: TelegramBot, update: Update, state: TelegramState):
+def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
-    custom_id = update.get_message().get_from().get_id()
+    left_id = update.get_message().left_chat_member.get_id()
 
 
-    if bot.getChatMember(chat_id, custom_id).status in ['left', 'banned', 'kicked']:
+    if bot.getChatMember(chat_id, left_id).status in ['left']:
          try:
-             TelegramUser.objects.get(telegram_id=custom_id).delete()
+             TelegramUser.objects.get(telegram_id=left_id).delete()
          except TelegramUser.DoesNotExist:
              bot.sendMessage(OWNER, text="user does not exist")
 
-    elif bot.getChatMember(chat_id, custom_id).status in ['member']:
-        try:
-            user = TelegramUser.objects.get(telegram_id=custom_id)
-        except TelegramUser.DoesNotExist:
-            bot.sendMessage(OWNER, text="user does not exist")
-        else:
-            user.has_status=True
-            user.save()
+    bot.deleteMessage(chat_id, msg_id)
+
+
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.NewChatMembers],
+           update_types=update_types.Message)
+def indoor(bot: TelegramBot, update: Update, state: TelegramState):
+    msg_id = update.get_message().get_message_id()
+    chat_id = update.get_chat().get_id()
 
     bot.deleteMessage(chat_id, msg_id)
 

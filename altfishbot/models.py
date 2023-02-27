@@ -17,7 +17,7 @@ class TelegramUser(AbstractTelegramUser):
     post_count = models.IntegerField("posts", default=0)
     joined = models.DateField(default=date.today)
     updated_at = models.DateTimeField(auto_now=True)
-    has_status = models.BooleanField("Mb", default=False)
+    has_status = models.BooleanField("Mb", default=True)
     warnings = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -30,11 +30,6 @@ class TelegramUser(AbstractTelegramUser):
         if self.username is not None:
             name = f' @{self.username}'
         return name
-
-    def is_bot(self):
-        if self.is_bot:
-            self.role = 'Bot'
-            self.save()
 
 
 class TelegramChat(AbstractTelegramChat):
