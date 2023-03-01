@@ -31,6 +31,11 @@ class TelegramUser(AbstractTelegramUser):
             name = f' @{self.username}'
         return name
 
+    # def is_bot(self):
+    #     if self.is_bot:
+    #         self.role = 'Bot'
+    #         self.save()
+
 
 class TelegramChat(AbstractTelegramChat):
     pass
