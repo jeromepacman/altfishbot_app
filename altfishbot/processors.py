@@ -270,8 +270,14 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
             except TelegramUser.DoesNotExist:
                 bot.sendMessage(OWNER, 'unknown user')
             else:
-                b = b.telegram_id
-                sta = bot.getChatMember(chat_id, b).status
+                b_id = b.telegram_id
+                sta = bot.getChatMember(chat_id, b_id).status
+                if sta in ['left']:
+                    b.delete()
+                elif sta in ['kicked', 'banned']:
+                    b.has_status = False
+                elif sta in ['member']:
+                    b.has_status = True
                 bot.sendMessage(OWNER, sta)
 
         elif text.startswith('/f ') and text[3:].isdigit() and user_id == OWNER or user_id == JIM:
@@ -281,8 +287,14 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
             except TelegramUser.DoesNotExist:
                 bot.sendMessage(OWNER, 'unknown user')
             else:
-                b = b.telegram_id
-                sta = bot.getChatMember(chat_id, b).status
+                b_id = b.telegram_id
+                sta = bot.getChatMember(chat_id, b_id).status
+                if sta in ['left']:
+                    b.delete()
+                elif sta in ['kicked', 'banned']:
+                    b.has_status=False
+                elif sta in ['member']:
+                    b.has_status=True
                 bot.sendMessage(OWNER, sta)
 
         elif text.startswith('/k @') and user_id == OWNER or user_id == JIM:
