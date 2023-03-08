@@ -11,7 +11,7 @@ class TelegramUserAdmin(admin.ModelAdmin):
     list_filter = ['role', 'joined']
     search_fields = ['telegram_id', 'first_name', 'username']
     list_editable = ['role']
-    actions = ['tag_user', 'make_member', 'unwarn_user']
+    actions = ['tag_user', 'untag_user', 'make_member', 'unwarn_user']
 
     @admin.action(description='Make selected users as trusted')
     def make_member(self, request, queryset):
@@ -23,6 +23,12 @@ class TelegramUserAdmin(admin.ModelAdmin):
     def tag_user(self, request, queryset):
         updated_count = queryset.update(has_status=True)
         self.message_user(request, f'{updated_count} telegram users were successfully tagged',
+                          messages.SUCCESS)
+
+    @admin.action(description='Untagged selected users')
+    def untag_user(self, request, queryset):
+        updated_count = queryset.update(has_status=True)
+        self.message_user(request, f'{updated_count} telegram users were successfully untagged',
                           messages.SUCCESS)
 
     @admin.action(description='Unwarn selected users')
