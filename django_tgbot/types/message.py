@@ -16,6 +16,7 @@ class Message(BasicType):
         'forward_from': str,
         'forward_signature': str,
         'forward_sender_name': str,
+        'forward_from_chat': str,
         'forward_date': str,
         'edit_date': str,
         'media_group_id': str,
@@ -97,10 +98,10 @@ class Message(BasicType):
     def get_reply_markup(self):
         return getattr(self, 'reply_markup', None)
 
-    def get_forward_from_chat(self):
+    def get_forward_from_chat(self) -> object:
         return getattr(self, 'forward_from_chat', None)
 
-    def get_forward_from(self):
+    def get_forward_from(self) -> object:
         return getattr(self, 'forward_from', None)
 
     def get_photo(self):

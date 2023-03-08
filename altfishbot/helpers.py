@@ -38,7 +38,6 @@ def get_market_cap():
     domi_eth = '{:,}'.format(eth)
     data2 = result_2["data"][0]
     feeling = data2["value_classification"]
-    number = data2["value"]
     data3 = result_3["data"][0]
     buy = data3["buy_pressure"]
     sell = data3["sell_pressure"]
