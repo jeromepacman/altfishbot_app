@@ -76,7 +76,7 @@ def forward_test(bot: TelegramBot, update: Update, state: TelegramState):
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                 user.save()
-            bot.deleteMessage(chat_id, msg_id)
+                bot.deleteMessage(chat_id, msg_id)
         #           FORWARD FROM #####
         elif forward_from and not user.role:
             if WarningText.objects.filter(bannedword__banned_word='!forward_from').exists():
@@ -89,7 +89,7 @@ def forward_test(bot: TelegramBot, update: Update, state: TelegramState):
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
                 user.save()
-            bot.deleteMessage(chat_id, msg_id)
+                bot.deleteMessage(chat_id, msg_id)
 
 
 #        ###   MEDIA #####
@@ -130,8 +130,9 @@ def post_test(bot: TelegramBot, update: Update, state: TelegramState):
                     bot.sendMessage(OWNER, f'{user.name()} banned')
                 else:
                     bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
-                    bot.deleteMessage(chat_id, msg_id)
                     user.save()
+                bot.deleteMessage(chat_id, msg_id)
+
         else:
             user.updated_at = now()
             user.post_count += 1
