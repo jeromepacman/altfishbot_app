@@ -22,32 +22,43 @@ from .quotes import ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
 
 # commands #########
 # Internal direct requests
-
 # LEFT / NEW  CHAT MEMBER #######################
-@processor(state_manager, from_states=state_types.Reset, message_types=message_types.LeftChatMember,
+@processor(state_manager, from_states=state_types.All, message_types=[message_types.LeftChatMember],
            update_types=update_types.Message)
 def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
     left_id = update.get_message().left_chat_member.get_id()
 
-    if bot.getChatMember(chat_id, left_id).status in 'left':
-         try:
-             TelegramUser.objects.get(telegram_id=left_id).delete()
-         except TelegramUser.DoesNotExist:
-             bot.sendMessage(OWNER, text="user does not exist")
+    try:
+        user = TelegramUser.objects.get(telegram_id=left_id)
+    except TelegramUser.DoesNotExist:
+        bot.sendMessage(OWNER, text="user does not exist")
+    else:
+        user.has_status = False
+        user.save()
+        if bot.getChatMember(chat_id, user.telegram_id).status in ['left']:
+            user.delete()
 
     bot.deleteMessage(chat_id, msg_id)
 
 
-@processor(state_manager, from_states=state_types.Reset, message_types=message_types.NewChatMembers,
+@processor(state_manager, from_states=state_types.Reset, message_types=[message_types.NewChatMembers],
            update_types=update_types.Message)
 def indoor(bot: TelegramBot, update: Update, state: TelegramState):
     msg_id = update.get_message().get_message_id()
     chat_id = update.get_chat().get_id()
+    new_user = update.get_message().new_chat_members
+
+    for n in new_user:
+        user_id = n.id
+        bot.get_db_user(user_id)
+        try:
+            bot.sendMessage(user_id, f'Hi & welcome to Altwhales 🐳\nCheck the rules 🖐')
+        except TelegramUser.DoesNotExist:
+            bot.sendMessage(OWNER, 'message failed to new user')
 
     bot.deleteMessage(chat_id, msg_id)
-
 
 # CHECKS & UPDATES#######
 #   FORWARDS  ####
@@ -135,7 +146,8 @@ def post_test(bot: TelegramBot, update: Update, state: TelegramState):
 
         else:
             user.updated_at = now()
-            user.post_count += 1
+            if len(text) >= 4 and not text.startswith('/'):
+                user.post_count += 1
             user.save()
 
 #         ###   ACTIONS  #####
