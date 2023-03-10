@@ -1,4 +1,13 @@
+import re
 import requests
+
+
+def text_orientation(text):
+    # Persian \u0600-\u06FF
+    # Arabic \u0627-\u064a
+    lang = ['ltr', 'rtl']
+    pattern = re.compile('[\u0627-\u064a]|[\u0600-\u06FF]')
+    return lang[len(re.findall(pattern, text)) > (len(text) / 2)]
 
 
 def get_tendency(self):

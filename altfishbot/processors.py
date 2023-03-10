@@ -15,7 +15,7 @@ from moderation.models import BannedWord, WarningText, Rule, Quote
 from .bot import TelegramBot
 from .bot import state_manager
 from .credentials import OWNER, JIM, CHAT_INVITE_LINK
-from .helpers import get_market_cap
+from .helpers import get_market_cap, text_orientation
 from .models import TelegramState, TelegramUser
 from .quotes import ACTIVE_ADMINS_LIST, MEMBERS_ROLES, SERV_MSG
 
@@ -52,11 +52,17 @@ def indoor(bot: TelegramBot, update: Update, state: TelegramState):
 
     for n in new_user:
         user_id = n.id
-        bot.get_db_user(user_id)
-        try:
-            bot.sendMessage(user_id, f'Hi & welcome to Altwhales 🐳\nCheck the rules 🖐')
-        except TelegramUser.DoesNotExist:
-            bot.sendMessage(OWNER, 'message failed to new user')
+        first_name = n.first_name
+        lang = text_orientation(first_name)
+        if lang == 'rtl':
+            bot.kickChatMember(chat_id, user_id)
+            bot.sendMessage(OWNER, 'arabic name detected')
+        else:
+            bot.get_db_user(user_id)
+            try:
+                bot.sendMessage(user_id, f'Hi & welcome to Altwhales 🐳\nCheck the rules 🖐')
+            except TelegramUser.DoesNotExist:
+                bot.sendMessage(OWNER, 'message failed to new user')
 
     bot.deleteMessage(chat_id, msg_id)
 
@@ -252,6 +258,9 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
 
         elif text == '/hook' and user_id == OWNER:
             bot.setWebhook(url='')
+
+        elif text == '/sethook' and user_id == OWNER:
+            bot.setWebhook(url='https://altfish.jcloud-ver-jpe.ik-server.com/altfishbot/update/')
 
         elif text == "/cap" and user_id == OWNER or user_id == JIM:
             bot.sendMessage(chat_id, get_market_cap(), parse_mode='html')
