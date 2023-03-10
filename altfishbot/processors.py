@@ -144,17 +144,17 @@ def post_test(bot: TelegramBot, update: Update, state: TelegramState):
     if chat_type == 'supergroup':
         user = TelegramUser.objects.get(telegram_id=user_id)
         words = BannedWord.objects.values_list('banned_word', flat=True)
-        for w in words:
-            if w in text.lower():
-                warn_text = WarningText.objects.get(bannedword__banned_word=w)
-                user.warnings += 1
-                if user.warnings > warn_text.warning_number and not user.role:
-                    user.has_status = False
-                    bot.banChatMember(chat_id, user_id, revoke_messages=True)
-                    bot.sendMessage(OWNER, f'{user.name()} banned')
-                else:
-                    bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
-                    user.save()
+        if not user.role:
+            for w in words:
+                if w in text.lower():
+                    warn_text = WarningText.objects.get(bannedword__banned_word=w)
+                    user.warnings += 1
+                    if user.warnings > warn_text.warning_number:
+                        user.has_status = False
+                        bot.banChatMember(chat_id, user_id, revoke_messages=True)
+                    else:
+                        bot.sendMessage(chat_id, f"{user.name()} <i>{warn_text}</i>", parse_mode='HTML')
+                user.save(update_fields=['has_status', 'warnings'])
                 bot.deleteMessage(chat_id, msg_id)
 
         else:
@@ -187,7 +187,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
 
     #      ###  SLASH COMMANDS #####
 
-    if chat_type == 'supergroup' and text.startswith('/'):
+    elif chat_type == 'supergroup' and text.startswith('/'):
 
         if text == '/quote' and user_id == OWNER or user_id == JIM:
             quote = Quote.objects.filter(active=True).order_by('?')[0]

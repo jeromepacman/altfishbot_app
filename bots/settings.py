@@ -18,7 +18,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://*.altfish.jcloud-ver-jpe.ik-server.com', 'http://localhost']
+CSRF_TRUSTED_ORIGINS = ['https://*.altfishbot.jcloud-ver-jpe.ik-server.com', 'http://localhost']
 # Application definition
 
 INSTALLED_APPS = [
