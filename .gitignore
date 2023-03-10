@@ -128,5 +128,5 @@ dmypy.json
 .pytype/
 
 # Cython debug symbols
-cython_debug/!/db.sqlite3
+cython_debug.
 db.sqlite3

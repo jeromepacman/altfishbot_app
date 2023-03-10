@@ -17,8 +17,6 @@ class PollAnswer(BasicType):
         return getattr(self, 'user', None)
 
 
-from . import user
+from django_tgbot.types import user
 
-PollAnswer.fields.update({
-    'user': user.User
-})
+PollAnswer.fields.update(dict(user=user.User))

@@ -41,7 +41,7 @@ class CallbackQuery(BasicType):
 
 # Placed here to avoid import cycles
 
-from . import user, message
+from django_tgbot.types import user, message
 
 CallbackQuery.fields.update({
     'from': user.User,

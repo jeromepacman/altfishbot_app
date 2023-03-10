@@ -12,9 +12,7 @@ class UserProfilePhotos(BasicType):
 
 from . import photosize
 
-UserProfilePhotos.fields.update({
-    'photos': {
-        'class': photosize.PhotoSize,
-        'array_of_array': True
-    }
-})
+UserProfilePhotos.fields.update(dict(photos={
+    'class': photosize.PhotoSize,
+    'array_of_array': True
+}))

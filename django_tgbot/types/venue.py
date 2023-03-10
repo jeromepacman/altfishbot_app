@@ -15,6 +15,4 @@ class Venue(BasicType):
 
 from . import location
 
-Venue.fields.update({
-    'location': location.Location
-})
+Venue.fields.update(dict(location=location.Location))

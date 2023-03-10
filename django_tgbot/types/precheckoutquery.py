@@ -20,7 +20,7 @@ class PreCheckoutQuery(BasicType):
         return self.get_user()
 
 
-from . import user, orderinfo
+from django_tgbot.types import user, orderinfo
 
 PreCheckoutQuery.fields.update({
     'from': user.User,

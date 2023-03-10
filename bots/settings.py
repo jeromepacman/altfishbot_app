@@ -18,7 +18,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = ['https://*.altfish.jcloud-ver-jpe.ik-server.com', 'http://localhost']
 # Application definition
 
 INSTALLED_APPS = [
@@ -117,8 +117,3 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-if not DEBUG:
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600)
-    SECURE_SSL_REDIRECT = True

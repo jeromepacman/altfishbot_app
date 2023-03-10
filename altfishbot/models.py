@@ -16,6 +16,8 @@ class TelegramUser(AbstractTelegramUser):
 
     post_count = models.IntegerField("posts", default=0)
     joined = models.DateField(default=date.today)
+    language_code = models.CharField('lang', max_length=16, null=True, blank=True)
+    is_premium = models.BooleanField('premium', default=False)
     updated_at = models.DateTimeField(auto_now=True)
     has_status = models.BooleanField("Mb", default=True)
     warnings = models.PositiveIntegerField(default=0)

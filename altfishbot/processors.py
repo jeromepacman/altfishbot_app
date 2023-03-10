@@ -36,7 +36,7 @@ def outdoor(bot: TelegramBot, update: Update, state: TelegramState):
     except TelegramUser.DoesNotExist:
         bot.sendMessage(OWNER, text="user does not exist")
     else:
-        user.has_status = False
+        user.has_status = bool(False)
         user.save(update_fields=['has_status'])
         if bot.getChatMember(chat_id, user.telegram_id).status in ['left']:
             user.delete()

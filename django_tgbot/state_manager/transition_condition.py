@@ -10,6 +10,7 @@ class TransitionCondition:
         :param message_types: accepted message_types
         :param update_types: accepted update_types
         """
+
         if message_types in ['all', '*', state_types.All]:
             message_types = None
 

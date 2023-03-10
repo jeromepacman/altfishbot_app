@@ -1,4 +1,5 @@
 from django_tgbot.bot_api_user import BotAPIUser
+from django_tgbot.models import AbstractTelegramUser
 from django_tgbot.types.update import Update
 
 
@@ -78,12 +79,11 @@ class AbstractTelegramBot(BotAPIUser):
         pass
 
     def get_db_user(self, telegram_id):
-        """
-        Should be implemented - Creates or retrieves the user object from database
-        :param telegram_id: The telegram user's id
-        :return: User object from database
-        """
+
+        telegram_id = AbstractTelegramUser.objects.get(telegram_id=id(self))
+        print(self, telegram_id)
         pass
+
 
     def get_db_chat(self, telegram_id):
         """

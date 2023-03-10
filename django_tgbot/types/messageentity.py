@@ -20,7 +20,5 @@ class MessageEntity(BasicType):
         return getattr(self, 'language', None)
 
 
-from . import user
-MessageEntity.fields.update({
-    'user': user.User
-})
+from django_tgbot.types import user
+MessageEntity.fields.update(dict(user=user.User))

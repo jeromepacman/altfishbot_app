@@ -22,6 +22,4 @@ class OrderInfo(BasicType):
 
 from . import shippingaddress
 
-OrderInfo.fields.update({
-    'shipping_address': shippingaddress.ShippingAddress
-})
+OrderInfo.fields.update(dict(shipping_address=shippingaddress.ShippingAddress))
