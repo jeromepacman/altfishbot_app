@@ -9,7 +9,7 @@ class Sticker(BasicType):
         'width': int,
         'height': int,
         'is_animated': BasicType.bool_interpreter,
-        'thumb': photosize.PhotoSize,
+        'thumbnail': photosize.PhotoSize,
         'emoji': str,
         'set_name': str,
         'mask_position': maskposition.MaskPosition,

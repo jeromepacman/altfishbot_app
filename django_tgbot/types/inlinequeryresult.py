@@ -22,9 +22,9 @@ class InlineQueryResultArticle(InlineQueryResult):
         'url': str,
         'hide_url': BasicType.bool_interpreter,
         'description': str,
-        'thumb_url': str,
-        'thumb_width': int,
-        'thumb_height': int
+        'thumbnail_url': str,
+        'thumbnail_width': int,
+        'thumbnail_height': int
     }
 
     def __init__(self, obj=None):
@@ -33,8 +33,8 @@ class InlineQueryResultArticle(InlineQueryResult):
     @classmethod
     def a(cls, id: str, title: str, input_message_content: inputmessagecontent.InputMessageContent,
           reply_markup: Optional[inlinekeyboardmarkup.InlineKeyboardMarkup] = None, url: Optional[str] = None,
-          hide_url: Optional[bool] = None, description: Optional[str] = None, thumb_url: Optional[str] = None,
-          thumb_width: Optional[int] = None, thumb_height: Optional[int] = None):
+          hide_url: Optional[bool] = None, description: Optional[str] = None, thumbnail_url: Optional[str] = None,
+          thumbnail_width: Optional[int] = None, thumbnail_height: Optional[int] = None):
         type = 'article'
         return super().a(**locals())
 
@@ -44,7 +44,7 @@ class InlineQueryResultPhoto(InlineQueryResult):
         'type': str,
         'id': str,
         'photo_url': str,
-        'thumb_url': str,
+        'thumbnail_url': str,
         'photo_width': int,
         'photo_height': int,
         'title': str,
@@ -62,7 +62,7 @@ class InlineQueryResultPhoto(InlineQueryResult):
         super(InlineQueryResultPhoto, self).__init__(obj)
 
     @classmethod
-    def a(cls, id: str, photo_url: str, thumb_url: str, photo_width: Optional[int] = None,
+    def a(cls, id: str, photo_url: str, thumbnail_url: str, photo_width: Optional[int] = None,
           photo_height: Optional[int] = None, title: Optional[str] = None, description: Optional[str] = None,
           caption: Optional[str] = None, parse_mode: Optional[str] = None,
           input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
@@ -79,8 +79,8 @@ class InlineQueryResultGif(InlineQueryResult):
         'gif_width': int,
         'gif_height': int,
         'gif_duration': int,
-        'thumb_url': str,
-        'thumb_mime_type': str,
+        'thumbnail_url': str,
+        'thumbnail_mime_type': str,
         'title': str,
         'caption': str,
         'parse_mode': str,
@@ -95,9 +95,11 @@ class InlineQueryResultGif(InlineQueryResult):
         super(InlineQueryResultGif, self).__init__(obj)
 
     @classmethod
-    def a(cls, id: str, gif_url: str, thumb_url: str, thumb_mime_type: str = None, gif_width: Optional[int] = None, gif_height: Optional[int] = None,
+    def a(cls, id: str, gif_url: str, thumbnail_url: str, thumbnail_mime_type: str = None, gif_width: Optional[int] = None,
+          gif_height: Optional[int] = None,
           gif_duration: Optional[int] = None, title: Optional[str] = None, caption: Optional[str] = None,
-          parse_mode: Optional[str] = None, input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
+          parse_mode: Optional[str] = None,
+          input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
           reply_markup: Optional[inlinekeyboardmarkup.InlineKeyboardMarkup] = None):
         type = 'gif'
         return super().a(**locals())
@@ -111,8 +113,8 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
         'mpeg4_width': int,
         'mpeg4_height': int,
         'mpeg4_duration': int,
-        'thumb_url': str,
-        'thumb_mime_type': str,
+        'thumbnail_url': str,
+        'thumbnail_mime_type': str,
         'title': str,
         'caption': str,
         'parse_mode': str,
@@ -127,7 +129,7 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
         super(InlineQueryResultMpeg4Gif, self).__init__(obj)
 
     @classmethod
-    def a(cls, id: str, mpeg4_url: str, thumb_url: str, thumb_mime_type: str = None, mpeg4_width: Optional[int] = None,
+    def a(cls, id: str, mpeg4_url: str, thumbnail_url: str, thumbnail_mime_type: str = None, mpeg4_width: Optional[int] = None,
           mpeg4_height: Optional[int] = None, mpeg4_duration: Optional[int] = None, title: Optional[str] = None,
           caption: Optional[str] = None, parse_mode: Optional[str] = None,
           input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
@@ -142,7 +144,7 @@ class InlineQueryResultVideo(InlineQueryResult):
         'id': str,
         'video_url': str,
         'mime_type': str,
-        'thumb_url': str,
+        'thumbnail_url': str,
         'title': str,
         'caption': str,
         'parse_mode': str,
@@ -161,7 +163,7 @@ class InlineQueryResultVideo(InlineQueryResult):
         super(InlineQueryResultVideo, self).__init__(obj)
 
     @classmethod
-    def a(cls, id: str, video_url: str, mime_type: str, thumb_url: str, title: str,
+    def a(cls, id: str, video_url: str, mime_type: str, thumbnail_url: str, title: str,
           caption: Optional[str] = None, parse_mode: Optional[str] = None, video_width: Optional[int] = None,
           video_height: Optional[int] = None, video_duration: Optional[int] = None, description: Optional[str] = None,
           input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
@@ -234,9 +236,9 @@ class InlineQueryResultDocument(InlineQueryResult):
         'document_url': str,
         'mime_type': str,
         'description': str,
-        'thumb_url': str,
-        'thumb_width': int,
-        'thumb_height': int,
+        'thumbnail_url': str,
+        'thumbnail_width': int,
+        'thumbnail_height': int,
         'title': str,
         'caption': str,
         'parse_mode': str,
@@ -252,8 +254,8 @@ class InlineQueryResultDocument(InlineQueryResult):
 
     @classmethod
     def a(cls, id: str, title: str, document_url: str, mime_type: str, caption: Optional[str] = None,
-          parse_mode: Optional[str] = None, description: Optional[str] = None, thumb_url: Optional[str] = None,
-          thumb_width: Optional[int] = None, thumb_height: Optional[int] = None,
+          parse_mode: Optional[str] = None, description: Optional[str] = None, thumbnail_url: Optional[str] = None,
+          thumbnail_width: Optional[int] = None, thumbnail_height: Optional[int] = None,
           input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
           reply_markup: Optional[inlinekeyboardmarkup.InlineKeyboardMarkup] = None):
         type = 'document'
@@ -268,9 +270,9 @@ class InlineQueryResultLocation(InlineQueryResult):
         'longitude': str,
         'title': str,
         'live_period': int,
-        'thumb_width': int,
-        'thumb_height': int,
-        'thumb_url': str,
+        'thumbnail_width': int,
+        'thumbnail_height': int,
+        'thumbnail_url': str,
         'reply_markup': inlinekeyboardmarkup.InlineKeyboardMarkup,
         'input_message_content': {
             'class': inputmessagecontent.InputMessageContent,
@@ -283,7 +285,7 @@ class InlineQueryResultLocation(InlineQueryResult):
 
     @classmethod
     def a(cls, id: str, latitude: str, longitude: str, title: str, live_period: Optional[int] = None,
-          thumb_url: Optional[str] = None, thumb_width: Optional[int] = None, thumb_height: Optional[int] = None,
+          thumbnail_url: Optional[str] = None, thumbnail_width: Optional[int] = None, thumbnail_height: Optional[int] = None,
           input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
           reply_markup: Optional[inlinekeyboardmarkup.InlineKeyboardMarkup] = None):
         type = 'document'
@@ -300,9 +302,9 @@ class InlineQueryResultVenue(InlineQueryResult):
         'address': str,
         'foursquare_id': str,
         'foursquare_type': str,
-        'thumb_url': str,
-        'thumb_width': int,
-        'thumb_height': int,
+        'thumbnail_url': str,
+        'thumbnail_width': int,
+        'thumbnail_height': int,
         'reply_markup': inlinekeyboardmarkup.InlineKeyboardMarkup,
         'input_message_content': {
             'class': inputmessagecontent.InputMessageContent,
@@ -315,8 +317,8 @@ class InlineQueryResultVenue(InlineQueryResult):
 
     @classmethod
     def a(cls, id: str, latitude: str, longitude: str, title: str, address: str,
-          foursquare_id: Optional[str] = None, foursqure_type: Optional[str] = None, thumb_url: Optional[str] = None,
-          thumb_width: Optional[int] = None, thumb_height: Optional[int] = None,
+          foursquare_id: Optional[str] = None, foursqure_type: Optional[str] = None, thumbnail_url: Optional[str] = None,
+          thumbnail_width: Optional[int] = None, thumbnail_height: Optional[int] = None,
           input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
           reply_markup: Optional[inlinekeyboardmarkup.InlineKeyboardMarkup] = None):
         type = 'venue'
@@ -331,9 +333,9 @@ class InlineQueryResultContact(InlineQueryResult):
         'first_name': str,
         'last_name': str,
         'vcard': str,
-        'thumb_url': str,
-        'thumb_width': int,
-        'thumb_height': int,
+        'thumbnail_url': str,
+        'thumbnail_width': int,
+        'thumbnail_height': int,
         'reply_markup': inlinekeyboardmarkup.InlineKeyboardMarkup,
         'input_message_content': {
             'class': inputmessagecontent.InputMessageContent,
@@ -346,8 +348,8 @@ class InlineQueryResultContact(InlineQueryResult):
 
     @classmethod
     def a(cls, id: str, phone_number: str, first_name: str, last_name: Optional[str] = None,
-          vcard: Optional[str] = None, thumb_url: Optional[str] = None, thumb_width: Optional[int] = None,
-          thumb_height: Optional[int] = None,
+          vcard: Optional[str] = None, thumbnail_url: Optional[str] = None, thumbnail_width: Optional[int] = None,
+          thumbnail_height: Optional[int] = None,
           input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
           reply_markup: Optional[inlinekeyboardmarkup.InlineKeyboardMarkup] = None):
         type = 'contact'
@@ -367,7 +369,7 @@ class InlineQueryResultGame(InlineQueryResult):
 
     @classmethod
     def a(cls, id: str, game_short_name: str,
-        reply_markup: Optional[inlinekeyboardmarkup.InlineKeyboardMarkup] = None):
+          reply_markup: Optional[inlinekeyboardmarkup.InlineKeyboardMarkup] = None):
         type = 'game'
         return super().a(**locals())
 
@@ -378,7 +380,7 @@ class InlineQueryResultCachedPhoto(InlineQueryResult):
         'id': str,
         'photo_file_id': str,
         'description': str,
-        'thumb_url': str,
+        'thumbnail_url': str,
         'title': str,
         'caption': str,
         'parse_mode': str,

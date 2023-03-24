@@ -37,5 +37,5 @@ from django_tgbot.types import user, location
 
 ChosenInlineResult.fields.update({
     'from': user.User,
-    'location': location.Location,
+    'location': location.Location
 })

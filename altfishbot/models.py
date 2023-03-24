@@ -28,15 +28,10 @@ class TelegramUser(AbstractTelegramUser):
     def name(self):
         name = self.first_name
         if self.last_name is not None:
-            name += f' {self.last_name}'
+            name += f'{self.last_name}'
         if self.username is not None:
-            name = f' @{self.username}'
+            name = f'@{self.username}'
         return name
-
-    # def is_bot(self):
-    #     if self.is_bot:
-    #         self.role = 'Bot'
-    #         self.save()
 
 
 class TelegramChat(AbstractTelegramChat):

@@ -18,4 +18,4 @@ class Video(BasicType):
 
 from . import photosize
 
-Video.fields.update(dict(thumb=photosize.PhotoSize))
+Video.fields.update(dict(thumbnail=photosize.PhotoSize))

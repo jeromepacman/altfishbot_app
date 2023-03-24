@@ -21,6 +21,4 @@ class Document(BasicType):
 
 from . import photosize
 
-Document.fields.update({
-    'thumb': photosize.PhotoSize
-})
+Document.fields.update(dict(thumbnail=photosize.PhotoSize))

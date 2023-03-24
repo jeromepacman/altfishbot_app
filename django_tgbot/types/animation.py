@@ -25,5 +25,5 @@ class Animation(BasicType):
 from . import photosize
 
 Animation.fields.update({
-    'thumb': photosize.PhotoSize
+    'thumbnail': photosize.PhotoSize
 })

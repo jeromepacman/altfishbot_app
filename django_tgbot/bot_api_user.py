@@ -162,12 +162,14 @@ class BotAPIUser:
         return self.send_request('setWebhook', {'url': url})
 
     def sendMessage(self, chat_id, text, parse_mode=None, entities: List[MessageEntity] = None,
-                    disable_web_page_preview=None, disable_notification=None, reply_to_message_id=None,
+                    disable_web_page_preview=None, disable_notification=None, protect_content=None,
+                    reply_to_message_id=None,
+                    allow_sending_without_reply=None,
                     reply_markup: Union[
                         None, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply] = None) -> Message:
         return self.request_and_result(create_params_from_args(locals()), Message)
 
-    def forwardMessage(self, chat_id, from_chat_id, message_id, disable_notification=None):
+    def forwardMessage(self, chat_id, from_chat_id, message_id, disable_notification=None, protect_content=None):
         return self.request_and_result(create_params_from_args(locals()), Message)
 
     def sendPhoto(self, chat_id, photo, upload=False, caption=None, parse_mode=None, disable_notification=None,
@@ -198,7 +200,7 @@ class BotAPIUser:
                 files={'audio': audio}
             )
 
-    def sendDocument(self, chat_id, document, upload=False, thumb=None, caption=None, parse_mode=None,
+    def sendDocument(self, chat_id, document, upload=False, thumbnail=None, caption=None, parse_mode=None,
                      disable_notification=None,
                      reply_to_message_id=None,
                      reply_markup: Union[
@@ -213,7 +215,8 @@ class BotAPIUser:
                 files={'document': document}
             )
 
-    def sendVideo(self, chat_id, video, upload=False, duration=None, width=None, height=None, thumb=None, caption=None,
+    def sendVideo(self, chat_id, video, upload=False, duration=None, width=None, height=None, thumbnail=None,
+                  caption=None,
                   parse_mode=None, supports_streaming=None, disable_notification=None, reply_to_message_id=None,
                   reply_markup: Union[
                       None, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply] = None) -> Message:
@@ -227,7 +230,7 @@ class BotAPIUser:
                 files={'video': video}
             )
 
-    def sendAnimation(self, chat_id, animation, upload=False, duration=None, width=None, height=None, thumb=None,
+    def sendAnimation(self, chat_id, animation, upload=False, duration=None, width=None, height=None, thumbnail=None,
                       caption=None,
                       parse_mode=None, disable_notification=None, reply_to_message_id=None,
                       reply_markup: Union[
@@ -257,7 +260,7 @@ class BotAPIUser:
                 files={'voice': voice}
             )
 
-    def sendVideoNote(self, chat_id, video_note, upload=False, duration=None, length=None, thumb=None,
+    def sendVideoNote(self, chat_id, video_note, upload=False, duration=None, length=None, thumbnail=None,
                       disable_notification=None,
                       reply_to_message_id=None,
                       reply_markup: Union[
@@ -282,7 +285,7 @@ class BotAPIUser:
                 files={'media': media}
             )
 
-    def sendLocation(self, chat_id, latitude, longitude, live_period=None, disable_notification=None,
+    def sendLocation(self, chat_id, latitude, longitude, live_period=None, heading=None, disable_notification=None,
                      reply_to_message_id=None,
                      reply_markup: Union[
                          None, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply] = None) -> Message:
@@ -357,10 +360,22 @@ class BotAPIUser:
     def setChatAdministratorCustomTitle(self, chat_id, user_id, custom_title):
         return self.request_and_result(create_params_from_args(locals()), bool)
 
+    def banChatSenderChat(self, chat_id, sender_chat_id):
+        return self.request_and_result(create_params_from_args(locals()), bool)
+
+    def unbanChatSenderChat(self, chat_id, sender_chat_id):
+        return self.request_and_result(create_params_from_args(locals()), bool)
+
     def setChatPermissions(self, chat_id, permissions):
         return self.request_and_result(create_params_from_args(locals()), bool)
 
     def exportChatInviteLink(self, chat_id):
+        return self.request_and_result(create_params_from_args(locals()), bool)
+
+    def createChatInviteLink(self, chat_id):
+        return self.request_and_result(create_params_from_args(locals()), bool)
+
+    def revokeChatInviteLink(self, chat_id, invite_link):
         return self.request_and_result(create_params_from_args(locals()), bool)
 
     def setChatPhoto(self, chat_id, photo):
@@ -405,7 +420,7 @@ class BotAPIUser:
         return self.request_and_result(create_params_from_args(locals()), bool)
 
     def editMessageText(self, text, chat_id=None, message_id=None, inline_message_id=None, parse_mode=None,
-                        disable_webpage_preview=None,
+                        disable_web_page_preview=None,
                         reply_markup: Union[
                             None, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply] = None) -> Message:
 

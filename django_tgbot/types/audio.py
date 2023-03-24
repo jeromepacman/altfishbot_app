@@ -23,4 +23,4 @@ class Audio(BasicType):
 
 from . import photosize
 
-Audio.fields.update(dict(thumb=photosize.PhotoSize))
+Audio.fields.update(dict(thumbnail=photosize.PhotoSize))

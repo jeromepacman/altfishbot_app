@@ -11,19 +11,23 @@ class Message(BasicType):
     """
     fields = {
         'message_id': str,
+        'message_thread_id': str,
         'date': str,
         'forward_from_message_id': str,
-        'forward_from': str,
         'forward_signature': str,
         'forward_sender_name': str,
-        'forward_from_chat': str,
         'forward_date': str,
+        'is_topîc_message': BasicType.bool_interpreter,
+        'is_automatic_forward': BasicType.bool_interpreter,
         'edit_date': str,
         'media_group_id': str,
         'author_signature': str,
         'text': str,
         'caption': str,
         'new_chat_title': str,
+        'is_topic_message': BasicType.bool_interpreter,
+        'is_automatic_formward': BasicType.bool_interpreter,
+        'has_protected_content': BasicType.bool_interpreter,
         'delete_chat_photo': BasicType.bool_interpreter,
         'group_chat_created': BasicType.bool_interpreter,
         'supergroup_chat_created': BasicType.bool_interpreter,
@@ -104,14 +108,21 @@ class Message(BasicType):
     def get_forward_from(self) -> object:
         return getattr(self, 'forward_from', None)
 
+    def get_left_chat_member(self):
+        return getattr(self, 'left_chat_member', None)
+
+    def get_new_chat_members(self):
+        return getattr(self, 'new_chat_members', None)
+
     def get_photo(self):
         return getattr(self, 'photo', None)
 
 
+
 # Placed here to avoid import cycles
-from django_tgbot.types import user, chat, messageentity, audio, document, animation, game, photosize, \
-    inlinekeyboardmarkup, passportdata, successfulpayment, invoice, poll, venue, location, contact, videonote, voice, \
-    video, sticker, dice
+from . import user, chat, messageentity, audio, document, animation, game, photosize, \
+    inlinekeyboardmarkup, passportdata, successfulpayment, invoice, poll, \
+    venue, location, contact, videonote, voice, video, sticker, dice
 
 
 Message.fields.update({
@@ -120,6 +131,7 @@ Message.fields.update({
     'pinned_message': Message,
     'from': user.User,
     'chat': chat.Chat,
+    'sender_chat': chat.Chat,
     'forward_from': user.User,
     'forward_from_chat': chat.Chat,
     'entities': {
@@ -139,6 +151,7 @@ Message.fields.update({
         'array': True
     },
     'sticker': sticker.Sticker,
+
     'video': video.Video,
     'voice': voice.Voice,
     'video_note': videonote.VideoNote,

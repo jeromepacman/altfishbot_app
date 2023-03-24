@@ -35,9 +35,11 @@ class ChatMember(BasicType):
     def get_is_member(self) -> bool:
         return getattr(self, 'is_member', None)
 
+
 # Placed here to avoid import cycles
-from django_tgbot.types import user
+from django_tgbot.types import user, chat
 
 ChatMember.fields.update({
-    'user': user.User
+    'user': user.User,
+    'chat': chat.Chat
 })

@@ -10,6 +10,7 @@ class Chat(BasicType):
         'username': str,
         'first_name': str,
         'last_name': str,
+        'is_forum': BasicType.bool_interpreter,
         'description': str,
         'invite_link': str,
         'slow_mode_delay': str,

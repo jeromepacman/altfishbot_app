@@ -12,7 +12,7 @@ class StickerSet(BasicType):
             'class': sticker.Sticker,
             'array': True
         },
-        'thumb': photosize.PhotoSize
+        'thumbnail': photosize.PhotoSize
     }
 
     def __init__(self, obj=None):
