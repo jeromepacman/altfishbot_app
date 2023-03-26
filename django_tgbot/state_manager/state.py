@@ -40,9 +40,9 @@ class State:
     def matches(self, waiting_for, update_type, message_type=None):
         try:
             return (waiting_for in self.waiting_for or self.waiting_for == ['*']) and \
-                   (message_type is None or message_type in self.message_types or self.message_types == []) and \
-                   (message_type is None or message_type not in self.exclude_message_types) and \
-                   (update_type in self.update_types or self.update_types == []) and \
-                   (update_type not in self.exclude_update_types)
+                (message_type is None or message_type in self.message_types or self.message_types == []) and \
+                (message_type is None or message_type not in self.exclude_message_types) and \
+                (update_type in self.update_types or self.update_types == []) and \
+                (update_type not in self.exclude_update_types)
         except AttributeError:
             return False

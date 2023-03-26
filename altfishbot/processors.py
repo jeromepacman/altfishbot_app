@@ -1,6 +1,6 @@
 from datetime import timedelta
 import requests
-
+import time
 from django.utils.timezone import now
 from django_tgbot.decorators import processor
 from django_tgbot.state_manager import message_types, update_types, state_types
@@ -50,8 +50,11 @@ def indoor(bot: TelegramBot, update: Update, state: TelegramState):
         bot.kickChatMember(chat_id=chat_id, user_id=user_id)
         bot.sendMessage(OWNER, 'arabic name detected')
         return
-    # bot.sendMessage(chat_id, f'Hi {first_name}, welcome to Altwhales 🐳\nCheck group info by checking me @alt_fish_bot 🖐')
-    TelegramUser.objects.get_or_create(telegram_id=user_id, first_name=first_name)
+    try:
+        bot.get_db_user(user_id)
+        bot.get_db_state(user_id, chat_id)
+    except:
+        bot.sendMessage(OWNER, 'no id found')
 
     bot.deleteMessage(chat_id, msg_id)
 
@@ -178,19 +181,19 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
     #      ###  SLASH COMMANDS #####
 
     if chat_type == 'supergroup' and text.startswith('/'):
-
+                ## QUOTE ###
         if text == '/quote' and user_id == OWNER or user_id == JIM:
             quote = Quote.objects.filter(active=True).order_by('?')[0]
             bot.sendMessage(chat_id, f'🔈"{quote.text}"\n©️{quote.author}', parse_mode='HTML')
             state.set_name('')
-
+                ### STRIKE ####
         elif text == '/strike':
             bot.sendDice(chat_id, '🎳')
-
+                #### RULES ####
         elif text == '/rules':
             rules = Rule.objects.get(pk=1)
             bot.sendMessage(user_id, f'{rules}', parse_mode='html')
-
+                #### ROLE  ####
         elif text == '/role' or text == '/role@AltFishBot':
             try:
                 sender = update.get_message().get_reply_to_message().get_from().get_id()
@@ -203,7 +206,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                     bot.sendMessage(chat_id, response, disable_notification=True)
                 else:
                     bot.sendMessage(chat_id, 'no status found')
-
+                #### STATUS ####
         elif text == '/status' or text == '/status@AltFishBot':
             b = TelegramUser.objects.get(telegram_id=user_id)
             if b.role is not None:
@@ -211,7 +214,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, f'Hi {b.first_name} 😎\nYour Status: \n{c}', disable_notification=True)
             else:
                 bot.sendMessage(chat_id, f"😶 You don't have any status yet {b.first_name}")
-
+                ##### PROMOTE ####
         elif text == '/promote' and user_id == OWNER:
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             if sender is not None:
@@ -225,7 +228,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                         bot.sendMessage(chat_id, response)
                 else:
                     bot.sendMessage(OWNER, f'user {d} has no role')
-
+                #### CLEAR WARNS ####
         elif text == '/clear' and user_id == OWNER or user_id == JIM:
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             if sender is not None:
@@ -235,7 +238,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(sender, f"✅ warnings cleared")
             else:
                 bot.sendMessage(user_id, 'invalid request')
-
+                #### DB #####
         elif text == '/db' and user_id == OWNER:
             try:
                 banned = TelegramUser.objects.filter(has_status=False)
@@ -244,7 +247,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id=OWNER, text="Data failed")
             else:
                 bot.sendMessage(chat_id=OWNER, text=f"{banned.count()} users deleted")
-
+                #### PURGE ####
         elif text == '/purge' and user_id == OWNER:
             try:
                 inactive = TelegramUser.objects.filter(updated_at__lt=now() - timedelta(days=180)).exclude(
@@ -254,16 +257,16 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id=OWNER, text='Error db action')
             else:
                 bot.sendMessage(chat_id=OWNER, text=f'{inactive.count()} users purged')
-
+                ##### HOOK ####
         elif text == '/hook' and user_id == OWNER:
             bot.setWebhook(url='')
 
         elif text == '/sethook' and user_id == OWNER:
             bot.setWebhook(url='https://fishbot.jcloud-ver-jpe.ik-server.com/altbabywhale_bot/update/')
-
+                ##### CAP ####
         elif text == "/cap" and user_id == OWNER or user_id == JIM:
             bot.sendMessage(chat_id, get_market_cap(), parse_mode='html')
-
+                ##### WARN WWWWW
         elif text == '/warn' and user_id == OWNER or user_id == JIM:
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             sender_msg = update.get_message().get_reply_to_message().get_message_id()
@@ -275,33 +278,36 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, f'{f.name()} <i>you have been warned</i>', parse_mode='HTML')
             else:
                 bot.sendMessage(user_id, 'invalid request')
-
+                ##### FIND #####
         elif text.startswith('/f ') and text[3:].isdigit() and user_id == OWNER or user_id == JIM:
             flag = text[3:]
-            b = TelegramUser.objects.get(telegram_id=flag)
             try:
-                sta = bot.getChatMember(chat_id, b.telegram_id).status
-            except AttributeError:
-                bot.sendMessage(OWNER, 'user does not exist')
-                b.delete()
+                user_sta = bot.getChatMember(chat_id, flag).status
+                time.sleep(0.2)
+                b = TelegramUser.objects.get_or_create(telegram_id=flag)
+            except:
+                bot.sendMessage(OWNER, 'invalid request')
             else:
-                if sta in ['kicked', 'banned']:
+                if user_sta in ['kicked']:
                     b.has_status = False
                     b.save(update_fields=['has_status'])
-                elif sta in ['member']:
+                elif user_sta in ['member']:
                     b.has_status = True
                     b.save(update_fields=['has_status'])
-                elif sta in ['left']:
+                elif user_sta in ['left']:
                     b.delete()
-                bot.sendMessage(OWNER, sta)
-
+                else:
+                    bot.sendMessage(user_id, user_sta)
+            finally:
+                return None
+                    ##### KICK #####
         elif text == '/kick' and user_id == OWNER or user_id == JIM:
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             sender_msg = update.get_message().get_reply_to_message().get_message_id()
             if sender is not None:
                 f = TelegramUser.objects.get(telegram_id=sender)
                 f.has_status = False
-                f.save(update_fields=['warnings'])
+                f.save(update_fields=['has_status'])
                 bot.kickChatMember(chat_id, sender)
                 bot.deleteMessage(chat_id, sender_msg)
             else:
@@ -328,7 +334,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 b.has_status = False
                 b.save(update_fields=['has_status'])
                 bot.kickChatMember(chat_id, b.telegram_id)
-
+                        ##### BAN (all msgs) #####
         elif text == '/ban' and user_id == OWNER or user_id == JIM:
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             if sender is not None:
@@ -358,17 +364,10 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
             else:
                 bot.sendMessage(
                     chat_direct,
-                    f'🐳',
-                    reply_markup=ReplyKeyboardMarkup.a(resize_keyboard=True, keyboard=[
-                        [KeyboardButton.a('Rules of the group'), KeyboardButton.a('Invite link')],
-                        [KeyboardButton.a('Admins list'), KeyboardButton.a('Hustlers list')],
-                        [KeyboardButton.a('Group status'), KeyboardButton.a('My status')],
-                        [KeyboardButton.a('Market news'), KeyboardButton.a('Gecko trendy coins')],
-                        [KeyboardButton.a('Market trend'), KeyboardButton.a('Channel')],
-                    ])
-                )
+                    f'🐳')
 
         bot.deleteMessage(chat_id, msg_id)
+
 
 
 # ADMIN #######################
@@ -381,7 +380,7 @@ def ask_quote(bot: TelegramBot, update: Update, state: TelegramState):
     chat_id = update.get_chat().get_id()
     text = update.get_message().get_text()
 
-    if chat_type == 'private' and chat_id == '342785208' and text == '/add':
+    if chat_type == 'private' and chat_id == OWNER and text == '/add':
         bot.sendMessage(chat_id, f"⚪️ Ok\nsend me a quote..")
 
 
@@ -422,7 +421,7 @@ def private_kb(bot: TelegramBot, update: Update, state: TelegramState):
     if chat_type == 'private':
         user = TelegramUser.objects.get(telegram_id=chat_id)
         if text == 'My status':
-            if user.role:
+            if user.role and not user.role in ['Hustler']:
                 st = f'{user.get_role_display()}\n'
                 bot.sendMessage(chat_id,
                                 f"<b>{user.first_name}</b> 😎\n\nId {user.telegram_id}\n\n\nYour Status is {st}\nYou're in the group since {user.joined}\n\n<i>Date might be incorrect, i'm still in beta</i> 😬",
@@ -460,8 +459,8 @@ def private_kb(bot: TelegramBot, update: Update, state: TelegramState):
                     response = f'🌎{source.title()}\n<a href="{url}">{title}</a>'
                     bot.sendMessage(chat_id, {response}, parse_mode='html', disable_web_page_preview=True,
                                     disable_notification=True)
-                else:
-                    bot.sendMessage(chat_id, SERV_MSG[1])
+            else:
+                bot.sendMessage(chat_id, SERV_MSG[1])
 
         elif text == 'Gecko trendy coins':
             if user.role in ['Admin', 'Whale', 'Babywhale', 'Dolphin']:
@@ -496,7 +495,7 @@ def private_kb(bot: TelegramBot, update: Update, state: TelegramState):
             if user.role and user.role not in ['Hustler']:
                 bot.sendMessage(chat_id, f'—————<b>Your invite link</b>—————\n{CHAT_INVITE_LINK}\n',
                                 parse_mode="html",
-                                disable_web_page_preview=True, disable_notification=True)
+                                disable_web_page_preview=True)
             else:
                 bot.sendMessage(chat_id, SERV_MSG[1])
 
@@ -505,6 +504,9 @@ def private_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 bot.sendMessage(chat_id, get_market_cap(), parse_mode='html', disable_notification=True)
             else:
                 bot.sendMessage(chat_id, SERV_MSG[1])
+
+        elif text in ['/rules', '/role', '/status']:
+            bot.sendMessage(chat_id, SERV_MSG[2])
 
         elif text == '/start' or text == '/up' or text == '/up@alt_fish_bot':
             bot.sendMessage(
@@ -519,12 +521,7 @@ def private_kb(bot: TelegramBot, update: Update, state: TelegramState):
                 ])
             )
 
-        elif text == '/rules':
-            pass
-
         else:
             bot.sendMessage(chat_id, SERV_MSG[3])
 
         bot.deleteMessage(chat_id, msg_id)
-        user.updated_at = now()
-        user.save(update_fields=['updated_at'])

@@ -37,7 +37,8 @@ class Command(BaseCommand):
                 return
 
         with open(os.path.join(dst, 'credentials.py'), 'w') as f:
-            f.write("# Do not remove these 2 lines:\nBOT_TOKEN = '{}'\nAPP_NAME = '{}'\n".format(bot_token, bot_username))
+            f.write(
+                "# Do not remove these 2 lines:\nBOT_TOKEN = '{}'\nAPP_NAME = '{}'\n".format(bot_token, bot_username))
 
         with open(os.path.join(dst, '__init__.py'), 'w') as f:
             f.write(
@@ -53,7 +54,9 @@ class Command(BaseCommand):
 
         self.stdout.write("Next steps:")
         self.stdout.write("\t1. Add '{}' to INSTALLED_APPS in project settings".format(bot_username))
-        self.stdout.write("\t2. Add `from {} import urls as {}_urls` to project urls file".format(bot_username, bot_username))
-        self.stdout.write("\t3. Add `path('{}/', include({}_urls))` to project urls' urlpatterns".format(bot_username, bot_username))
+        self.stdout.write(
+            "\t2. Add `from {} import urls as {}_urls` to project urls file".format(bot_username, bot_username))
+        self.stdout.write(
+            "\t3. Add `path('{}/', include({}_urls))` to project urls' urlpatterns".format(bot_username, bot_username))
         self.stdout.write("\t4. `python manage.py migrate`")
         self.stdout.write("Enjoy!")

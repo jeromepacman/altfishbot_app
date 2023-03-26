@@ -9,4 +9,3 @@ class ResponseParameters(BasicType):
 
     def __init__(self, obj=None):
         super(ResponseParameters, self).__init__(obj)
-

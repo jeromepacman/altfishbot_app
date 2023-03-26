@@ -72,5 +72,3 @@ class InputContactMessageContent(InputMessageContent):
     @classmethod
     def a(cls, phone_number: str, first_name: str, last_name: Optional[str] = None, vcard: Optional[str] = None):
         return super().a(**locals())
-
-

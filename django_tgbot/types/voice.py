@@ -12,4 +12,3 @@ class Voice(BasicType):
 
     def __init__(self, obj=None):
         super(Voice, self).__init__(obj)
-

@@ -29,4 +29,3 @@ Game.fields.update({
     },
     'animation': animation.Animation
 })
-

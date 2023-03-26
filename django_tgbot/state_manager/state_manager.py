@@ -34,4 +34,3 @@ class StateManager:
 
     def set_default_update_types(self, update_types):
         self.default_update_types = update_types
-

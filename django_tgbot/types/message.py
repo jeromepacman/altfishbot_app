@@ -118,12 +118,10 @@ class Message(BasicType):
         return getattr(self, 'photo', None)
 
 
-
 # Placed here to avoid import cycles
 from . import user, chat, messageentity, audio, document, animation, game, photosize, \
     inlinekeyboardmarkup, passportdata, successfulpayment, invoice, poll, \
     venue, location, contact, videonote, voice, video, sticker, dice
-
 
 Message.fields.update({
     'reply_to_message': Message,

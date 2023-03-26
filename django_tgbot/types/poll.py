@@ -28,4 +28,3 @@ class Poll(BasicType):
 
     def __init__(self, obj=None):
         super(Poll, self).__init__(obj)
-

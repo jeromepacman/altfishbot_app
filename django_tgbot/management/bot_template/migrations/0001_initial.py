@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,7 +16,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('telegram_id', models.CharField(max_length=128, unique=True)),
-                ('type', models.CharField(choices=[('private', 'private'), ('group', 'group'), ('supergroup', 'supergroup'), ('channel', 'channel')], max_length=128)),
+                ('type', models.CharField(
+                    choices=[('private', 'private'), ('group', 'group'), ('supergroup', 'supergroup'),
+                             ('channel', 'channel')], max_length=128)),
                 ('title', models.CharField(blank=True, max_length=512, null=True)),
                 ('username', models.CharField(blank=True, max_length=128, null=True)),
             ],
@@ -45,8 +46,10 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('memory', models.TextField(blank=True, null=True, verbose_name='Memory in JSON format')),
                 ('name', models.CharField(blank=True, max_length=256, null=True)),
-                ('telegram_chat', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='telegram_states', to='_BOT_USERNAME.telegramchat')),
-                ('telegram_user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='telegram_states', to='_BOT_USERNAME.telegramuser')),
+                ('telegram_chat', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                                                    related_name='telegram_states', to='_BOT_USERNAME.telegramchat')),
+                ('telegram_user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                                                    related_name='telegram_states', to='_BOT_USERNAME.telegramuser')),
             ],
             options={
                 'unique_together': {('telegram_user', 'telegram_chat')},

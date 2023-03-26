@@ -22,4 +22,3 @@ class ReplyKeyboardMarkup(BasicType):
     def a(cls, keyboard: List[List[keyboardbutton.KeyboardButton]], resize_keyboard: Optional[bool] = None,
           one_time_keyboard: Optional[bool] = None, selective: Optional[bool] = None):
         return super().a(**locals())
-

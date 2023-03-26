@@ -95,7 +95,8 @@ class InlineQueryResultGif(InlineQueryResult):
         super(InlineQueryResultGif, self).__init__(obj)
 
     @classmethod
-    def a(cls, id: str, gif_url: str, thumbnail_url: str, thumbnail_mime_type: str = None, gif_width: Optional[int] = None,
+    def a(cls, id: str, gif_url: str, thumbnail_url: str, thumbnail_mime_type: str = None,
+          gif_width: Optional[int] = None,
           gif_height: Optional[int] = None,
           gif_duration: Optional[int] = None, title: Optional[str] = None, caption: Optional[str] = None,
           parse_mode: Optional[str] = None,
@@ -129,7 +130,8 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
         super(InlineQueryResultMpeg4Gif, self).__init__(obj)
 
     @classmethod
-    def a(cls, id: str, mpeg4_url: str, thumbnail_url: str, thumbnail_mime_type: str = None, mpeg4_width: Optional[int] = None,
+    def a(cls, id: str, mpeg4_url: str, thumbnail_url: str, thumbnail_mime_type: str = None,
+          mpeg4_width: Optional[int] = None,
           mpeg4_height: Optional[int] = None, mpeg4_duration: Optional[int] = None, title: Optional[str] = None,
           caption: Optional[str] = None, parse_mode: Optional[str] = None,
           input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
@@ -285,7 +287,8 @@ class InlineQueryResultLocation(InlineQueryResult):
 
     @classmethod
     def a(cls, id: str, latitude: str, longitude: str, title: str, live_period: Optional[int] = None,
-          thumbnail_url: Optional[str] = None, thumbnail_width: Optional[int] = None, thumbnail_height: Optional[int] = None,
+          thumbnail_url: Optional[str] = None, thumbnail_width: Optional[int] = None,
+          thumbnail_height: Optional[int] = None,
           input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
           reply_markup: Optional[inlinekeyboardmarkup.InlineKeyboardMarkup] = None):
         type = 'document'
@@ -317,7 +320,8 @@ class InlineQueryResultVenue(InlineQueryResult):
 
     @classmethod
     def a(cls, id: str, latitude: str, longitude: str, title: str, address: str,
-          foursquare_id: Optional[str] = None, foursqure_type: Optional[str] = None, thumbnail_url: Optional[str] = None,
+          foursquare_id: Optional[str] = None, foursqure_type: Optional[str] = None,
+          thumbnail_url: Optional[str] = None,
           thumbnail_width: Optional[int] = None, thumbnail_height: Optional[int] = None,
           input_message_content: Optional[inputmessagecontent.InputMessageContent] = None,
           reply_markup: Optional[inlinekeyboardmarkup.InlineKeyboardMarkup] = None):

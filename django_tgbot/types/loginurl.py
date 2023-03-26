@@ -15,5 +15,6 @@ class LoginUrl(BasicType):
         super(LoginUrl, self).__init__(obj)
 
     @classmethod
-    def a(cls, url: str, forward_text: Optional[str] = None, bot_username: Optional[str] = None, request_write_access: Optional[bool] = None):
+    def a(cls, url: str, forward_text: Optional[str] = None, bot_username: Optional[str] = None,
+          request_write_access: Optional[bool] = None):
         return super().a(**locals())

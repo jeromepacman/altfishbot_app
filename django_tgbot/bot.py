@@ -84,7 +84,6 @@ class AbstractTelegramBot(BotAPIUser):
         print(self, telegram_id)
         pass
 
-
     def get_db_chat(self, telegram_id):
         """
         Should be implemented - Creates or retrieves the chat object from database

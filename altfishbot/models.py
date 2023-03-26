@@ -14,13 +14,13 @@ class TelegramUser(AbstractTelegramUser):
         ('Hustler', '🚫 Hustler'),
         ('Bot', '🔷 Bot'),), blank=True, null=True)
 
-    post_count = models.IntegerField("posts", default=0)
+    post_count = models.IntegerField("posts")
     joined = models.DateField(default=date.today)
-    language_code = models.CharField('lang', max_length=16, null=True, blank=True)
+    language_code = models.CharField('lang', max_length=12, null=True, blank=True)
     is_premium = models.BooleanField('premium', default=False)
     updated_at = models.DateTimeField(auto_now=True)
     has_status = models.BooleanField("Mb", default=True)
-    warnings = models.PositiveIntegerField(default=0)
+    warnings = models.PositiveIntegerField()
 
     def __str__(self):
         return f'{self.name()}'

@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from . import models
 
 
@@ -36,4 +36,19 @@ class WelcomeMessageAdmin(admin.ModelAdmin):
 @admin.register(models.Quote)
 class QuoteAdmin(admin.ModelAdmin):
     list_display = ['text', 'author', 'active']
-    list_editable = ['active']
+    actions = ['actives', 'inactives']
+
+    @admin.action(description='Make active')
+    def actives(self, request, queryset):
+        updated_count = queryset.update(active=True)
+        self.message_user(request, f'{updated_count} quotes enabled', messages.SUCCESS)
+
+    @admin.action(description='Make inactive')
+    def inactives(self, request, queryset):
+        updated_count = queryset.update(active=False)
+        self.message_user(request, f'{updated_count} quotes disabled', messages.SUCCESS)
+
+
+
+
+

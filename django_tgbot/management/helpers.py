@@ -75,4 +75,5 @@ def prompt_project_url(command_line, bot_token, bot_username):
         if res['ok']:
             command_line.stdout.write(command_line.style.SUCCESS("Successfully set webhook."))
         else:
-            command_line.stdout.write(command_line.style.WARNING("Couldn't set webhook:\n{}".format(res['description'])))
+            command_line.stdout.write(
+                command_line.style.WARNING("Couldn't set webhook:\n{}".format(res['description'])))

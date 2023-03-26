@@ -54,6 +54,7 @@ class BasicType:
         }
     }
     """
+
     def __init__(self, obj=None):
         self.obj = validate_type_object(obj)
         self.parse_fields()
@@ -139,6 +140,3 @@ class BasicType:
             setattr(result, key, kwargs[key])
 
         return result
-
-
-

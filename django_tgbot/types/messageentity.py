@@ -21,4 +21,5 @@ class MessageEntity(BasicType):
 
 
 from django_tgbot.types import user
+
 MessageEntity.fields.update(dict(user=user.User))

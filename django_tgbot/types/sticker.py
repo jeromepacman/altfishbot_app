@@ -18,4 +18,3 @@ class Sticker(BasicType):
 
     def __init__(self, obj=None):
         super(Sticker, self).__init__(obj)
-

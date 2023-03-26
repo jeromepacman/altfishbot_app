@@ -13,4 +13,3 @@ class ShippingAddress(BasicType):
 
     def __init__(self, obj=None):
         super(ShippingAddress, self).__init__(obj)
-

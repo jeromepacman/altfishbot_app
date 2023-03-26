@@ -39,6 +39,7 @@ class CallbackQuery(BasicType):
     def get_data(self) -> Optional[str]:
         return getattr(self, 'data', None)
 
+
 # Placed here to avoid import cycles
 
 from django_tgbot.types import user, message
