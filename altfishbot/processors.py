@@ -190,7 +190,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
         elif text == '/strike':
             bot.sendDice(chat_id, '🎳')
                 #### RULES ####
-        elif text == '/rules':
+        elif text == '/reg':
             rules = Rule.objects.get(pk=1)
             bot.sendMessage(user_id, f'{rules}', parse_mode='html')
                 #### ROLE  ####
@@ -267,7 +267,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
         elif text == "/cap" and user_id == OWNER or user_id == JIM:
             bot.sendMessage(chat_id, get_market_cap(), parse_mode='html')
                 ##### WARN WWWWW
-        elif text == '/warn' and user_id == OWNER or user_id == JIM:
+        elif text == '/alert' and user_id == OWNER or user_id == JIM:
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             sender_msg = update.get_message().get_reply_to_message().get_message_id()
             if sender is not None:
@@ -301,7 +301,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
             finally:
                 return None
                     ##### KICK #####
-        elif text == '/kick' and user_id == OWNER or user_id == JIM:
+        elif text == '/out' and user_id == OWNER or user_id == JIM:
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             sender_msg = update.get_message().get_reply_to_message().get_message_id()
             if sender is not None:
@@ -313,8 +313,8 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
             else:
                 bot.sendMessage(user_id, 'invalid request')
 
-        elif text.startswith('/k @') and user_id == OWNER or user_id == JIM:
-            klag = text[4:]
+        elif text.startswith('/out @') and user_id == OWNER or user_id == JIM:
+            klag = text[6:]
             try:
                 b = TelegramUser.objects.get(username=klag)
             except TelegramUser.DoesNotExist:
@@ -324,8 +324,8 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 b.save(update_fields=['has_status'])
                 bot.kickChatMember(chat_id, b.telegram_id)
 
-        elif text.startswith('/k ') and text[3:].isdigit() and user_id == OWNER or user_id == JIM:
-            klag = text[3:]
+        elif text.startswith('/out ') and text[5:].isdigit() and user_id == OWNER or user_id == JIM:
+            klag = text[5:]
             try:
                 b = TelegramUser.objects.get(telegram_id=klag)
             except TelegramUser.DoesNotExist:
@@ -335,7 +335,7 @@ def group_cmd(bot: TelegramBot, update: Update, state: TelegramState):
                 b.save(update_fields=['has_status'])
                 bot.kickChatMember(chat_id, b.telegram_id)
                         ##### BAN (all msgs) #####
-        elif text == '/ban' and user_id == OWNER or user_id == JIM:
+        elif text == '/defout' and user_id == OWNER or user_id == JIM:
             sender = update.get_message().get_reply_to_message().get_from().get_id()
             if sender is not None:
                 f = TelegramUser.objects.get(telegram_id=sender)
